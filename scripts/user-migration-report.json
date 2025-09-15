@@ -1,0 +1,42 @@
+{
+  "timestamp": "2025-09-15T06:20:54.943Z",
+  "totalFirebaseUsers": 5,
+  "successfulMigrations": 5,
+  "users": [
+    {
+      "id": "30bddfad-6430-4770-be8a-ba512ae2d870",
+      "email": "jaehxxn7@naver.com",
+      "displayName": "천재훈",
+      "provider": "google.com",
+      "createdAt": "2025-08-31T09:16:34.000Z"
+    },
+    {
+      "id": "ff5f3a26-1803-4706-b540-547d3fe56935",
+      "email": "rnjsdud980@gmail.com",
+      "displayName": "조권영",
+      "provider": "google.com",
+      "createdAt": "2025-09-03T09:30:40.000Z"
+    },
+    {
+      "id": "cb875782-280f-45db-ba6a-1baf2c674be6",
+      "email": "tnalsqkr1234@gmail.com",
+      "displayName": "박수민",
+      "provider": "google.com",
+      "createdAt": "2025-09-04T05:04:09.000Z"
+    },
+    {
+      "id": "893efbed-52f7-4d52-a834-adf276fd7f60",
+      "email": "hackuser988@gmail.com",
+      "displayName": "천재훈",
+      "provider": "google.com",
+      "createdAt": "2025-09-03T06:47:04.000Z"
+    },
+    {
+      "id": "8c563c4a-c1cb-44ae-9cef-aeeeb32e4d09",
+      "email": "regend0726@gmail.com",
+      "displayName": "김용현 (방구석쉐프)",
+      "provider": "google.com",
+      "createdAt": "2025-09-03T07:56:41.000Z"
+    }
+  ]
+}

@@ -1,0 +1,118 @@
+// Prisma Schema for 성격팔자 (Seonggyeok-Palja) - Next.js + Supabase
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Profile (extends Supabase Auth)
+model Profile {
+  id            String   @id @db.Uuid
+  email         String   @unique
+  displayName   String?  @map("display_name")
+  photoUrl      String?  @map("photo_url")
+  provider      String?
+  emailVerified Boolean  @default(false) @map("email_verified")
+  firebaseUid   String?  @unique @map("firebase_uid") // 원본 Firebase UID 보관
+  lastSignInAt  DateTime? @map("last_sign_in_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  analysisResults AnalysisResult[]
+  synergyAnalysis SynergyAnalysis[]
+  savedResults    SavedResult[]
+
+  @@map("profiles")
+}
+
+// Personality Types (MBTI x 팔자유형)
+model PersonalityType {
+  code        String @id @db.VarChar(4)
+  alias       String
+  imageUrl    String? @map("image_url")
+  description String
+  advice      String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  analysisResults     AnalysisResult[]
+  synergyAsPartner    SynergyAnalysis[] @relation("PartnerType")
+  synergyAsUser       SynergyAnalysis[] @relation("UserType")
+
+  @@map("personality_types")
+}
+
+// Analysis Results
+model AnalysisResult {
+  id              String    @id @default(cuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  personalityType String    @map("personality_type") @db.VarChar(4)
+  mbtiType        String?   @map("mbti_type") @db.VarChar(4)
+  paljaType       String?   @map("palja_type") @db.VarChar(20)
+  birthDate       DateTime? @map("birth_date") @db.Date
+  birthTime       DateTime? @map("birth_time") @db.Time
+  lunarCalendar   Boolean   @default(false) @map("lunar_calendar")
+  analysisData    Json?     @map("analysis_data")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user            Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personalityTypeRef PersonalityType @relation(fields: [personalityType], references: [code])
+
+  @@index([userId])
+  @@index([personalityType])
+  @@map("analysis_results")
+}
+
+// Synergy Analysis
+model SynergyAnalysis {
+  id                String   @id @default(cuid()) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  partnerType       String   @map("partner_type") @db.VarChar(4)
+  userType          String   @map("user_type") @db.VarChar(4)
+  compatibilityScore Int?    @map("compatibility_score")
+  analysisData      Json?    @map("analysis_data")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user              Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partnerTypeRef    PersonalityType @relation("PartnerType", fields: [partnerType], references: [code])
+  userTypeRef       PersonalityType @relation("UserType", fields: [userType], references: [code])
+
+  @@index([userId])
+  @@map("synergy_analysis")
+}
+
+// Saved Results
+model SavedResult {
+  id         String   @id @default(cuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  resultType String   @map("result_type") @db.VarChar(20)
+  resultId   String?  @map("result_id") @db.Uuid
+  title      String?
+  isFavorite Boolean  @default(false) @map("is_favorite")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user       Profile  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("saved_results")
+}
+
+// Admin Settings
+model AdminSetting {
+  id           String   @id @default(cuid()) @db.Uuid
+  settingKey   String   @unique @map("setting_key") @db.VarChar(100)
+  settingValue Json?    @map("setting_value")
+  updatedBy    String?  @map("updated_by") @db.Uuid
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("admin_settings")
+}
