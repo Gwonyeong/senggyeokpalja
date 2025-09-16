@@ -1,37 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { auth } from '@/lib/firebase-config';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { useState } from 'react';
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      if (firebaseUser) {
-        // Check if user is admin
-        const token = await firebaseUser.getIdTokenResult();
-        setIsAdmin(token.claims?.admin === true);
-      } else {
-        setIsAdmin(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      window.location.href = '/';
-    } catch (error) {
-      console.error('로그아웃 실패:', error);
-    }
+    // TODO: Implement Firebase logout
+    console.log('로그아웃');
   };
 
   const handleLogin = () => {

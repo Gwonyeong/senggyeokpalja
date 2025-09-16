@@ -1,371 +1,326 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { calculateSaju, determinePaljaType } from '../../lib/saju-utils';
+import { useState, useEffect } from "react";
 
 export default function SynergyPage() {
-  const [person1Data, setPerson1Data] = useState({
-    name: '',
-    year: '',
-    month: '',
-    day: '',
-    hour: '',
-    calendar: 'solar'
-  });
-
-  const [person2Data, setPerson2Data] = useState({
-    name: '',
-    year: '',
-    month: '',
-    day: '',
-    hour: '',
-    calendar: 'solar'
-  });
-
+  const [selectedMBTI, setSelectedMBTI] = useState("");
+  const [selectedPalja, setSelectedPalja] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // MBTI 유형 목록
+  const mbtiTypes = [
+    "INTJ",
+    "INTP",
+    "ENTJ",
+    "ENTP",
+    "INFJ",
+    "INFP",
+    "ENFJ",
+    "ENFP",
+    "ISTJ",
+    "ISFJ",
+    "ESTJ",
+    "ESFJ",
+    "ISTP",
+    "ISFP",
+    "ESTP",
+    "ESFP",
+  ];
+
+  // 팔자 유형 목록 (예시)
+  const paljaTypes = [
+    "용띠형",
+    "봉황형",
+    "호랑이형",
+    "거북이형",
+    "매형",
+    "늑대형",
+    "사자형",
+    "여우형",
+    "뱀형",
+    "말형",
+    "원숭이형",
+    "닭형",
+    "개형",
+    "돼지형",
+    "쥐형",
+    "소형",
+  ];
+
+  useEffect(() => {
+    // MBTI와 팔자유형 모두 선택되었을 때 버튼 활성화
+    const button = document.getElementById("analyze-synergy");
+    if (button) {
+      button.disabled = !selectedMBTI || !selectedPalja;
+    }
+  }, [selectedMBTI, selectedPalja]);
+
+  const handleAnalyze = async () => {
+    if (!selectedMBTI || !selectedPalja) return;
+
     setLoading(true);
 
     try {
-      // 첫 번째 사람 분석
-      const birthDate1 = new Date(
-        parseInt(person1Data.year),
-        parseInt(person1Data.month) - 1,
-        parseInt(person1Data.day)
+      // 시뮬레이션된 분석 결과 생성
+      const compatibilityScore = calculateCompatibility(
+        selectedMBTI,
+        selectedPalja
       );
-
-      let timeIndex1 = 0;
-      if (person1Data.hour) {
-        const hourValue = parseInt(person1Data.hour);
-        const timeMap = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23];
-        timeIndex1 = timeMap.findIndex(h => h === hourValue);
-        if (timeIndex1 === -1) timeIndex1 = 0;
-      }
-
-      const sajuData1 = calculateSaju(birthDate1, timeIndex1);
-      const personalityType1 = determinePaljaType(sajuData1);
-
-      // 두 번째 사람 분석
-      const birthDate2 = new Date(
-        parseInt(person2Data.year),
-        parseInt(person2Data.month) - 1,
-        parseInt(person2Data.day)
+      const analysis = getCompatibilityAnalysis(
+        selectedMBTI,
+        selectedPalja,
+        compatibilityScore
       );
-
-      let timeIndex2 = 0;
-      if (person2Data.hour) {
-        const hourValue = parseInt(person2Data.hour);
-        const timeMap = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23];
-        timeIndex2 = timeMap.findIndex(h => h === hourValue);
-        if (timeIndex2 === -1) timeIndex2 = 0;
-      }
-
-      const sajuData2 = calculateSaju(birthDate2, timeIndex2);
-      const personalityType2 = determinePaljaType(sajuData2);
-
-      // 궁합 점수 계산 (간단한 로직)
-      const compatibilityScore = calculateCompatibility(personalityType1, personalityType2);
 
       setResult({
-        person1: { ...person1Data, sajuData: sajuData1, personalityType: personalityType1 },
-        person2: { ...person2Data, sajuData: sajuData2, personalityType: personalityType2 },
+        mbti: selectedMBTI,
+        palja: selectedPalja,
         compatibilityScore,
-        analysis: getCompatibilityAnalysis(personalityType1, personalityType2, compatibilityScore)
+        analysis,
+        detailedAnalysis: getDetailedAnalysis(selectedMBTI, selectedPalja),
       });
     } catch (error) {
-      console.error('궁합 분석 중 오류 발생:', error);
-      alert('궁합 분석 중 오류가 발생했습니다: ' + error.message);
+      console.error("시너지 분석 중 오류 발생:", error);
+      alert("시너지 분석 중 오류가 발생했습니다: " + error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateCompatibility = (type1, type2) => {
-    // 기본 점수 50점에서 시작
-    let score = 50;
+  const calculateCompatibility = (mbti, palja) => {
+    // MBTI와 팔자유형의 조화 점수를 계산하는 로직
+    let score = 70; // 기본 점수
 
-    // 각 축별 호환성 검사
-    const axes = [
-      [type1[0], type2[0]], // Energy (W/N)
-      [type1[1], type2[1]], // Perception (G/S)
-      [type1[2], type2[2]], // Judgement (I/H)
-      [type1[3], type2[3]]  // Lifestyle (J/Y)
-    ];
-
-    // 같은 특성이면 +10, 다르면 +5 (다양성의 가치)
-    axes.forEach(([a, b]) => {
-      if (a === b) {
-        score += 10; // 같은 성향은 이해하기 쉬움
-      } else {
-        score += 5; // 다른 성향은 보완 관계
-      }
-    });
-
-    // 특별한 조합 보너스
-    if ((type1.includes('W') && type2.includes('N')) || (type1.includes('N') && type2.includes('W'))) {
-      score += 10; // 에너지 보완
+    // MBTI 성향별 보정
+    if (mbti.includes("E") && ["사자형", "호랑이형", "매형"].includes(palja)) {
+      score += 10; // 외향적 성격과 강한 팔자의 조화
+    }
+    if (mbti.includes("I") && ["거북이형", "뱀형", "여우형"].includes(palja)) {
+      score += 10; // 내향적 성격과 신중한 팔자의 조화
+    }
+    if (
+      mbti.includes("N") &&
+      ["용띠형", "봉황형", "원숭이형"].includes(palja)
+    ) {
+      score += 8; // 직관형과 변화를 추구하는 팔자
+    }
+    if (mbti.includes("S") && ["소형", "개형", "말형"].includes(palja)) {
+      score += 8; // 감각형과 안정적인 팔자
     }
 
-    if ((type1.includes('G') && type2.includes('S')) || (type1.includes('S') && type2.includes('G'))) {
-      score += 10; // 인식 보완
-    }
+    // 랜덤 요소 추가로 자연스러운 점수 생성
+    score += Math.floor(Math.random() * 10) - 5;
 
-    // 80점을 넘지 않도록 제한
-    return Math.min(score, 95);
+    return Math.max(60, Math.min(95, score));
   };
 
-  const getCompatibilityAnalysis = (type1, type2, score) => {
-    if (score >= 80) {
-      return "🌟 환상의 조합! 서로를 깊이 이해하고 지지하는 최고의 파트너십입니다.";
-    } else if (score >= 70) {
-      return "💫 좋은 궁합! 서로 다른 점을 존중하며 성장할 수 있는 관계입니다.";
-    } else if (score >= 60) {
-      return "🌱 보통 궁합! 노력한다면 좋은 관계를 만들어 갈 수 있습니다.";
+  const getCompatibilityAnalysis = (mbti, palja, score) => {
+    if (score >= 85) {
+      return `🌟 ${mbti}와 ${palja}의 완벽한 조화! 성격과 운명이 서로를 강화시키는 최상의 시너지입니다.`;
+    } else if (score >= 75) {
+      return `✨ ${mbti}의 특성이 ${palja}와 잘 어우러집니다. 균형 잡힌 발전이 기대됩니다.`;
+    } else if (score >= 65) {
+      return `🌱 ${mbti}와 ${palja}가 만나 새로운 가능성을 열어갑니다. 조화로운 성장이 가능합니다.`;
     } else {
-      return "🤔 도전적인 궁합! 서로를 이해하기 위해 더 많은 소통이 필요합니다.";
+      return `🤔 ${mbti}와 ${palja}의 만남은 도전적이지만, 그만큼 큰 성장의 기회가 됩니다.`;
     }
+  };
+
+  const getDetailedAnalysis = (mbti, palja) => {
+    return {
+      strengths: [
+        `${mbti}의 분석적 사고와 ${palja}의 직관이 조화를 이룹니다.`,
+        `타고난 리더십과 판단력이 돋보입니다.`,
+        `변화에 대한 적응력이 뛰어납니다.`,
+      ],
+      challenges: [
+        `때로는 완벽주의 성향이 스트레스가 될 수 있습니다.`,
+        `감정 표현에 있어 균형이 필요합니다.`,
+      ],
+      advice: [
+        `${mbti}의 장점을 ${palja}의 에너지로 더욱 발전시켜보세요.`,
+        `주변 사람들과의 소통을 늘려 시너지를 극대화하세요.`,
+        `새로운 도전을 두려워하지 말고 적극적으로 임하세요.`,
+      ],
+    };
   };
 
   return (
     <div className="analyze-page">
-      <div className="container">
-        <div className="analyze-header">
-          <h1>💫 시너지 분석</h1>
-          <p>두 사람의 궁합을 확인해보세요</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="saju-form">
-          <div className="form-section">
-            <h2>👤 첫 번째 사람</h2>
-
-            <div style={{marginBottom: '20px'}}>
-              <input
-                type="text"
-                placeholder="이름"
-                value={person1Data.name}
-                onChange={(e) => setPerson1Data({...person1Data, name: e.target.value})}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '8px',
-                  background: 'var(--surface-color)',
-                  color: 'var(--text-color)',
-                  fontSize: '16px'
-                }}
-                required
-              />
-            </div>
-
-            <div className="date-inputs">
-              <select
-                value={person1Data.year}
-                onChange={(e) => setPerson1Data({...person1Data, year: e.target.value})}
-                required
-              >
-                <option value="">년</option>
-                {Array.from({length: 124}, (_, i) => 2024 - i).map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-
-              <select
-                value={person1Data.month}
-                onChange={(e) => setPerson1Data({...person1Data, month: e.target.value})}
-                required
-              >
-                <option value="">월</option>
-                {Array.from({length: 12}, (_, i) => i + 1).map(month => (
-                  <option key={month} value={month}>{month}</option>
-                ))}
-              </select>
-
-              <select
-                value={person1Data.day}
-                onChange={(e) => setPerson1Data({...person1Data, day: e.target.value})}
-                required
-              >
-                <option value="">일</option>
-                {Array.from({length: 31}, (_, i) => i + 1).map(day => (
-                  <option key={day} value={day}>{day}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="time-selection">
-              <label>🕐 태어난 시간</label>
-              <select
-                value={person1Data.hour}
-                onChange={(e) => setPerson1Data({...person1Data, hour: e.target.value})}
-              >
-                <option value="">시간을 모르겠어요</option>
-                <option value="1">01시 (자시)</option>
-                <option value="3">03시 (축시)</option>
-                <option value="5">05시 (인시)</option>
-                <option value="7">07시 (묘시)</option>
-                <option value="9">09시 (진시)</option>
-                <option value="11">11시 (사시)</option>
-                <option value="13">13시 (오시)</option>
-                <option value="15">15시 (미시)</option>
-                <option value="17">17시 (신시)</option>
-                <option value="19">19시 (유시)</option>
-                <option value="21">21시 (술시)</option>
-                <option value="23">23시 (해시)</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="form-section">
-            <h2>👥 두 번째 사람</h2>
-
-            <div style={{marginBottom: '20px'}}>
-              <input
-                type="text"
-                placeholder="이름"
-                value={person2Data.name}
-                onChange={(e) => setPerson2Data({...person2Data, name: e.target.value})}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '8px',
-                  background: 'var(--surface-color)',
-                  color: 'var(--text-color)',
-                  fontSize: '16px'
-                }}
-                required
-              />
-            </div>
-
-            <div className="date-inputs">
-              <select
-                value={person2Data.year}
-                onChange={(e) => setPerson2Data({...person2Data, year: e.target.value})}
-                required
-              >
-                <option value="">년</option>
-                {Array.from({length: 124}, (_, i) => 2024 - i).map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-
-              <select
-                value={person2Data.month}
-                onChange={(e) => setPerson2Data({...person2Data, month: e.target.value})}
-                required
-              >
-                <option value="">월</option>
-                {Array.from({length: 12}, (_, i) => i + 1).map(month => (
-                  <option key={month} value={month}>{month}</option>
-                ))}
-              </select>
-
-              <select
-                value={person2Data.day}
-                onChange={(e) => setPerson2Data({...person2Data, day: e.target.value})}
-                required
-              >
-                <option value="">일</option>
-                {Array.from({length: 31}, (_, i) => i + 1).map(day => (
-                  <option key={day} value={day}>{day}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="time-selection">
-              <label>🕐 태어난 시간</label>
-              <select
-                value={person2Data.hour}
-                onChange={(e) => setPerson2Data({...person2Data, hour: e.target.value})}
-              >
-                <option value="">시간을 모르겠어요</option>
-                <option value="1">01시 (자시)</option>
-                <option value="3">03시 (축시)</option>
-                <option value="5">05시 (인시)</option>
-                <option value="7">07시 (묘시)</option>
-                <option value="9">09시 (진시)</option>
-                <option value="11">11시 (사시)</option>
-                <option value="13">13시 (오시)</option>
-                <option value="15">15시 (미시)</option>
-                <option value="17">17시 (신시)</option>
-                <option value="19">19시 (유시)</option>
-                <option value="21">21시 (술시)</option>
-                <option value="23">23시 (해시)</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="submit-btn primary-btn"
-            disabled={loading}
-          >
-            {loading ? '💫 분석 중...' : '💫 궁합 확인하기'}
-          </button>
-        </form>
-
-        {result && (
-          <div className="result-section">
-            <div className="result-content">
-              <h2>💫 궁합 분석 결과</h2>
-
-              <div style={{textAlign: 'center', marginBottom: '30px'}}>
-                <div style={{fontSize: '48px', fontWeight: 'bold', color: 'var(--accent-color)', marginBottom: '10px'}}>
-                  {result.compatibilityScore}점
+      <main>
+        <section id="analyzer">
+          <div className="container">
+            <div className="analyzer-layout">
+              <div className="card analyzer-card">
+                <div className="card-header">
+                  <h2 className="card-title sage-title">
+                    <span className="sage-subtitle">
+                      내 안의 두 자아, 조화를 이루다.
+                    </span>
+                  </h2>
+                  <p className="sage-description">
+                    그대의 성격(MBTI)과 운명(팔자유형)이 만나 어떤 이야기를
+                    만드는지 살펴보자.
+                  </p>
                 </div>
-                <p style={{fontSize: '18px', lineHeight: '1.6'}}>
-                  {result.analysis}
-                </p>
+
+                <form className="analyzer-form">
+                  <div className="form-section">
+                    <div className="input-group">
+                      <label htmlFor="mbti-select">성격 (MBTI)</label>
+                      <select
+                        id="mbti-select"
+                        value={selectedMBTI}
+                        onChange={(e) => setSelectedMBTI(e.target.value)}
+                        required
+                      >
+                        <option value="">성격을 선택하세요</option>
+                        {mbtiTypes.map((mbti) => (
+                          <option key={mbti} value={mbti}>
+                            {mbti}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-section">
+                    <div className="input-group">
+                      <label htmlFor="palja-select">운명 (팔자유형)</label>
+                      <select
+                        id="palja-select"
+                        value={selectedPalja}
+                        onChange={(e) => setSelectedPalja(e.target.value)}
+                        required
+                      >
+                        <option value="">운명을 선택하세요</option>
+                        {paljaTypes.map((palja) => (
+                          <option key={palja} value={palja}>
+                            {palja}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-footer">
+                    <div className="sage-advice">
+                      <div>"두 자아의 만남,</div>
+                      <div>그대의 새로운 길이 열릴지니."</div>
+                    </div>
+                    <button
+                      type="button"
+                      id="analyze-synergy"
+                      className="cta-button ink-brush-effect"
+                      onClick={handleAnalyze}
+                      disabled={!selectedMBTI || !selectedPalja || loading}
+                    >
+                      {loading ? "🔮 분석 중..." : "이야기 듣기"}
+                    </button>
+                  </div>
+                </form>
               </div>
 
-              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px'}}>
-                <div style={{background: 'var(--card-bg-color)', padding: '25px', borderRadius: '16px', border: '1px solid var(--border-color)'}}>
-                  <h3 style={{color: 'var(--accent-color)', marginBottom: '15px'}}>👤 {result.person1.name}</h3>
-                  <div style={{marginBottom: '15px'}}>
-                    <strong>성격 유형:</strong> {result.person1.personalityType}
+              {result && (
+                <div className="card result-card">
+                  <div className="result-header">
+                    <h3>
+                      🎭 {result.mbti} × {result.palja}
+                    </h3>
+                    <p>토리가 들려주는 시너지 이야기</p>
                   </div>
-                  <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px'}}>
-                    {Object.entries(result.person1.sajuData.palja).map(([ju, data]) => (
-                      <div key={ju} style={{
-                        textAlign: 'center',
-                        padding: '8px',
-                        background: 'rgba(252, 163, 17, 0.1)',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}>
-                        {data.gan.han}{data.ji.han}
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
-                <div style={{background: 'var(--card-bg-color)', padding: '25px', borderRadius: '16px', border: '1px solid var(--border-color)'}}>
-                  <h3 style={{color: 'var(--accent-color)', marginBottom: '15px'}}>👥 {result.person2.name}</h3>
-                  <div style={{marginBottom: '15px'}}>
-                    <strong>성격 유형:</strong> {result.person2.personalityType}
-                  </div>
-                  <div style={{display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px'}}>
-                    {Object.entries(result.person2.sajuData.palja).map(([ju, data]) => (
-                      <div key={ju} style={{
-                        textAlign: 'center',
-                        padding: '8px',
-                        background: 'rgba(252, 163, 17, 0.1)',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}>
-                        {data.gan.han}{data.ji.han}
+                  <div className="result-content">
+                    <div
+                      className="synergy-score"
+                      style={{
+                        textAlign: "center",
+                        marginBottom: "30px",
+                        padding: "25px",
+                        background: "rgba(252, 163, 17, 0.1)",
+                        borderRadius: "15px",
+                        border: "1px solid rgba(252, 163, 17, 0.2)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "3rem",
+                          fontWeight: "bold",
+                          color: "var(--starlight-orange)",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        {result.compatibilityScore}점
                       </div>
-                    ))}
+                      <p
+                        style={{
+                          fontSize: "1.1rem",
+                          lineHeight: "1.6",
+                          color: "var(--text-color)",
+                          margin: 0,
+                        }}
+                      >
+                        {result.analysis}
+                      </p>
+                    </div>
+
+                    <div className="synergy-details">
+                      <div className="info-card">
+                        <h3>💪 시너지 강점</h3>
+                        <ul>
+                          {result.detailedAnalysis.strengths.map(
+                            (strength, index) => (
+                              <li key={index}>{strength}</li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+
+                      <div className="info-card">
+                        <h3>⚠️ 주의할 점</h3>
+                        <ul>
+                          {result.detailedAnalysis.challenges.map(
+                            (challenge, index) => (
+                              <li key={index}>{challenge}</li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+
+                      <div className="info-card">
+                        <h3>🌟 토리의 조언</h3>
+                        <ul>
+                          {result.detailedAnalysis.advice.map(
+                            (advice, index) => (
+                              <li key={index}>{advice}</li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="share-card">
+                      <h3>📱 결과 공유하기</h3>
+                      <p>토리의 시너지 분석 결과를 친구들과 공유해보세요!</p>
+                      <button className="btn btn-secondary">공유하기</button>
+                    </div>
+
+                    <div
+                      className="save-to-mypage-card"
+                      style={{ marginTop: "20px", textAlign: "center" }}
+                    >
+                      <button className="btn btn-primary">
+                        📝 마이페이지에 저장하기
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </section>
+      </main>
     </div>
   );
 }
