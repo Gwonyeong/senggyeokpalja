@@ -1955,6 +1955,19 @@ input[type="text"]::placeholder {
     text-shadow: 0 0 10px rgba(252, 163, 17, 0.3);
 }
 
+.compatibility-item-title {
+    font-size: 0.75rem;
+    color: var(--starlight-orange);
+    margin-bottom: 12px;
+    font-weight: 600;
+    min-height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 .compatibility-grid {
     display: flex;
     justify-content: center;
@@ -2067,14 +2080,14 @@ input[type="text"]::placeholder {
         justify-content: center;
         flex-wrap: wrap;
     }
-    
+
     .compatibility-item {
         flex: 0 1 140px;
         min-width: 120px;
         padding: 15px 8px;
         margin-bottom: 10px;
     }
-    
+
     .compatibility-image {
         width: 120px !important;
         height: 120px !important;
@@ -2083,12 +2096,12 @@ input[type="text"]::placeholder {
         background: rgba(255, 255, 255, 0.1) !important;
         border: 3px solid #FCA311 !important;
     }
-    
+
     .compatibility-name {
         font-size: 0.8rem;
         font-weight: 600;
     }
-    
+
     .compatibility-type {
         font-size: 0.7rem;
     }
