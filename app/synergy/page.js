@@ -56,27 +56,54 @@ export default function SynergyPage() {
     }
   }, [selectedMBTI, selectedPalja]);
 
+  // 결과가 표시될 때 애니메이션 효과
+  useEffect(() => {
+    if (result) {
+      // 원형 게이지 애니메이션
+      setTimeout(() => {
+        const progressCircle = document.querySelector('.progress-circle');
+        if (progressCircle) {
+          const targetValue = progressCircle.getAttribute('data-target');
+          progressCircle.style.strokeDasharray = `${targetValue} 327`;
+        }
+      }, 300);
+
+      // 진행률 바 애니메이션
+      setTimeout(() => {
+        const progressFills = document.querySelectorAll('.progress-fill');
+        progressFills.forEach(fill => {
+          const targetWidth = fill.getAttribute('data-width');
+          fill.style.width = '0%';
+          setTimeout(() => {
+            fill.style.width = targetWidth + '%';
+          }, 200);
+        });
+      }, 500);
+    }
+  }, [result]);
+
   const handleAnalyze = async () => {
     if (!selectedMBTI || !selectedPalja) return;
 
     setLoading(true);
 
     try {
-      // 시뮬레이션된 분석 결과 생성
-      const compatibilityScore = calculateCompatibility(
+      // 4차원 시너지 분석 결과 생성
+      const compatibilityResult = calculateCompatibility(
         selectedMBTI,
         selectedPalja
       );
       const analysis = getCompatibilityAnalysis(
         selectedMBTI,
         selectedPalja,
-        compatibilityScore
+        compatibilityResult.totalScore
       );
 
       setResult({
         mbti: selectedMBTI,
         palja: selectedPalja,
-        compatibilityScore,
+        compatibilityScore: compatibilityResult.totalScore,
+        breakdown: compatibilityResult.breakdown,
         analysis,
         detailedAnalysis: getDetailedAnalysis(selectedMBTI, selectedPalja),
       });
@@ -88,34 +115,105 @@ export default function SynergyPage() {
     }
   };
 
+  // MBTI와 팔자유형의 4차원 특성 매핑
+  const mbtiCharacteristics = {
+    energy: {
+      'E': 'external', // 외향: 적극적/사교적
+      'I': 'internal'  // 내향: 신중함/내적 성찰
+    },
+    lifestyle: {
+      'J': 'structured', // 판단: 계획적/체계적
+      'P': 'flexible'    // 인식: 즉흥적/자율적
+    },
+    perception: {
+      'S': 'realistic', // 감각: 현실/경험 중시
+      'N': 'idealistic' // 직관: 이상/가능성 중시
+    },
+    decision: {
+      'T': 'logical',   // 사고: 논리/원칙 중시
+      'F': 'emotional'  // 감정: 관계/조화 중시
+    }
+  };
+
+  const paljaCharacteristics = {
+    energy: {
+      'W': 'powerful',  // 외강: 고출력/강력한 힘
+      'N': 'stable'     // 내유: 안정적/효율적인 힘
+    },
+    lifestyle: {
+      'Y': 'dynamic',   // 유랑: 역동적/변화무쌍
+      'J': 'steady'     // 정주: 안정적/예측 가능
+    },
+    perception: {
+      'G': 'conceptual', // 관념: 정신적 가치 추구
+      'S': 'practical'   // 실리: 구체적인 성과 추구
+    },
+    decision: {
+      'H': 'harmony',   // 화합: 사람/소통 중시
+      'I': 'systematic' // 이성: 시스템/규율 중시
+    }
+  };
+
+  // 4차원 시너지 점수 계산 로직
+  const synergyScoring = {
+    energy: {
+      'external-powerful': 25,
+      'internal-stable': 25,
+      'internal-powerful': 15,
+      'external-stable': 15
+    },
+    lifestyle: {
+      'structured-steady': 25,
+      'flexible-dynamic': 25,
+      'structured-dynamic': 15,
+      'flexible-steady': 15
+    },
+    perception: {
+      'realistic-practical': 25,
+      'idealistic-conceptual': 25,
+      'realistic-conceptual': 5,
+      'idealistic-practical': 5
+    },
+    decision: {
+      'logical-systematic': 25,
+      'emotional-harmony': 25,
+      'logical-harmony': 15,
+      'emotional-systematic': 15
+    }
+  };
+
   const calculateCompatibility = (mbti, paljaCode) => {
-    // MBTI와 팔자유형의 조화 점수를 계산하는 로직
-    let score = 70; // 기본 점수
+    // 1. MBTI 특성 추출
+    const mbtiTraits = {
+      energy: mbtiCharacteristics.energy[mbti[0]], // E 또는 I
+      perception: mbtiCharacteristics.perception[mbti[1]], // S 또는 N
+      decision: mbtiCharacteristics.decision[mbti[2]], // T 또는 F
+      lifestyle: mbtiCharacteristics.lifestyle[mbti[3]] // J 또는 P
+    };
 
-    // MBTI 성향별 보정 (4글자 코드 기반)
-    if (mbti.includes("E") && paljaCode.startsWith("W")) {
-      score += 10; // 외향적 성격과 활발한 에너지(W)의 조화
-    }
-    if (mbti.includes("I") && paljaCode.startsWith("N")) {
-      score += 10; // 내향적 성격과 조용한 에너지(N)의 조화
-    }
-    if (mbti.includes("N") && paljaCode.includes("G")) {
-      score += 8; // 직관형과 창의적 성향(G)의 조화
-    }
-    if (mbti.includes("S") && paljaCode.includes("S")) {
-      score += 8; // 감각형과 현실적 성향(S)의 조화
-    }
-    if (mbti.includes("F") && paljaCode.endsWith("J")) {
-      score += 6; // 감정형과 조화로운 성향(J)의 조화
-    }
-    if (mbti.includes("T") && paljaCode.endsWith("Y")) {
-      score += 6; // 사고형과 독립적 성향(Y)의 조화
-    }
+    // 2. 팔자유형 특성 추출
+    const paljaTraits = {
+      energy: paljaCharacteristics.energy[paljaCode[0]], // W 또는 N
+      perception: paljaCharacteristics.perception[paljaCode[1]], // G 또는 S
+      decision: paljaCharacteristics.decision[paljaCode[2]], // H 또는 I
+      lifestyle: paljaCharacteristics.lifestyle[paljaCode[3]] // J 또는 Y
+    };
 
-    // 랜덤 요소 추가로 자연스러운 점수 생성
-    score += Math.floor(Math.random() * 10) - 5;
+    // 3. 각 차원별 점수 계산
+    const scores = {
+      energy: synergyScoring.energy[`${mbtiTraits.energy}-${paljaTraits.energy}`] || 0,
+      lifestyle: synergyScoring.lifestyle[`${mbtiTraits.lifestyle}-${paljaTraits.lifestyle}`] || 0,
+      perception: synergyScoring.perception[`${mbtiTraits.perception}-${paljaTraits.perception}`] || 0,
+      decision: synergyScoring.decision[`${mbtiTraits.decision}-${paljaTraits.decision}`] || 0
+    };
 
-    return Math.max(60, Math.min(95, score));
+    // 4. 총점 계산
+    const totalScore = scores.energy + scores.lifestyle + scores.perception + scores.decision;
+
+    return {
+      totalScore: Math.max(20, Math.min(100, totalScore)),
+      breakdown: scores
+    };
   };
 
   const getCompatibilityAnalysis = (mbti, paljaCode, score) => {
@@ -153,6 +251,20 @@ export default function SynergyPage() {
         `새로운 도전을 두려워하지 말고 적극적으로 임하세요.`,
       ],
     };
+  };
+
+  const getSynergyClass = (score) => {
+    if (score >= 90) return 'fantastic';
+    if (score >= 70) return 'potential';
+    if (score >= 50) return 'caution';
+    return 'mismatch';
+  };
+
+  const getSynergyTypeDisplay = (score) => {
+    if (score >= 90) return '✨ 환상의 시너지';
+    if (score >= 70) return '🌱 잠재력 폭발';
+    if (score >= 50) return '🚦 과부하 주의';
+    return '🧩 엇박자 궁합';
   };
 
   return (
@@ -241,72 +353,148 @@ export default function SynergyPage() {
                   </div>
 
                   <div className="result-content">
-                    <div
-                      className="synergy-score"
-                      style={{
-                        textAlign: "center",
-                        marginBottom: "30px",
-                        padding: "25px",
-                        background: "rgba(252, 163, 17, 0.1)",
-                        borderRadius: "15px",
-                        border: "1px solid rgba(252, 163, 17, 0.2)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "3rem",
-                          fontWeight: "bold",
-                          color: "var(--starlight-orange)",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        {result.compatibilityScore}점
+                    <div className="synergy-score-display">
+                      <div className="circular-progress">
+                        <svg viewBox="0 0 120 120">
+                          <defs>
+                            <linearGradient id="fantasticGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" style={{stopColor: "#4CAF50", stopOpacity: 1}} />
+                              <stop offset="100%" style={{stopColor: "#66BB6A", stopOpacity: 1}} />
+                            </linearGradient>
+                            <linearGradient id="potentialGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" style={{stopColor: "#FCA311", stopOpacity: 1}} />
+                              <stop offset="100%" style={{stopColor: "#DAA520", stopOpacity: 1}} />
+                            </linearGradient>
+                            <linearGradient id="cautionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" style={{stopColor: "#FF9800", stopOpacity: 1}} />
+                              <stop offset="100%" style={{stopColor: "#FFB74D", stopOpacity: 1}} />
+                            </linearGradient>
+                            <linearGradient id="mismatchGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%" style={{stopColor: "#F44336", stopOpacity: 1}} />
+                              <stop offset="100%" style={{stopColor: "#EF5350", stopOpacity: 1}} />
+                            </linearGradient>
+                          </defs>
+                          <circle className="bg-circle" cx="60" cy="60" r="52"></circle>
+                          <circle
+                            className={`progress-circle ${getSynergyClass(result.compatibilityScore)}`}
+                            cx="60"
+                            cy="60"
+                            r="52"
+                            strokeDasharray="0 327"
+                            data-target={(result.compatibilityScore / 100) * 327}
+                          ></circle>
+                        </svg>
+                        <div className="score-text">
+                          <span className="score-number">{result.compatibilityScore}</span>
+                          <span className="score-label">점</span>
+                        </div>
                       </div>
-                      <p
-                        style={{
-                          fontSize: "1.1rem",
-                          lineHeight: "1.6",
-                          color: "var(--text-color)",
-                          margin: 0,
-                        }}
-                      >
-                        {result.analysis}
-                      </p>
+                      <div className="score-type-display">
+                        {getSynergyTypeDisplay(result.compatibilityScore)}
+                      </div>
                     </div>
 
-                    <div className="synergy-details">
-                      <div className="info-card">
-                        <h3>💪 시너지 강점</h3>
-                        <ul>
-                          {result.detailedAnalysis.strengths.map(
-                            (strength, index) => (
-                              <li key={index}>{strength}</li>
-                            )
-                          )}
-                        </ul>
-                      </div>
+                    <p className="result-description">
+                      타고난 성격: {result.mbti}와<br />
+                      운명의 흐름: {paljaTypes.find(p => p.code === result.palja)?.name || result.palja}이 만났을 때
+                    </p>
 
-                      <div className="info-card">
-                        <h3>⚠️ 주의할 점</h3>
-                        <ul>
-                          {result.detailedAnalysis.challenges.map(
-                            (challenge, index) => (
-                              <li key={index}>{challenge}</li>
-                            )
-                          )}
-                        </ul>
-                      </div>
+                    <div className="info-card" style={{marginTop: "25px"}}>
+                      <h3>[토리가 풀이하는 당신의 시너지]</h3>
+                      <p>{result.analysis}</p>
+                    </div>
 
-                      <div className="info-card">
-                        <h3>🌟 토리의 조언</h3>
-                        <ul>
-                          {result.detailedAnalysis.advice.map(
-                            (advice, index) => (
-                              <li key={index}>{advice}</li>
-                            )
-                          )}
-                        </ul>
+                    <div className="info-card">
+                      <h3>[토리가 건네는 조언]</h3>
+                      <ul>
+                        {result.detailedAnalysis.advice.map(
+                          (advice, index) => (
+                            <li key={index}>{advice}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+
+                    <div className="info-card breakdown-card">
+                      <h3>[차원별 조화도 분석]</h3>
+                      <div className="synergy-graph">
+                        <div className="graph-item">
+                          <div className="graph-label">
+                            <span className="graph-dimension">에너지</span>
+                            <span className="graph-score">{result.breakdown.energy}점</span>
+                          </div>
+                          <div className="progress-bar">
+                            <div
+                              className={`progress-fill score-${result.breakdown.energy}`}
+                              data-width={(result.breakdown.energy / 25) * 100}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="graph-item">
+                          <div className="graph-label">
+                            <span className="graph-dimension">라이프스타일</span>
+                            <span className="graph-score">{result.breakdown.lifestyle}점</span>
+                          </div>
+                          <div className="progress-bar">
+                            <div
+                              className={`progress-fill score-${result.breakdown.lifestyle}`}
+                              data-width={(result.breakdown.lifestyle / 25) * 100}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="graph-item">
+                          <div className="graph-label">
+                            <span className="graph-dimension">인식방식</span>
+                            <span className="graph-score">{result.breakdown.perception}점</span>
+                          </div>
+                          <div className="progress-bar">
+                            <div
+                              className={`progress-fill score-${result.breakdown.perception}`}
+                              data-width={(result.breakdown.perception / 25) * 100}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="graph-item">
+                          <div className="graph-label">
+                            <span className="graph-dimension">판단방식</span>
+                            <span className="graph-score">{result.breakdown.decision}점</span>
+                          </div>
+                          <div className="progress-bar">
+                            <div
+                              className={`progress-fill score-${result.breakdown.decision}`}
+                              data-width={(result.breakdown.decision / 25) * 100}
+                            ></div>
+                          </div>
+                        </div>
                       </div>
+                      <div className="dimension-explanations">
+                        <div><strong>에너지:</strong> 내향성(I)과 외향성(E)의 조화 - 혼자만의 시간과 사람들과의 시간 균형</div>
+                        <div><strong>라이프스타일:</strong> 계획성(J)과 유연성(P)의 조화 - 체계적 접근과 즉흥적 대응의 균형</div>
+                        <div><strong>인식방식:</strong> 감각(S)과 직관(N)의 조화 - 현실적 정보와 미래 가능성의 균형</div>
+                        <div><strong>판단방식:</strong> 사고(T)와 감정(F)의 조화 - 논리적 분석과 감정적 고려의 균형</div>
+                      </div>
+                    </div>
+
+                    <div className="info-card">
+                      <h3>💪 시너지 강점</h3>
+                      <ul>
+                        {result.detailedAnalysis.strengths.map(
+                          (strength, index) => (
+                            <li key={index}>{strength}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+
+                    <div className="info-card">
+                      <h3>⚠️ 주의할 점</h3>
+                      <ul>
+                        {result.detailedAnalysis.challenges.map(
+                          (challenge, index) => (
+                            <li key={index}>{challenge}</li>
+                          )
+                        )}
+                      </ul>
                     </div>
 
                     <div className="share-card">
@@ -315,10 +503,7 @@ export default function SynergyPage() {
                       <button className="btn btn-secondary">공유하기</button>
                     </div>
 
-                    <div
-                      className="save-to-mypage-card"
-                      style={{ marginTop: "20px", textAlign: "center" }}
-                    >
+                    <div className="save-to-mypage-card">
                       <button className="btn btn-primary">
                         📝 마이페이지에 저장하기
                       </button>
