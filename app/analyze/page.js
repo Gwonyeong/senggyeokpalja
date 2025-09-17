@@ -165,15 +165,25 @@ export default function AnalyzePage() {
 
   // 공유하기 기능
   const handleShare = () => {
+    // 공유용 URL 생성
+    const shareId = Date.now().toString();
+    const shareParams = new URLSearchParams({
+      type: result.personalityType,
+      alias: result.typeData.alias,
+      description: result.typeData.description,
+      image: result.typeData.imageUrl
+    });
+    const shareUrl = `${window.location.origin}/share/${shareId}?${shareParams.toString()}`;
+
     if (navigator.share) {
       navigator.share({
         title: `나는 ${result.typeData.alias}! - 성격팔자`,
         text: `내 팔자 유형은 "${result.typeData.alias}"입니다. ${result.typeData.description}`,
-        url: window.location.href
+        url: shareUrl
       });
     } else {
       // Web Share API를 지원하지 않는 브라우저에서는 클립보드 복사
-      const shareText = `나는 ${result.typeData.alias}! 내 팔자 유형: ${result.personalityType}\n${result.typeData.description}\n\n성격팔자에서 확인해보세요: ${window.location.origin}`;
+      const shareText = `나는 ${result.typeData.alias}! 내 팔자 유형: ${result.personalityType}\n${result.typeData.description}\n\n성격팔자에서 확인해보세요: ${shareUrl}`;
       navigator.clipboard.writeText(shareText).then(() => {
         alert('공유 링크가 클립보드에 복사되었습니다!');
       });
