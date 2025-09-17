@@ -1,20 +1,41 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { onAuthChange, signOutUser, checkAdminAccess } from '../../lib/firebase-config';
+import LoginModal from './LoginModal';
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    // Firebase 인증 상태 감시
+    const unsubscribe = onAuthChange((authUser) => {
+      setUser(authUser);
+      setIsAdmin(authUser ? checkAdminAccess(authUser) : false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = async () => {
-    // TODO: Implement Firebase logout
-    console.log('로그아웃');
+    try {
+      await signOutUser();
+      setUser(null);
+      setIsAdmin(false);
+      alert('로그아웃되었습니다.');
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      alert('로그아웃에 실패했습니다.');
+    }
   };
 
   const handleLogin = () => {
-    window.location.href = '/auth/login';
+    setShowLoginModal(true);
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -48,7 +69,9 @@ export default function Navigation() {
               <button onClick={handleLogin} className="header-auth-btn">로그인</button>
             ) : (
               <>
-                <Link href="/mypage" className="header-auth-btn">마이페이지</Link>
+                <Link href="/mypage" className="header-auth-btn">
+                  {user.displayName || '마이페이지'}
+                </Link>
                 <button onClick={handleLogout} className="header-auth-btn">로그아웃</button>
               </>
             )}
@@ -95,6 +118,12 @@ export default function Navigation() {
           </div>
         )}
       </div>
+
+      {/* 로그인 모달 */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </header>
   );
 }

@@ -10,6 +10,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
+      <head>
+        <script
+          src="https://developers.kakao.com/sdk/js/kakao.js"
+          async
+        />
+      </head>
       <body>
         <Navigation />
         <main>
