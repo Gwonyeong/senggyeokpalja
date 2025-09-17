@@ -1,23 +1,27 @@
 import { notFound, redirect } from 'next/navigation';
+import { getShareData } from '../../../lib/share-data';
 
 // 메타데이터를 동적으로 생성
-export async function generateMetadata({ params, searchParams }) {
+export async function generateMetadata({ params }) {
   const { id } = params;
-  const { type: typeCode, alias, description, image: imageUrl } = searchParams;
 
-  if (!typeCode || !alias) {
+  const shareData = getShareData(id);
+
+  if (!shareData) {
     return {
       title: '성격팔자 - 토리의 찻집',
       description: 'MBTI와 팔자유형을 결합한 새로운 성격 분석',
     };
   }
 
+  const { type: typeCode, alias, description, image: imageUrl } = shareData;
+
   return {
     title: `나는 ${alias}! - 성격팔자`,
-    description: `내 팔자 유형: ${typeCode}. ${description || '나만의 특별한 팔자 유형을 확인해보세요!'}`,
+    description: `내 팔자 유형: ${typeCode}. ${description}`,
     openGraph: {
       title: `나는 ${alias}! - 성격팔자`,
-      description: `내 팔자 유형: ${typeCode}. ${description || '나만의 특별한 팔자 유형을 확인해보세요!'}`,
+      description: `내 팔자 유형: ${typeCode}. ${description}`,
       type: 'website',
       locale: 'ko_KR',
       siteName: '성격팔자',
@@ -26,20 +30,23 @@ export async function generateMetadata({ params, searchParams }) {
     twitter: {
       card: 'summary_large_image',
       title: `나는 ${alias}! - 성격팔자`,
-      description: `내 팔자 유형: ${typeCode}. ${description || '나만의 특별한 팔자 유형을 확인해보세요!'}`,
+      description: `내 팔자 유형: ${typeCode}. ${description}`,
       images: imageUrl ? [imageUrl] : [],
     },
   };
 }
 
-export default function SharePage({ params, searchParams }) {
+export default function SharePage({ params }) {
   const { id } = params;
-  const { type, alias, description, image } = searchParams;
 
-  // 파라미터가 없으면 메인 페이지로 리다이렉트
-  if (!type || !alias) {
+  const shareData = getShareData(id);
+
+  // 데이터가 없으면 분석 페이지로 리다이렉트
+  if (!shareData) {
     redirect('/analyze');
   }
+
+  const { type, alias, description, image } = shareData;
 
   return (
     <div className="share-page">
