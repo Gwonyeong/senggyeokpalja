@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
+import Head from "next/head";
 
 export default function AnalyzePage() {
   const [formData, setFormData] = useState({
@@ -161,6 +162,46 @@ export default function AnalyzePage() {
       setLoading(false);
     }
   };
+
+  // 공유하기 기능
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `나는 ${result.typeData.alias}! - 성격팔자`,
+        text: `내 팔자 유형은 "${result.typeData.alias}"입니다. ${result.typeData.description}`,
+        url: window.location.href
+      });
+    } else {
+      // Web Share API를 지원하지 않는 브라우저에서는 클립보드 복사
+      const shareText = `나는 ${result.typeData.alias}! 내 팔자 유형: ${result.personalityType}\n${result.typeData.description}\n\n성격팔자에서 확인해보세요: ${window.location.origin}`;
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('공유 링크가 클립보드에 복사되었습니다!');
+      });
+    }
+  };
+
+  // 동적 메타데이터 업데이트
+  useEffect(() => {
+    if (result) {
+      document.title = `나는 ${result.typeData.alias}! - 성격팔자`;
+
+      // Open Graph 메타태그 업데이트
+      const updateMetaTag = (property, content) => {
+        let tag = document.querySelector(`meta[property="${property}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('property', property);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      };
+
+      updateMetaTag('og:title', `나는 ${result.typeData.alias}! - 성격팔자`);
+      updateMetaTag('og:description', `내 팔자 유형: ${result.personalityType}. ${result.typeData.description}`);
+      updateMetaTag('og:image', result.typeData.imageUrl);
+      updateMetaTag('og:url', window.location.href);
+    }
+  }, [result]);
 
   return (
     <div className="analyze-page">
@@ -524,7 +565,11 @@ export default function AnalyzePage() {
                   <div className="share-card">
                     <h3>내 팔자 유형 자랑하기</h3>
                     <p>친구들에게 나의 특별한 팔자 유형을 공유해보세요!</p>
-                    <button id="openShareModalBtn" className="share-toggle-btn">
+                    <button
+                      id="openShareModalBtn"
+                      className="share-toggle-btn"
+                      onClick={handleShare}
+                    >
                       공유하기
                     </button>
                   </div>
