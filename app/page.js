@@ -176,8 +176,26 @@ export default function Home() {
             <div className="footer-brand">
               <h3 className="brand-name">성격팔자</h3>
             </div>
+            <div className="footer-links">
+              <Link href="/terms" style={{ color: 'var(--text-muted-color)', textDecoration: 'none', marginRight: '20px' }}>
+                이용약관
+              </Link>
+              <Link href="/privacy" style={{ color: 'var(--text-muted-color)', textDecoration: 'none' }}>
+                개인정보처리방침
+              </Link>
+            </div>
             <div className="footer-info">
               <p>&copy; 2025 성격팔자. All rights reserved.</p>
+            </div>
+          </div>
+
+          {/* Business Info - Separate Section */}
+          <div className="footer-business-info">
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted-color)', lineHeight: '1.4' }}>
+              <div>상호: 성격팔자 | 대표: 천재훈</div>
+              <div>사업자등록번호: 589-34-01598</div>
+              <div>통신판매업: 2025-의정부송산-0941</div>
+              <div>주소: 경기도 의정부시 서광로 166</div>
             </div>
           </div>
         </div>

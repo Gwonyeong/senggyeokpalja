@@ -1861,7 +1861,27 @@ section {
 .footer-content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links a:hover {
+  color: var(--starlight-orange);
+  transition: color 0.3s ease;
+}
+
+.footer-business-info {
+  text-align: left;
+  padding-top: 20px;
+  margin-top: 20px;
+  border-top: 1px solid var(--border-color);
 }
 
 .brand-name {
@@ -1879,6 +1899,10 @@ section {
     flex-direction: column;
     gap: 20px;
     text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
   }
 }
 
