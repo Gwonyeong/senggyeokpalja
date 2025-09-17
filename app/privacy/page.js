@@ -214,6 +214,127 @@ export default function Privacy() {
               marginBottom: '25px',
               borderBottom: '3px solid var(--starlight-orange)',
               paddingBottom: '15px'
+            }}>5-2. 제3자 수집 행태정보의 허용/차단 방법</h2>
+
+            <p style={{ marginBottom: '20px' }}>
+              이용자는 웹 브라우저 또는 모바일 기기 설정을 통해 제3자가 수집하는 행태정보의 수집을 허용하거나 차단할 수 있습니다. 구체적인 방법은 각 브라우저나 기기의 설정 메뉴를 참조하십시오.
+            </p>
+          </section>
+
+          <section style={{ marginBottom: '40px' }}>
+            <h2 style={{
+              color: 'var(--starlight-orange)',
+              fontSize: '1.8rem',
+              marginBottom: '25px',
+              borderBottom: '3px solid var(--starlight-orange)',
+              paddingBottom: '15px'
+            }}>6. 개인정보 파기절차 및 방법</h2>
+
+            <p style={{ marginBottom: '20px' }}>
+              이용자가 서비스 탈퇴(회원 탈퇴)를 요청하는 경우, 회사는 지체 없이 이용자의 개인정보를 파기합니다. 다만, 관련 법령에 따라 일정 기간 보관이 필요한 정보(계약 및 결제 기록, 소비자 분쟁 처리 기록 등)는 법정 기간 동안 보관 후 즉시 파기합니다.
+            </p>
+
+            <p style={{ marginBottom: '20px' }}>
+              탈퇴는 서비스 내 [설정 &gt; 회원 탈퇴] 메뉴 또는 고객센터(카카오 채널, 이메일, 전화)를 통해 신청할 수 있으며, 탈퇴 완료 시에는 복구가 불가능합니다. 탈퇴 시에는 구매한 유료 컨텐츠 또한 삭제됩니다.
+            </p>
+
+            <div style={{ marginBottom: '25px' }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px'
+              }}>(1) 파기절차</h3>
+              <ul style={{ marginBottom: '20px', paddingLeft: '20px' }}>
+                <li style={{ marginBottom: '12px' }}>
+                  정보주체가 서비스 이용 등을 위해 입력한 정보는 목적이 달성된 후 무료서비스의 경우 즉시 파기하며, 유료서비스의 경우 별도의 DB로 옮겨져(종이의 경우 별도의 서류함) 다시보기 기간 및 기타 관련 법령에 의한 정보보호 사유에 따라 일정 기간 저장된 후 파기됩니다.
+                </li>
+                <li style={{ marginBottom: '12px' }}>
+                  동 개인정보는 법률에 의한 경우가 아니고서는 보유 이외의 다른 목적으로 이용되지 않습니다.
+                </li>
+              </ul>
+            </div>
+
+            <div style={{ marginBottom: '25px' }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px'
+              }}>(2) 파기방법</h3>
+              <ul style={{ marginBottom: '20px', paddingLeft: '20px' }}>
+                <li style={{ marginBottom: '12px' }}>
+                  종이에 출력된 개인정보는 분쇄기로 분쇄하거나 소각을 통하여 파기합니다.
+                </li>
+                <li style={{ marginBottom: '12px' }}>
+                  전자적 파일 형태로 저장된 개인정보는 기록을 재생할 수 없는 기술적 방법을 사용하여 삭제합니다.
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section style={{ marginBottom: '40px' }}>
+            <h2 style={{
+              color: 'var(--starlight-orange)',
+              fontSize: '1.8rem',
+              marginBottom: '25px',
+              borderBottom: '3px solid var(--starlight-orange)',
+              paddingBottom: '15px'
+            }}>7. 개인정보의 안전성 확보 조치에 관한 사항</h2>
+
+            <div style={{ marginBottom: '25px' }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px'
+              }}>(1) 비밀번호 암호화</h3>
+              <p style={{ marginBottom: '15px' }}>
+                이용자의 개인정보는 비밀번호에 의해 보호되고 있습니다.
+              </p>
+            </div>
+
+            <div style={{ marginBottom: '25px' }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px'
+              }}>(2) 개인 아이디와 비밀번호 관리</h3>
+              <p style={{ marginBottom: '15px' }}>
+                이용자 계정의 비밀번호는 본인만 알 수 있으며, 이를 절대 타인에게 알려주면 안 됩니다. 특히 공용PC 사용 뒤 반드시 로그아웃을 하시기 바랍니다.
+              </p>
+              <p style={{ marginBottom: '15px' }}>
+                회사는 이용자 부주의로 인한 개인정보 유출 및 인터넷의 구조적 특성에 따른 해킹 등에 대한 책임을 지지 않습니다.
+              </p>
+            </div>
+
+            <div style={{ marginBottom: '25px' }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px'
+              }}>(3) 해킹 등에 대비한 대책</h3>
+              <p style={{ marginBottom: '15px' }}>
+                외부 침입을 차단하기 위한 장치를 이용하여 공격, 해킹 등을 방지하며, 침입탐지시스템을 설치하여 24시간 감시하고 있습니다.
+              </p>
+            </div>
+
+            <div style={{ marginBottom: '25px' }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px'
+              }}>(4) 개인정보 처리 직원의 최소화 및 교육</h3>
+              <p style={{ marginBottom: '15px' }}>
+                회사의 개인정보 관련 처리 직원은 담당자 및 책임자 등으로 한정하여 별도의 비밀번호를 부여하고 정기적으로 갱신·교육을 시행하고 있습니다.
+              </p>
+            </div>
+          </section>
+
+          <section style={{ marginBottom: '40px' }}>
+            <h2 style={{
+              color: 'var(--starlight-orange)',
+              fontSize: '1.8rem',
+              marginBottom: '25px',
+              borderBottom: '3px solid var(--starlight-orange)',
+              paddingBottom: '15px'
             }}>8. 개인정보 보호책임자에 관한 사항</h2>
 
             <p style={{ marginBottom: '20px' }}>
@@ -232,6 +353,40 @@ export default function Privacy() {
                 marginBottom: '15px',
                 textAlign: 'center'
               }}>개인정보 보호책임자</h3>
+              <ul style={{ listStyle: 'none', padding: '0', textAlign: 'center' }}>
+                <li style={{ marginBottom: '10px' }}><strong>이름:</strong> 김용현</li>
+                <li style={{ marginBottom: '10px' }}><strong>소속:</strong> CS팀</li>
+                <li style={{ marginBottom: '10px' }}><strong>전화번호:</strong> 010-2546-8979</li>
+                <li style={{ marginBottom: '0' }}><strong>전자우편:</strong> regend0726@gmail.com</li>
+              </ul>
+            </div>
+          </section>
+
+          <section style={{ marginBottom: '40px' }}>
+            <h2 style={{
+              color: 'var(--starlight-orange)',
+              fontSize: '1.8rem',
+              marginBottom: '25px',
+              borderBottom: '3px solid var(--starlight-orange)',
+              paddingBottom: '15px'
+            }}>9. 개인정보 열람청구를 접수·처리하는 부서</h2>
+
+            <p style={{ marginBottom: '20px' }}>
+              정보주체는 「개인정보 보호법」 제35조에 따른 개인정보 열람청구를 아래의 부서에 할 수 있습니다. 회사는 정보주체의 개인정보 열람 청구가 신속하게 처리되도록 노력하겠습니다.
+            </p>
+
+            <div style={{
+              padding: '25px',
+              background: 'var(--dark-brown)',
+              borderRadius: '8px',
+              border: '2px solid var(--starlight-orange)'
+            }}>
+              <h3 style={{
+                color: 'var(--starlight-orange)',
+                fontSize: '1.4rem',
+                marginBottom: '15px',
+                textAlign: 'center'
+              }}>개인정보 열람청구 접수·처리 담당자</h3>
               <ul style={{ listStyle: 'none', padding: '0', textAlign: 'center' }}>
                 <li style={{ marginBottom: '10px' }}><strong>이름:</strong> 김용현</li>
                 <li style={{ marginBottom: '10px' }}><strong>소속:</strong> CS팀</li>
