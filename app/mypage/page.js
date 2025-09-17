@@ -1,13 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { onAuthChange, getCurrentUser, signOutUser } from '../../lib/firebase-config';
+import { onAuthChange, getCurrentUser, signOutUser, deleteUserAccount } from '../../lib/firebase-config';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function MyPage() {
   const [savedResults, setSavedResults] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('types');
+  const [favoriteTypes, setFavoriteTypes] = useState([]);
+  const [favoriteMatches, setFavoriteMatches] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -26,6 +30,17 @@ export default function MyPage() {
           localStorage.getItem(`sajuResults_${authUser.uid}`) || '[]'
         );
         setSavedResults(userResults);
+
+        // 관심 목록 불러오기
+        const userFavoriteTypes = JSON.parse(
+          localStorage.getItem(`favoriteTypes_${authUser.uid}`) || '[]'
+        );
+        setFavoriteTypes(userFavoriteTypes);
+
+        const userFavoriteMatches = JSON.parse(
+          localStorage.getItem(`favoriteMatches_${authUser.uid}`) || '[]'
+        );
+        setFavoriteMatches(userFavoriteMatches);
 
         setLoading(false);
       } else {
@@ -76,6 +91,55 @@ export default function MyPage() {
       } catch (error) {
         console.error('로그아웃 실패:', error);
         alert('로그아웃 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    // 2단계 확인
+    const firstConfirm = confirm(
+      '⚠️ 경고: 계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.\n\n삭제될 데이터:\n- 프로필 정보\n- 분석 결과 히스토리\n- 관심 목록\n- 모든 저장된 데이터\n\n정말로 계정을 삭제하시겠습니까?'
+    );
+
+    if (!firstConfirm) return;
+
+    const secondConfirm = confirm(
+      '마지막 확인입니다.\n\n계정 삭제는 되돌릴 수 없습니다.\n정말로 진행하시겠습니까?'
+    );
+
+    if (!secondConfirm) return;
+
+    try {
+      // 로딩 표시
+      const originalText = document.querySelector('.btn-danger').textContent;
+      document.querySelector('.btn-danger').textContent = '삭제 중...';
+      document.querySelector('.btn-danger').disabled = true;
+
+      await deleteUserAccount();
+
+      // 성공 메시지 표시
+      alert('계정이 성공적으로 삭제되었습니다. 이용해 주셔서 감사합니다.');
+
+      // 홈페이지로 리디렉트
+      router.push('/');
+    } catch (error) {
+      console.error('계정 삭제 실패:', error);
+
+      // 버튼 상태 복원
+      document.querySelector('.btn-danger').textContent = originalText;
+      document.querySelector('.btn-danger').disabled = false;
+
+      if (error.message.includes('최근에 로그인')) {
+        alert(error.message);
+        // 재로그인을 위해 로그아웃
+        try {
+          await signOutUser();
+          router.push('/');
+        } catch (logoutError) {
+          console.error('로그아웃 실패:', logoutError);
+        }
+      } else {
+        alert(`계정 삭제 중 오류가 발생했습니다: ${error.message}`);
       }
     }
   };
@@ -147,152 +211,224 @@ export default function MyPage() {
   }
 
   return (
-    <div className="analyze-page">
+    <div className="analyze-page" style={{paddingTop: '120px'}}>
       <div className="container">
-        <div className="analyze-header">
-          <h1>👤 마이페이지</h1>
-          <p>당신의 분석 결과와 정보를 관리하세요</p>
-        </div>
-
-        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', marginBottom: '40px'}}>
-          {/* 사용자 정보 카드 */}
-          <div className="feature-card">
-            <div className="feature-icon">👤</div>
-            <h3>프로필 정보</h3>
-            {user && (
-              <div style={{textAlign: 'left', marginTop: '15px'}}>
-                {user.photoURL && (
-                  <div style={{textAlign: 'center', marginBottom: '15px'}}>
-                    <img
-                      src={user.photoURL}
-                      alt="프로필"
-                      style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '50%',
-                        border: '2px solid var(--accent-color)'
-                      }}
-                    />
-                  </div>
-                )}
-                <p><strong>이름:</strong> {user.name}</p>
-                <p><strong>이메일:</strong> {user.email}</p>
-                <p><strong>가입일:</strong> {new Date(user.joinDate).toLocaleDateString('ko-KR')}</p>
+        {/* 사용자 정보 카드 */}
+        <div className="card user-info-card" style={{marginBottom: '30px', background: 'var(--card-bg-color)', padding: '25px', borderRadius: '12px'}}>
+          <div className="user-profile" style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
+            {user.photoURL ? (
+              <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+                <Image
+                  src={user.photoURL}
+                  alt="프로필 사진"
+                  width={80}
+                  height={80}
+                  className="profile-photo"
+                  style={{
+                    borderRadius: '50%',
+                    border: '3px solid var(--accent-color)',
+                    objectFit: 'cover'
+                  }}
+                />
+              </div>
+            ) : (
+              <div
+                className="profile-photo"
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  borderRadius: '50%',
+                  border: '3px solid var(--accent-color)',
+                  background: 'linear-gradient(135deg, var(--starlight-orange) 0%, var(--accent-color) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '32px',
+                  color: 'white',
+                  fontWeight: 'bold'
+                }}
+              >
+                {user.name ? user.name.charAt(0).toUpperCase() : '👤'}
               </div>
             )}
+            <div className="user-details">
+              <h3 style={{color: 'var(--accent-color)', marginBottom: '8px'}}>{user.name}</h3>
+              <p style={{color: 'var(--text-muted-color)', marginBottom: '5px'}}>{user.email}</p>
+              <p style={{color: 'var(--text-muted-color)', fontSize: '14px'}}>가입일: {new Date(user.joinDate).toLocaleDateString('ko-KR')}</p>
+            </div>
           </div>
+        </div>
 
-          {/* 통계 카드 */}
-          <div className="feature-card">
-            <div className="feature-icon">📊</div>
-            <h3>분석 통계</h3>
-            <div style={{textAlign: 'left', marginTop: '15px'}}>
-              <p><strong>총 분석 횟수:</strong> {savedResults.length}회</p>
-              <p><strong>가장 최근 분석:</strong> {savedResults.length > 0 ? new Date(savedResults[0].date).toLocaleDateString() : '-'}</p>
+        {/* 메인 그리드 */}
+        <div className="mypage-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px', marginBottom: '40px'}}>
+          {/* 토리와의 대화록 카드 */}
+          <div className="card analysis-card" style={{background: 'var(--card-bg-color)', padding: '25px', borderRadius: '12px'}}>
+            <div className="card-header" style={{marginBottom: '20px'}}>
+              <h3 className="card-title sage-title" style={{color: 'var(--starlight-orange)', marginBottom: '8px'}}>📜 토리와의 대화록</h3>
+              <p className="card-description" style={{color: 'var(--text-muted-color)', fontSize: '14px'}}>그대와 나눈 운명의 이야기들</p>
+            </div>
+            <div id="analysis-history">
+              {savedResults.length === 0 ? (
+                <p className="no-data" style={{textAlign: 'center', color: 'var(--text-muted-color)', padding: '20px'}}>
+                  아직 분석 결과가 없습니다. <a href="/analyze" style={{color: 'var(--accent-color)'}}>지금 분석해보세요!</a>
+                </p>
+              ) : (
+                <div style={{maxHeight: '300px', overflowY: 'auto'}}>
+                  {savedResults.slice(0, 3).map((result, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        padding: '15px',
+                        borderBottom: '1px solid var(--border-color)',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => {
+                        localStorage.setItem('selectedResult', JSON.stringify(result));
+                        router.push('/result');
+                      }}
+                    >
+                      <h4 style={{color: 'var(--accent-color)', fontSize: '14px', marginBottom: '5px'}}>
+                        {result.personalityType || 'Unknown'}
+                      </h4>
+                      <p style={{color: 'var(--text-muted-color)', fontSize: '12px'}}>
+                        {new Date(result.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="card-footer" style={{marginTop: '20px', textAlign: 'center'}}>
+              <button className="primary-btn" onClick={() => router.push('/saved-results')}>
+                전체 결과 보기
+              </button>
             </div>
           </div>
 
-          {/* 빠른 액션 카드 */}
-          <div className="feature-card">
-            <div className="feature-icon">⚡</div>
-            <h3>빠른 액션</h3>
-            <div style={{marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
+          {/* 관심 목록 카드 */}
+          <div className="card interests-card" style={{background: 'var(--card-bg-color)', padding: '25px', borderRadius: '12px'}}>
+            <div className="card-header" style={{marginBottom: '20px'}}>
+              <h3 className="card-title sage-title" style={{color: 'var(--starlight-orange)', marginBottom: '8px'}}>⭐ 관심 목록</h3>
+              <p className="card-description" style={{color: 'var(--text-muted-color)', fontSize: '14px'}}>마음에 드는 팔자 유형과 운명의 조합들</p>
+            </div>
+            <div className="interests-tabs" style={{display: 'flex', gap: '10px', marginBottom: '20px'}}>
+              <button
+                className={`tab-btn ${activeTab === 'types' ? 'active' : ''}`}
+                style={{
+                  padding: '8px 16px',
+                  background: activeTab === 'types' ? 'var(--accent-color)' : 'transparent',
+                  color: activeTab === 'types' ? 'var(--ink-black)' : 'var(--text-color)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '6px',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setActiveTab('types')}
+              >
+                팔자 유형
+              </button>
+              <button
+                className={`tab-btn ${activeTab === 'matches' ? 'active' : ''}`}
+                style={{
+                  padding: '8px 16px',
+                  background: activeTab === 'matches' ? 'var(--accent-color)' : 'transparent',
+                  color: activeTab === 'matches' ? 'var(--ink-black)' : 'var(--text-color)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '6px',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setActiveTab('matches')}
+              >
+                인연 궁합
+              </button>
+            </div>
+            <div id="interests-content">
+              {activeTab === 'types' ? (
+                <div id="types-content" className="tab-content active">
+                  <div id="favorite-types">
+                    {favoriteTypes.length === 0 ? (
+                      <p className="no-data" style={{textAlign: 'center', color: 'var(--text-muted-color)', padding: '20px'}}>
+                        관심 있는 팔자 유형을 저장해보세요.
+                      </p>
+                    ) : (
+                      <div style={{maxHeight: '200px', overflowY: 'auto'}}>
+                        {favoriteTypes.map((type, index) => (
+                          <div key={index} style={{padding: '10px', borderBottom: '1px solid var(--border-color)'}}>
+                            <p style={{color: 'var(--accent-color)', fontSize: '14px'}}>{type}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div id="matches-content" className="tab-content">
+                  <div id="compatibility-matches">
+                    {favoriteMatches.length === 0 ? (
+                      <p className="no-data" style={{textAlign: 'center', color: 'var(--text-muted-color)', padding: '20px'}}>
+                        인연 궁합을 저장해보세요.
+                      </p>
+                    ) : (
+                      <div style={{maxHeight: '200px', overflowY: 'auto'}}>
+                        {favoriteMatches.map((match, index) => (
+                          <div key={index} style={{padding: '10px', borderBottom: '1px solid var(--border-color)'}}>
+                            <p style={{color: 'var(--accent-color)', fontSize: '14px'}}>{match}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 찻집 관리 카드 */}
+          <div className="card account-card" style={{background: 'var(--card-bg-color)', padding: '25px', borderRadius: '12px'}}>
+            <div className="card-header" style={{marginBottom: '20px'}}>
+              <h3 className="card-title sage-title" style={{color: 'var(--starlight-orange)', marginBottom: '8px'}}>⚙️ 찻집 관리</h3>
+              <p className="card-description" style={{color: 'var(--text-muted-color)', fontSize: '14px'}}>계정 설정과 데이터 관리</p>
+            </div>
+            <div className="account-actions" style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
               <button
                 className="secondary-btn"
                 style={{width: '100%'}}
                 onClick={exportResults}
               >
-                📥 결과 내보내기
+                📥 데이터 내보내기
               </button>
               <button
                 className="primary-btn"
                 style={{width: '100%'}}
-                onClick={() => window.location.href = '/analyze'}
+                onClick={() => router.push('/analyze')}
               >
                 🔮 새 분석하기
               </button>
               <button
                 className="secondary-btn"
-                style={{width: '100%', background: 'var(--error-color)', color: 'white'}}
+                style={{width: '100%'}}
                 onClick={handleLogout}
               >
                 🚪 로그아웃
               </button>
+              <button
+                className="btn btn-danger"
+                style={{
+                  width: '100%',
+                  background: '#dc3545',
+                  color: 'white',
+                  padding: '10px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+                onClick={handleDeleteAccount}
+                onMouseOver={(e) => e.target.style.background = '#c82333'}
+                onMouseOut={(e) => e.target.style.background = '#dc3545'}
+              >
+                🗑️ 계정 삭제
+              </button>
             </div>
-          </div>
-        </div>
-
-        {/* 저장된 결과 목록 */}
-        <div className="result-section">
-          <div className="result-content">
-            <h2>📋 저장된 분석 결과</h2>
-
-            {savedResults.length === 0 ? (
-              <div style={{textAlign: 'center', padding: '40px', color: 'var(--text-muted-color)'}}>
-                <p>아직 저장된 분석 결과가 없습니다.</p>
-                <button
-                  className="primary-btn"
-                  onClick={() => window.location.href = '/analyze'}
-                  style={{marginTop: '20px'}}
-                >
-                  첫 분석하러 가기
-                </button>
-              </div>
-            ) : (
-              <div style={{display: 'grid', gap: '20px', marginTop: '25px'}}>
-                {savedResults.map((result, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      background: 'var(--card-bg-color)',
-                      padding: '20px',
-                      borderRadius: '12px',
-                      border: '1px solid var(--border-color)',
-                      display: 'grid',
-                      gridTemplateColumns: 'auto 1fr auto',
-                      gap: '20px',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <div style={{fontSize: '36px'}}>🎭</div>
-
-                    <div>
-                      <h4 style={{color: 'var(--accent-color)', marginBottom: '8px'}}>
-                        {result.personalityType || 'Unknown'}
-                      </h4>
-                      <p style={{color: 'var(--text-muted-color)', fontSize: '14px', marginBottom: '5px'}}>
-                        분석일: {new Date(result.date).toLocaleDateString()}
-                      </p>
-                      {result.birthInfo && (
-                        <p style={{color: 'var(--text-muted-color)', fontSize: '14px'}}>
-                          생년월일: {result.birthInfo.year}.{result.birthInfo.month}.{result.birthInfo.day}
-                        </p>
-                      )}
-                    </div>
-
-                    <div style={{display: 'flex', gap: '10px'}}>
-                      <button
-                        className="secondary-btn"
-                        style={{padding: '8px 12px', fontSize: '12px'}}
-                        onClick={() => {
-                          localStorage.setItem('selectedResult', JSON.stringify(result));
-                          router.push('/result');
-                        }}
-                      >
-                        👁️ 보기
-                      </button>
-                      <button
-                        className="secondary-btn"
-                        style={{padding: '8px 12px', fontSize: '12px', background: 'var(--accent-color)', color: 'var(--ink-black)'}}
-                        onClick={() => deleteResult(index)}
-                      >
-                        🗑️ 삭제
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>

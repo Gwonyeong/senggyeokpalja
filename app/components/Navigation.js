@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { onAuthChange, signOutUser, checkAdminAccess } from '../../lib/firebase-config';
 import LoginModal from './LoginModal';
+import PremiumModal from './PremiumModal';
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   useEffect(() => {
     // Firebase 인증 상태 감시
@@ -38,6 +40,12 @@ export default function Navigation() {
     setMobileMenuOpen(false);
   };
 
+  const handlePremiumClick = (e) => {
+    e.preventDefault();
+    setShowPremiumModal(true);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <header>
       <div className="container">
@@ -53,7 +61,7 @@ export default function Navigation() {
             <ul>
               <li><Link href="/analyze" className="nav-link" aria-label="팔자 분석하러 가기">찻집</Link></li>
               <li><Link href="/synergy" className="nav-link" aria-label="시너지 분석하러 가기">시너지</Link></li>
-              <li><Link href="#premium" className="nav-link" aria-label="프리미엄 서비스 보기">의뢰하기</Link></li>
+              <li><a href="#premium" className="nav-link" aria-label="프리미엄 서비스 보기" onClick={handlePremiumClick}>의뢰하기</a></li>
               {isAdmin && (
                 <li>
                   <Link href="/admin" className="nav-link admin-only" style={{ color: '#FF6B6B' }} aria-label="관리자 대시보드">
@@ -95,7 +103,7 @@ export default function Navigation() {
               <ul>
                 <li><Link href="/analyze" className="nav-link" onClick={() => setMobileMenuOpen(false)}>찻집</Link></li>
                 <li><Link href="/synergy" className="nav-link" onClick={() => setMobileMenuOpen(false)}>시너지</Link></li>
-                <li><Link href="#premium" className="nav-link" onClick={() => setMobileMenuOpen(false)}>의뢰하기</Link></li>
+                <li><a href="#premium" className="nav-link" onClick={handlePremiumClick}>의뢰하기</a></li>
                 {isAdmin && (
                   <li>
                     <Link href="/admin" className="nav-link admin-only" onClick={() => setMobileMenuOpen(false)}>
@@ -123,6 +131,12 @@ export default function Navigation() {
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
+      />
+
+      {/* 프리미엄 서비스 모달 */}
+      <PremiumModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
       />
     </header>
   );

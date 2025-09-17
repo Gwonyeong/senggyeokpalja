@@ -2641,3 +2641,84 @@ input[type="text"]::placeholder {
     padding: 20px;
   }
 }
+
+/* ============================================= */
+/* 마이페이지 스타일                              */
+/* ============================================= */
+.user-info-card {
+  background: linear-gradient(135deg, rgba(252, 163, 17, 0.05) 0%, rgba(252, 163, 17, 0.02) 100%);
+  border: 1px solid rgba(252, 163, 17, 0.2);
+}
+
+.sage-title {
+  font-family: var(--heading-font, "Noto Serif KR", serif);
+  font-weight: 600;
+  text-shadow: 0 0 20px rgba(252, 163, 17, 0.3);
+}
+
+.card-description {
+  line-height: 1.6;
+}
+
+.mypage-grid .card {
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.mypage-grid .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.tab-btn {
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.tab-btn:hover {
+  opacity: 0.9;
+}
+
+.btn-danger {
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .analyze-page {
+    padding-top: 100px !important;
+  }
+
+  .mypage-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .user-profile {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .user-profile .profile-photo {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .interests-tabs {
+    flex-direction: column;
+  }
+
+  .tab-btn {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .account-actions {
+    gap: 8px !important;
+  }
+}
