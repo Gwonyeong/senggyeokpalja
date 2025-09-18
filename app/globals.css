@@ -14,7 +14,7 @@
   --brass-gold: #b8860b;
   --muted-gold: #daa520;
   --sage-green: #8fbc8f;
-  --border-ink: rgba(234, 234, 234, 0.1);
+  --border-ink: rgba(21, 5, 5, 0.1);
 
   /* 기본 색상 매핑 */
   --primary-color: var(--ink-black);
@@ -167,17 +167,15 @@ header {
 
 .logo-section {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
 }
 
 .logo {
-  font-family: var(--heading-font);
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--starlight-orange);
+  display: flex;
+  align-items: center;
+  height: 50px;
   text-decoration: none;
-  letter-spacing: -0.5px;
 }
 
 .tagline {
@@ -315,7 +313,6 @@ header {
   }
 
   main {
-    padding-top: 70px;
   }
 
   .desktop-nav {
@@ -468,15 +465,18 @@ section {
 /* 6. 히어로 섹션 (찻집 입구) */
 /* ============================================= */
 #hero {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
-  background: var(--ink-wash-gradient);
-  padding: 120px 0 80px;
-  overflow: visible;
+  background-image: url("/assets/images/main_pc.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0;
+  overflow: hidden;
 }
 
 #hero::before {
@@ -486,16 +486,12 @@ section {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(
-      circle at 30% 70%,
-      rgba(252, 163, 17, 0.05) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 70% 30%,
-      rgba(184, 134, 11, 0.05) 0%,
-      transparent 50%
-    );
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 10, 0.3) 0%,
+    rgba(10, 10, 10, 0.5) 50%,
+    rgba(10, 10, 10, 0.7) 100%
+  );
   z-index: 1;
 }
 
@@ -503,6 +499,13 @@ section {
   position: relative;
   z-index: 2;
   max-width: 800px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .hero-content {
@@ -573,8 +576,10 @@ section {
 
 @media (max-width: 768px) {
   #hero {
-    min-height: 90vh;
-    padding: 100px 0 60px;
+    height: 100vh;
+    height: 100dvh;
+    padding: 0;
+    background-image: url("/assets/images/main_mobile.png");
   }
 
   .hero-content {
@@ -796,9 +801,7 @@ section {
   margin: 0 auto 30px;
   display: block;
   border: 4px solid var(--starlight-orange);
-  box-shadow:
-    0 0 20px rgba(252, 163, 17, 0.4),
-    0 0 40px rgba(252, 163, 17, 0.2);
+  box-shadow: 0 0 20px rgba(252, 163, 17, 0.4), 0 0 40px rgba(252, 163, 17, 0.2);
   object-fit: cover;
   transition: all 0.3s ease;
 }
@@ -960,7 +963,11 @@ section {
 
 /* 인터뷰 CTA - 루트 프로젝트 스타일 */
 .interview-cta {
-  background: linear-gradient(135deg, rgba(252, 163, 17, 0.15) 0%, rgba(184, 134, 11, 0.15) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(252, 163, 17, 0.15) 0%,
+    rgba(184, 134, 11, 0.15) 100%
+  );
   border: 1px solid var(--starlight-orange);
   border-radius: 20px;
   padding: 40px 30px;
@@ -1007,7 +1014,11 @@ section {
 .compatibility-section {
   margin-top: 30px;
   padding: 25px 20px;
-  background: linear-gradient(135deg, rgba(252, 163, 17, 0.08) 0%, rgba(184, 134, 11, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(252, 163, 17, 0.08) 0%,
+    rgba(184, 134, 11, 0.05) 100%
+  );
   border-radius: 16px;
   border: 2px solid rgba(252, 163, 17, 0.3);
   text-align: center;
@@ -1052,7 +1063,11 @@ section {
   min-width: 180px;
   max-width: 180px;
   text-align: center;
-  background: linear-gradient(135deg, rgba(45, 45, 48, 0.7) 0%, rgba(35, 35, 38, 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(45, 45, 48, 0.7) 0%,
+    rgba(35, 35, 38, 0.9) 100%
+  );
   border: 2px solid rgba(252, 163, 17, 0.4);
   border-radius: 16px;
   padding: 20px 15px;
@@ -1065,13 +1080,17 @@ section {
 }
 
 .compatibility-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--starlight-orange), var(--brass-gold));
+  background: linear-gradient(
+    90deg,
+    var(--starlight-orange),
+    var(--brass-gold)
+  );
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -1092,10 +1111,8 @@ section {
   border-radius: 16px !important;
   margin: 0 auto 15px !important;
   object-fit: cover !important;
-  border: 3px solid #FCA311 !important;
-  box-shadow:
-    0 0 15px rgba(252, 163, 17, 0.4),
-    0 0 30px rgba(252, 163, 17, 0.2) !important;
+  border: 3px solid #fca311 !important;
+  box-shadow: 0 0 15px rgba(252, 163, 17, 0.4), 0 0 30px rgba(252, 163, 17, 0.2) !important;
   display: block !important;
   transition: all 0.3s ease !important;
   background: rgba(255, 255, 255, 0.1) !important;
@@ -1107,9 +1124,7 @@ section {
 
 .compatibility-item:hover .compatibility-image {
   transform: scale(1.05) !important;
-  box-shadow:
-    0 0 20px rgba(252, 163, 17, 0.6),
-    0 0 40px rgba(252, 163, 17, 0.3) !important;
+  box-shadow: 0 0 20px rgba(252, 163, 17, 0.6), 0 0 40px rgba(252, 163, 17, 0.3) !important;
 }
 
 .compatibility-name {
@@ -1147,7 +1162,11 @@ section {
 
 /* 마이페이지 저장 카드 - 루트 프로젝트 스타일 */
 .save-to-mypage-card {
-  background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(32, 201, 151, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(40, 167, 69, 0.1) 0%,
+    rgba(32, 201, 151, 0.1) 100%
+  );
   border: 1px solid #28a745;
   border-radius: 16px;
   padding: 25px;
@@ -1179,7 +1198,11 @@ section {
 
 /* CTA 카드 - 루트 프로젝트 스타일 */
 .cta-card {
-  background: linear-gradient(135deg, rgba(252, 163, 17, 0.1) 0%, rgba(218, 165, 32, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(252, 163, 17, 0.1) 0%,
+    rgba(218, 165, 32, 0.1) 100%
+  );
   border: 1px solid var(--starlight-orange);
   border-radius: 16px;
   padding: 30px;
@@ -1256,7 +1279,7 @@ section {
     border-radius: 16px !important;
     object-fit: cover !important;
     background: rgba(255, 255, 255, 0.1) !important;
-    border: 3px solid #FCA311 !important;
+    border: 3px solid #fca311 !important;
   }
 
   .compatibility-name {
@@ -1283,7 +1306,11 @@ section {
   align-items: center;
   margin-bottom: 30px;
   padding: 25px;
-  background: linear-gradient(135deg, rgba(252, 163, 17, 0.08) 0%, rgba(184, 134, 11, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(252, 163, 17, 0.08) 0%,
+    rgba(184, 134, 11, 0.05) 100%
+  );
   border-radius: 16px;
   border: 2px solid rgba(252, 163, 17, 0.3);
   box-shadow: 0 4px 15px rgba(252, 163, 17, 0.1);
@@ -1408,7 +1435,7 @@ section {
 .progress-fill.score-22,
 .progress-fill.score-21,
 .progress-fill.score-20 {
-  background: linear-gradient(90deg, #4CAF50, #66BB6A);
+  background: linear-gradient(90deg, #4caf50, #66bb6a);
 }
 
 .progress-fill.score-19,
@@ -1416,7 +1443,7 @@ section {
 .progress-fill.score-17,
 .progress-fill.score-16,
 .progress-fill.score-15 {
-  background: linear-gradient(90deg, #FCA311, #DAA520);
+  background: linear-gradient(90deg, #fca311, #daa520);
 }
 
 .progress-fill.score-14,
@@ -1424,7 +1451,7 @@ section {
 .progress-fill.score-12,
 .progress-fill.score-11,
 .progress-fill.score-10 {
-  background: linear-gradient(90deg, #FF9800, #FFB74D);
+  background: linear-gradient(90deg, #ff9800, #ffb74d);
 }
 
 .progress-fill.score-9,
@@ -1432,7 +1459,7 @@ section {
 .progress-fill.score-7,
 .progress-fill.score-6,
 .progress-fill.score-5 {
-  background: linear-gradient(90deg, #F44336, #EF5350);
+  background: linear-gradient(90deg, #f44336, #ef5350);
 }
 
 .breakdown-card .dimension-explanations {
@@ -1775,7 +1802,7 @@ section {
 
 .scroll-indicator {
   position: absolute;
-  bottom: -160px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -2295,10 +2322,15 @@ input[type="text"]::placeholder {
 
 .analyze-page .sage-subtitle {
   font-size: 1.5rem;
-  display: block;
+  display: inline-block !important;
   margin-bottom: 0;
   color: var(--brass-gold);
   font-weight: 500;
+  padding: 12px 24px !important;
+  border-radius: 16px !important;
+  background: rgba(212, 175, 55, 0.08) !important;
+  border: 1px solid rgba(212, 175, 55, 0.15) !important;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1) !important;
   line-height: 1.3;
 }
 
@@ -2383,7 +2415,6 @@ input[type="text"]::placeholder {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .analyze-page #analyzer {
-    padding: 80px 0 40px;
   }
 
   .analyze-page .container {
@@ -2399,7 +2430,6 @@ input[type="text"]::placeholder {
     padding: 20px 15px;
     margin: 0;
     width: 100%;
-    border-radius: 0;
   }
 
   .analyze-page .card-title {
@@ -2411,10 +2441,15 @@ input[type="text"]::placeholder {
 
   .analyze-page .sage-subtitle {
     font-size: 1.3rem;
-    display: block;
+    display: inline-block !important;
     margin-bottom: 0;
     color: var(--brass-gold);
     font-weight: 500;
+    padding: 10px 20px !important;
+    border-radius: 14px !important;
+    background: rgba(212, 175, 55, 0.08) !important;
+    border: 1px solid rgba(212, 175, 55, 0.15) !important;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1) !important;
     line-height: 1.3;
   }
 
@@ -2670,7 +2705,11 @@ input[type="text"]::placeholder {
 /* 마이페이지 스타일                              */
 /* ============================================= */
 .user-info-card {
-  background: linear-gradient(135deg, rgba(252, 163, 17, 0.05) 0%, rgba(252, 163, 17, 0.02) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(252, 163, 17, 0.05) 0%,
+    rgba(252, 163, 17, 0.02) 100%
+  );
   border: 1px solid rgba(252, 163, 17, 0.2);
 }
 

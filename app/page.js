@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Home() {
   const scrollToServices = () => {
-    const servicesSection = document.querySelector('.services-section');
+    const servicesSection = document.querySelector(".services-section");
     if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' });
+      servicesSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -17,14 +17,15 @@ export default function Home() {
         <section id="hero">
           <div className="container">
             <div className="hero-content">
-              <h1 className="sage-title">성격팔자</h1>
-              <p className="sage-subtitle">그대의 길을 묻는가?</p>
+              <p className="sage-subtitle">
+                "어서 오시게. 그대의 이야기가 담긴 차를 준비하겠네."
+              </p>
               <p className="hero-description">
-                사주와 심리학을 통달한 토리가 운영하는 찻집에서,<br />
-                당신만의 운명을 발견해보세요.
+                이곳은 당신의 성격과 운명을 블렌딩하여, 세상에 단 하나뿐인
+                '나'라는 차를 맛보는 공간입니다
               </p>
               <Link href="/analyze" className="cta-button ink-brush-effect">
-                나의 길, 묻기
+                찻 잔, 맛보기
               </Link>
             </div>
             <div className="scroll-indicator">
@@ -40,14 +41,20 @@ export default function Home() {
         <section className="services-section">
           <div className="container">
             <h2 className="sage-title">토리의 서비스 안내</h2>
-            <p className="services-subtitle">당신의 운명을 더 깊이 탐구할 수 있는 다양한 길을 준비했습니다</p>
+            <p className="services-subtitle">
+              당신의 운명을 더 깊이 탐구할 수 있는 다양한 길을 준비했습니다
+            </p>
             <div className="services-grid">
               <div className="service-card free">
                 <div className="service-badge">무료</div>
                 <div className="service-card-content">
                   <div className="service-icon">🔮</div>
                   <h3>팔자유형 분석</h3>
-                  <p>16가지 팔자유형과<br />기본적인 운명 해석을 무료로 제공합니다</p>
+                  <p>
+                    16가지 팔자유형과
+                    <br />
+                    기본적인 운명 해석을 무료로 제공합니다
+                  </p>
                 </div>
                 <div className="service-card-footer">
                   <Link href="/analyze" className="service-btn primary">
@@ -60,7 +67,11 @@ export default function Home() {
                 <div className="service-card-content">
                   <div className="service-icon">⚡</div>
                   <h3>MBTI × 팔자유형 시너지</h3>
-                  <p>MBTI와 팔자유형의 만남<br />당신의 시너지를 발견해보세요</p>
+                  <p>
+                    MBTI와 팔자유형의 만남
+                    <br />
+                    당신의 시너지를 발견해보세요
+                  </p>
                 </div>
                 <div className="service-card-footer">
                   <Link href="/synergy" className="service-btn primary">
@@ -73,7 +84,11 @@ export default function Home() {
                 <div className="service-card-content">
                   <div className="service-icon">📜</div>
                   <h3>상세 운명 리포트</h3>
-                  <p>개인 맞춤 상세 분석과<br />토리의 특별한 조언이 담긴 상세 리포트</p>
+                  <p>
+                    개인 맞춤 상세 분석과
+                    <br />
+                    토리의 특별한 조언이 담긴 상세 리포트
+                  </p>
                 </div>
                 <div className="service-card-footer">
                   <a href="#premium" className="service-btn secondary">
@@ -86,7 +101,11 @@ export default function Home() {
                 <div className="service-card-content">
                   <div className="service-icon">💝</div>
                   <h3>궁합 분석 서비스</h3>
-                  <p>연인, 친구, 동료와의 깊이 있는<br />궁합 분석과 관계 개선 조언</p>
+                  <p>
+                    연인, 친구, 동료와의 깊이 있는
+                    <br />
+                    궁합 분석과 관계 개선 조언
+                  </p>
                 </div>
                 <div className="service-card-footer">
                   <a href="#premium" className="service-btn secondary">
@@ -99,7 +118,11 @@ export default function Home() {
                 <div className="service-card-content">
                   <div className="service-icon">🍵</div>
                   <h3>토리와의 개별 상담</h3>
-                  <p>토리의 발전을 위한<br />사전예약 및 설문조사를 진행해주세요</p>
+                  <p>
+                    토리의 발전을 위한
+                    <br />
+                    사전예약 및 설문조사를 진행해주세요
+                  </p>
                 </div>
                 <div className="service-card-footer">
                   <a
@@ -117,7 +140,11 @@ export default function Home() {
                 <div className="service-card-content">
                   <div className="service-icon">📱</div>
                   <h3>토리와 소통하기</h3>
-                  <p>성격팔자의 최신 소식과<br />특별한 혜택을 가장 먼저 받아보세요</p>
+                  <p>
+                    성격팔자의 최신 소식과
+                    <br />
+                    특별한 혜택을 가장 먼저 받아보세요
+                  </p>
                 </div>
                 <div className="service-card-footer">
                   <div className="social-service-buttons">
@@ -147,12 +174,16 @@ export default function Home() {
         {/* Features Preview */}
         <section className="features-preview">
           <div className="container">
-            <h2 className="sage-title">토리의 찻집에서 만나는 세 가지 깨달음</h2>
+            <h2 className="sage-title">
+              토리의 찻집에서 만나는 세 가지 깨달음
+            </h2>
             <div className="feature-cards">
               <div className="card ink-brush-effect">
                 <div className="card-icon">🎋</div>
                 <h3 className="sage-subtitle">16가지 팔자의 길</h3>
-                <p>고대 명리학과 현대 심리학이 만나 탄생한 당신만의 성격 해석</p>
+                <p>
+                  고대 명리학과 현대 심리학이 만나 탄생한 당신만의 성격 해석
+                </p>
               </div>
               <div className="card ink-brush-effect">
                 <div className="card-icon">🍃</div>
@@ -162,7 +193,9 @@ export default function Home() {
               <div className="card ink-brush-effect">
                 <div className="card-icon">🌸</div>
                 <h3 className="sage-subtitle">토리의 조언</h3>
-                <p>무림 고수 토리가 전하는 당신만의 인생 지혜와 앞날에 대한 통찰</p>
+                <p>
+                  무림 고수 토리가 전하는 당신만의 인생 지혜와 앞날에 대한 통찰
+                </p>
               </div>
             </div>
           </div>
@@ -177,10 +210,23 @@ export default function Home() {
               <h3 className="brand-name">성격팔자</h3>
             </div>
             <div className="footer-links">
-              <Link href="/terms" style={{ color: 'var(--text-muted-color)', textDecoration: 'none', marginRight: '20px' }}>
+              <Link
+                href="/terms"
+                style={{
+                  color: "var(--text-muted-color)",
+                  textDecoration: "none",
+                  marginRight: "20px",
+                }}
+              >
                 이용약관
               </Link>
-              <Link href="/privacy" style={{ color: 'var(--text-muted-color)', textDecoration: 'none' }}>
+              <Link
+                href="/privacy"
+                style={{
+                  color: "var(--text-muted-color)",
+                  textDecoration: "none",
+                }}
+              >
                 개인정보처리방침
               </Link>
             </div>
@@ -191,7 +237,13 @@ export default function Home() {
 
           {/* Business Info - Separate Section */}
           <div className="footer-business-info">
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted-color)', lineHeight: '1.4' }}>
+            <div
+              style={{
+                fontSize: "0.85rem",
+                color: "var(--text-muted-color)",
+                lineHeight: "1.4",
+              }}
+            >
               <div>상호: 성격팔자 | 대표: 천재훈</div>
               <div>사업자등록번호: 589-34-01598</div>
               <div>통신판매업: 2025-의정부송산-0941</div>
