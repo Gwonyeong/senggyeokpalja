@@ -1,6 +1,8 @@
 import "./globals.css";
 import Navigation from "./components/Navigation";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const metadata = {
   title: "성격팔자 - 토리의 찻집",
   description: "MBTI와 팔자유형을 결합한 새로운 성격 분석. 토리와 함께 당신의 진짜 모습을 발견해보세요.",
@@ -11,11 +13,19 @@ export const metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: "성격팔자",
+    url: siteUrl,
+    images: [{
+      url: `${siteUrl}/assets/images/토리.png`,
+      width: 800,
+      height: 600,
+      alt: '성격팔자 토리의 찻집'
+    }],
   },
   twitter: {
     card: "summary_large_image",
     title: "성격팔자 - 토리의 찻집",
     description: "MBTI와 팔자유형을 결합한 새로운 성격 분석. 토리와 함께 당신의 진짜 모습을 발견해보세요.",
+    images: [`${siteUrl}/assets/images/토리.png`],
   },
 };
 

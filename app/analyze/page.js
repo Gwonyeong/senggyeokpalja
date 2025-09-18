@@ -182,7 +182,8 @@ export default function AnalyzePage() {
       }
 
       const { shareId } = await response.json();
-      const shareUrl = `${window.location.origin}/share/${shareId}`;
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      const shareUrl = `${siteUrl}/share/${shareId}`;
 
       if (navigator.share) {
         navigator.share({
@@ -203,26 +204,10 @@ export default function AnalyzePage() {
     }
   };
 
-  // 동적 메타데이터 업데이트
+  // 페이지 제목만 업데이트 (메타데이터는 서버사이드에서 처리)
   useEffect(() => {
     if (result) {
       document.title = `나는 ${result.typeData.alias}! - 성격팔자`;
-
-      // Open Graph 메타태그 업데이트
-      const updateMetaTag = (property, content) => {
-        let tag = document.querySelector(`meta[property="${property}"]`);
-        if (!tag) {
-          tag = document.createElement('meta');
-          tag.setAttribute('property', property);
-          document.head.appendChild(tag);
-        }
-        tag.setAttribute('content', content);
-      };
-
-      updateMetaTag('og:title', `나는 ${result.typeData.alias}! - 성격팔자`);
-      updateMetaTag('og:description', `내 팔자 유형: ${result.personalityType}. ${result.typeData.description}`);
-      updateMetaTag('og:image', result.typeData.imageUrl);
-      updateMetaTag('og:url', window.location.href);
     }
   }, [result]);
 
