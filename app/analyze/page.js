@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
+import { createClient } from "../../lib/supabase";
 import Head from "next/head";
 
 export default function AnalyzePage() {
@@ -155,6 +156,39 @@ export default function AnalyzePage() {
       );
       savedResults.unshift(resultData);
       localStorage.setItem("sajuResults", JSON.stringify(savedResults));
+
+      // 로그인한 사용자의 경우 데이터베이스에 저장
+      try {
+        const saveResponse = await fetch('/api/analysis/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personalityType,
+            birthInfo: {
+              name: formData.name || null,
+              year: formData.year,
+              month: formData.month,
+              day: formData.day,
+              hour: formData.hour,
+              gender: formData.gender,
+              calendar: formData.calendar,
+              isLeapMonth: formData.isLeapMonth
+            },
+            sajuData,
+            analysisDate: new Date().toISOString()
+          })
+        });
+
+        const saveResult = await saveResponse.json();
+        if (saveResult.success && saveResult.resultId) {
+          console.log('Analysis result saved to database:', saveResult.resultId);
+        }
+      } catch (saveError) {
+        // 저장 실패는 조용히 처리 (사용자 경험에 영향 없음)
+        console.error('Failed to save analysis result:', saveError);
+      }
     } catch (error) {
       console.error("분석 중 오류 발생:", error);
       alert("분석 중 오류가 발생했습니다: " + error.message);

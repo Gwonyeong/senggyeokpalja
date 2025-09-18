@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { auth } from '@/lib/firebase-config';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChange, checkAdminAccess } from '@/lib/supabase-auth';
 import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
@@ -12,11 +11,10 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const token = await firebaseUser.getIdTokenResult();
-        if (token.claims?.admin === true) {
-          setUser(firebaseUser);
+    const { data: { subscription } } = onAuthStateChange((supabaseUser) => {
+      if (supabaseUser) {
+        if (checkAdminAccess(supabaseUser)) {
+          setUser(supabaseUser);
           setIsAdmin(true);
         } else {
           router.push('/');
@@ -27,7 +25,7 @@ export default function AdminPage() {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => subscription.unsubscribe();
   }, [router]);
 
   if (loading) {

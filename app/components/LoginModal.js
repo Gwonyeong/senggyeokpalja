@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { signInWithGoogle, signOutUser } from '../../lib/firebase-config';
+import { signInWithGoogle, signInWithKakao } from '../../lib/supabase-auth';
 import './LoginModal.css';
 
 export default function LoginModal({ isOpen, onClose }) {
@@ -36,8 +36,8 @@ export default function LoginModal({ isOpen, onClose }) {
                 return;
             }
 
-            const user = await signInWithGoogle();
-            console.log('로그인 성공:', user);
+            await signInWithGoogle();
+            console.log('구글 로그인 시작됨');
             onClose();
         } catch (error) {
             console.error('로그인 실패:', error);
@@ -48,48 +48,16 @@ export default function LoginModal({ isOpen, onClose }) {
     };
 
     const handleKakaoLogin = async () => {
-        // Kakao SDK 초기화 확인
-        if (!window.Kakao) {
-            // 카카오 SDK 동적 로드
-            const script = document.createElement('script');
-            script.src = 'https://developers.kakao.com/sdk/js/kakao.js';
-            script.async = true;
-            script.onload = () => {
-                window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JS_KEY || 'b45b4fdc1ea68a9b370ef6e80abc9414');
-                performKakaoLogin();
-            };
-            document.body.appendChild(script);
-        } else {
-            if (!window.Kakao.isInitialized()) {
-                window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_JS_KEY || 'b45b4fdc1ea68a9b370ef6e80abc9414');
-            }
-            performKakaoLogin();
+        try {
+            setLoading(true);
+            await signInWithKakao();
+            console.log('카카오 로그인 시작됨');
+            onClose();
+        } catch (error) {
+            console.error('카카오 로그인 실패:', error);
+            alert('카카오 로그인에 실패했습니다: ' + error.message);
+            setLoading(false);
         }
-    };
-
-    const performKakaoLogin = () => {
-        window.Kakao.Auth.login({
-            success: function(authObj) {
-                console.log('카카오 로그인 성공:', authObj);
-
-                // 사용자 정보 가져오기
-                window.Kakao.API.request({
-                    url: '/v2/user/me',
-                    success: function(response) {
-                        console.log('카카오 사용자 정보:', response);
-                        // 로그인 성공 처리
-                        onClose();
-                    },
-                    fail: function(error) {
-                        console.error('카카오 사용자 정보 가져오기 실패:', error);
-                    }
-                });
-            },
-            fail: function(err) {
-                console.error('카카오 로그인 실패:', err);
-                alert('카카오 로그인에 실패했습니다.');
-            }
-        });
     };
 
     if (!isOpen) return null;
@@ -125,13 +93,19 @@ export default function LoginModal({ isOpen, onClose }) {
                             </span>
                         </button>
 
-                        <button className="login-btn kakao-login-btn" onClick={handleKakaoLogin}>
+                        <button
+                            className="login-btn kakao-login-btn"
+                            onClick={handleKakaoLogin}
+                            disabled={loading}
+                        >
                             <div className="login-btn-icon">
                                 <svg width="20" height="20" viewBox="0 0 24 24">
                                     <path fill="#000000" d="M12 3C7.03 3 3 6.14 3 10.1c0 2.52 1.65 4.73 4.1 6.09l-.95 3.48c-.09.33.25.59.55.42l4.28-2.69c.34.03.68.04 1.02.04 4.97 0 9-3.14 9-7.1S16.97 3 12 3z"/>
                                 </svg>
                             </div>
-                            <span className="login-btn-text">카카오로 로그인/가입</span>
+                            <span className="login-btn-text">
+                                {loading ? '로그인 중...' : '카카오로 로그인/가입'}
+                            </span>
                         </button>
 
                         <button className="login-btn naver-login-btn disabled" disabled>

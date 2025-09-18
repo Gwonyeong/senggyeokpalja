@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { onAuthChange, getCurrentUser, signOutUser, deleteUserAccount } from '../../lib/firebase-config';
+import { onAuthStateChange, getCurrentUser, signOut, deleteAccount } from '../../lib/supabase-auth';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -15,30 +15,30 @@ export default function MyPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Firebase 인증 상태 감시
-    const unsubscribe = onAuthChange((authUser) => {
+    // Supabase 인증 상태 감시
+    const { data: { subscription } } = onAuthStateChange((authUser) => {
       if (authUser) {
         setUser({
-          name: authUser.displayName || 'Unknown',
+          name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0] || 'Unknown',
           email: authUser.email,
-          photoURL: authUser.photoURL || '',
-          joinDate: authUser.metadata.creationTime
+          photoURL: authUser.user_metadata?.avatar_url || '',
+          joinDate: authUser.created_at
         });
 
         // 사용자별 저장된 결과 불러오기
         const userResults = JSON.parse(
-          localStorage.getItem(`sajuResults_${authUser.uid}`) || '[]'
+          localStorage.getItem(`sajuResults_${authUser.id}`) || '[]'
         );
         setSavedResults(userResults);
 
         // 관심 목록 불러오기
         const userFavoriteTypes = JSON.parse(
-          localStorage.getItem(`favoriteTypes_${authUser.uid}`) || '[]'
+          localStorage.getItem(`favoriteTypes_${authUser.id}`) || '[]'
         );
         setFavoriteTypes(userFavoriteTypes);
 
         const userFavoriteMatches = JSON.parse(
-          localStorage.getItem(`favoriteMatches_${authUser.uid}`) || '[]'
+          localStorage.getItem(`favoriteMatches_${authUser.id}`) || '[]'
         );
         setFavoriteMatches(userFavoriteMatches);
 
@@ -49,7 +49,7 @@ export default function MyPage() {
       }
     });
 
-    return () => unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const deleteResult = (index) => {
@@ -57,11 +57,12 @@ export default function MyPage() {
       const updatedResults = savedResults.filter((_, i) => i !== index);
       setSavedResults(updatedResults);
 
-      // Firebase 사용자 ID로 저장
-      const currentUser = getCurrentUser();
-      if (currentUser) {
-        localStorage.setItem(`sajuResults_${currentUser.uid}`, JSON.stringify(updatedResults));
-      }
+      // Supabase 사용자 ID로 저장
+      getCurrentUser().then(currentUser => {
+        if (currentUser) {
+          localStorage.setItem(`sajuResults_${currentUser.id}`, JSON.stringify(updatedResults));
+        }
+      });
     }
   };
 
@@ -86,7 +87,7 @@ export default function MyPage() {
   const handleLogout = async () => {
     if (confirm('로그아웃 하시겠습니까?')) {
       try {
-        await signOutUser();
+        await signOut();
         router.push('/');
       } catch (error) {
         console.error('로그아웃 실패:', error);
@@ -115,7 +116,7 @@ export default function MyPage() {
       document.querySelector('.btn-danger').textContent = '삭제 중...';
       document.querySelector('.btn-danger').disabled = true;
 
-      await deleteUserAccount();
+      await deleteAccount();
 
       // 성공 메시지 표시
       alert('계정이 성공적으로 삭제되었습니다. 이용해 주셔서 감사합니다.');

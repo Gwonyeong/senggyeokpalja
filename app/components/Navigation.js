@@ -4,10 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import {
-  onAuthChange,
-  signOutUser,
+  onAuthStateChange,
+  signOut,
   checkAdminAccess,
-} from "../../lib/firebase-config";
+} from "../../lib/supabase-auth";
 import LoginModal from "./LoginModal";
 import PremiumModal from "./PremiumModal";
 
@@ -19,18 +19,18 @@ export default function Navigation() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   useEffect(() => {
-    // Firebase 인증 상태 감시
-    const unsubscribe = onAuthChange((authUser) => {
+    // Supabase 인증 상태 감시
+    const { data: { subscription } } = onAuthStateChange((authUser) => {
       setUser(authUser);
       setIsAdmin(authUser ? checkAdminAccess(authUser) : false);
     });
 
-    return () => unsubscribe();
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleLogout = async () => {
     try {
-      await signOutUser();
+      await signOut();
       setUser(null);
       setIsAdmin(false);
       alert("로그아웃되었습니다.");
@@ -173,6 +173,56 @@ export default function Navigation() {
                   </li>
                 )}
               </ul>
+
+              {/* 모바일 인증 섹션 */}
+              <div className="mobile-auth-section">
+                {user ? (
+                  <>
+                    <li>
+                      <Link
+                        href="/mypage"
+                        className="nav-link"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        👤 마이페이지
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        className="nav-link"
+                        onClick={handleLogout}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          width: '100%',
+                          textAlign: 'left',
+                          cursor: 'pointer',
+                          fontSize: '16px'
+                        }}
+                      >
+                        🚪 로그아웃
+                      </button>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <button
+                      className="nav-link"
+                      onClick={handleLogin}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        width: '100%',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        fontSize: '16px'
+                      }}
+                    >
+                      🔑 로그인
+                    </button>
+                  </li>
+                )}
+              </div>
             </nav>
           </div>
         )}
