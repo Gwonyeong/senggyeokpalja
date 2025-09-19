@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import MainToonSlider from "@/components/MainToonSlider";
 
 export default function Home() {
   const scrollToServices = () => {
@@ -36,6 +37,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Toon Slider Section */}
+        <MainToonSlider />
 
         {/* Services Section */}
         <section className="services-section">
