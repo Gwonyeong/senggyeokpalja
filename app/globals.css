@@ -556,14 +556,13 @@ section {
 }
 
 #hero .sage-subtitle {
-  font-size: clamp(1.2rem, 3vw, 1.5rem);
   margin-bottom: 0;
   opacity: 0.9;
   line-height: 1.3;
 }
 
 #hero .hero-description {
-  font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+  font-size: 14px;
   color: var(--text-muted-color);
   max-width: 600px;
   margin: 0 auto;
@@ -571,7 +570,7 @@ section {
 }
 
 #hero .cta-button {
-  margin-top: 10px;
+  margin-top: 100px;
 }
 
 @media (max-width: 768px) {
@@ -1485,12 +1484,7 @@ section {
 /* ============================================= */
 .services-section {
   padding: 80px 0;
-  background: linear-gradient(
-    135deg,
-    rgba(252, 163, 17, 0.05),
-    rgba(255, 183, 77, 0.03)
-  );
-  border-top: 1px solid rgba(252, 163, 17, 0.1);
+  background: #1a1a1d;
   text-align: center;
 }
 
@@ -1509,6 +1503,106 @@ section {
   gap: 30px;
   margin-top: 40px;
   justify-items: center;
+}
+
+/* New Image Grid Layout */
+.services-image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px 16px;
+
+  margin-top: 40px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px; /* Space for badges */
+}
+
+.service-image-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* Changed from hidden to visible */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.service-image-wrapper {
+  position: relative;
+  border: 1px solid #fca311;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.service-image-wrapper img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.service-image-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4caf50;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 400;
+  z-index: 10;
+}
+
+.service-image-badge.premium {
+  background: linear-gradient(135deg, var(--starlight-orange), #e6a015);
+}
+
+.service-image-item:hover {
+  transform: translateY(-5px);
+}
+
+.service-image-item:hover .service-image-wrapper img {
+  transform: scale(1.05);
+}
+
+/* Service image text content */
+.service-image-content {
+  padding: 10px 0;
+  margin-top: 8px;
+}
+
+.service-image-title {
+  font-size: 12px;
+  color: #fca311;
+  font-weight: 600;
+  margin-bottom: 6px;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.service-image-description {
+  font-size: 12px;
+  color: #eaeaea;
+  line-height: 1.4;
+  max-height: 2.8em; /* 2 lines max */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .services-image-grid {
+    padding: 0 15px;
+  }
+
+  .service-image-content {
+    padding: 8px 0;
+  }
 }
 
 .service-card {
@@ -1650,45 +1744,125 @@ section {
 }
 
 /* ============================================= */
-/* 12. Features Preview (찻집 메뉴) */
+/* 12. Customer Stories Section */
 /* ============================================= */
-.features-preview {
-  padding: 100px 0;
-  background: rgba(45, 45, 48, 0.3);
-  text-align: center;
+.customer-stories-section {
+  padding: 60px 0;
+  background: #1a1a1d;
 }
 
-.features-preview h2 {
-  text-align: center;
-  margin-bottom: 80px;
-  font-size: clamp(2.2rem, 4.5vw, 2.8rem);
-  line-height: 1.3;
-  letter-spacing: -0.5px;
-}
-
-.feature-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  max-width: 1000px;
+.customer-stories-container {
   margin: 0 auto;
-  padding: 0 20px;
+  position: relative;
+  max-width: 600px;
 }
 
-.feature-cards .card {
+.stories-slider-viewport {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 1;
   background: var(--card-bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  text-align: center;
-  padding: 45px 35px;
-  height: auto;
-  min-height: 320px;
+  border: 1px solid #fca311;
+}
+
+.stories-slider-track {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  transition: transform 0.3s ease;
+  height: 100%;
+
+  border-radius: 12px;
+}
+
+.story-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.story-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #fca311;
+}
+
+/* Story Info Box Styling */
+.story-info-box {
+  background: var(--ink-black);
+  border-radius: 16px;
+  padding: 30px 25px;
+  margin-top: 30px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.story-info-header {
+  font-size: 18px;
+  color: var(--text-color);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.story-info-title {
+  font-size: 24px;
+  color: #fca311;
+  font-weight: 600;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.story-cta-button {
+  display: inline-block;
+  background: #fca311;
+  color: var(--ink-black);
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 20px;
   transition: all 0.3s ease;
+}
+
+.story-cta-button:hover {
+  background: #e6a015;
+  transform: translateY(-1px);
+}
+
+.story-info-subtitle {
+  font-size: 12px;
+  color: var(--text-muted-color);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.story-social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.story-social-button {
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-icon-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.story-social-button:hover .social-icon-img {
+  transform: translateY(-3px) scale(1.1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .feature-cards .card:hover {
@@ -1721,7 +1895,7 @@ section {
   font-family: var(--heading-font);
   color: var(--brass-gold);
   margin-bottom: 15px;
-  font-size: 1.2rem;
+  font-size: 32px;
   font-weight: 500;
 }
 
@@ -1858,7 +2032,7 @@ section {
 /* 13. CTA 섹션                                */
 /* ============================================= */
 .cta-section {
-  background: var(--ink-wash-gradient);
+  background: #1a1a1d;
   text-align: center;
 }
 
@@ -2792,7 +2966,7 @@ input[type="text"]::placeholder {
 
 .toon-slider-section {
   padding: 80px 0;
-  background: var(--ink-wash-gradient);
+  background: #1a1a1d;
   position: relative;
   overflow: hidden;
 }

@@ -48,11 +48,11 @@ export default function MainToonSlider() {
   return (
     <section className="toon-slider-section">
       <div className="container">
-        <h2 className="text-[24px] text-[#FCA311] text-center">
+        <h2 className="ml-[15px] text-[24px] text-[#FCA311] text-left">
           MBTI와 사주 왜 같이 봐야할까?
         </h2>
         <div className="flex flex-col items-center  mb-[20px] mt-[12px]">
-          <div className="w-full max-w-xs h-[1px] bg-[#FCA311]" />
+          <div className="w-[calc(100%-30px)] h-[1px] bg-[#FCA311] " />
         </div>
 
         <div className="toon-slider-container">

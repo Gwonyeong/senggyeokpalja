@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import MainToonSlider from "@/components/MainToonSlider";
+import CustomerStoriesSlider from "@/components/CustomerStoriesSlider";
 
 export default function Home() {
   const scrollToServices = () => {
@@ -19,187 +20,168 @@ export default function Home() {
           <div className="container">
             <div className="hero-content">
               <p className="sage-subtitle">
-                "어서 오시게. 그대의 이야기가 담긴 차를 준비하겠네."
+                "어서 오시게.
+                <br />
+                그대의 이야기가 담긴 <br />
+                차를 준비하겠네."
               </p>
               <p className="hero-description">
-                이곳은 당신의 성격과 운명을 블렌딩하여, 세상에 단 하나뿐인
-                '나'라는 차를 맛보는 공간입니다
+                이곳은 당신의 성격과 운명을 블렌딩하여, <br />
+                세상에 단 하나뿐인 '나'라는 차를 맛보는 공간입니다
               </p>
-              <Link href="/analyze" className="cta-button ink-brush-effect">
+              <Link href="/analyze" className="cta-button ink-brush-effect ">
                 찻 잔, 맛보기
               </Link>
             </div>
-            <div className="scroll-indicator">
-              <div className="scroll-arrow" onClick={scrollToServices}>
-                <span>더 많은 서비스 보기</span>
-                <div className="arrow-down">↓</div>
-              </div>
-            </div>
           </div>
         </section>
-
         {/* Toon Slider Section */}
         <MainToonSlider />
 
-        {/* Services Section */}
+        {/* Services Section - Image Grid */}
         <section className="services-section">
           <div className="container">
-            <h2 className="sage-title">토리의 서비스 안내</h2>
-            <p className="services-subtitle">
-              당신의 운명을 더 깊이 탐구할 수 있는 다양한 길을 준비했습니다
-            </p>
-            <div className="services-grid">
-              <div className="service-card free">
-                <div className="service-badge">무료</div>
-                <div className="service-card-content">
-                  <div className="service-icon">🔮</div>
-                  <h3>팔자유형 분석</h3>
-                  <p>
-                    16가지 팔자유형과
-                    <br />
-                    기본적인 운명 해석을 무료로 제공합니다
+            <div className="ml-[15px]">
+              <h2 className="text-[24px] text-[#FCA311] text-left">
+                토리의 서비스 안내
+              </h2>
+            </div>
+            <div className="flex flex-col items-center  mb-[20px] mt-[12px]">
+              <div className="w-[calc(100%-30px)] h-[1px] bg-[#FCA311] " />
+            </div>
+
+            <div className="services-image-grid">
+              <Link href="/analyze" className="service-image-item">
+                <div className="service-image-badge">무료</div>
+                <div className="service-image-wrapper">
+                  <img src="/assets/images/service-1.png" alt="팔자유형 분석" />
+                </div>
+                <div className="service-image-content">
+                  <h3 className="service-image-title">팔자유형 알아보기</h3>
+                  <p className="service-image-description">
+                    사주판 mbti를 알아보세요.
                   </p>
                 </div>
-                <div className="service-card-footer">
-                  <Link href="/analyze" className="service-btn primary">
-                    팔자유형 분석하기
-                  </Link>
+              </Link>
+              <Link href="/synergy" className="service-image-item">
+                <div className="service-image-badge">무료</div>
+                <div className="service-image-wrapper">
+                  <img
+                    src="/assets/images/service-2.png"
+                    alt="MBTI × 팔자유형 시너지"
+                  />
                 </div>
-              </div>
-              <div className="service-card free">
-                <div className="service-badge">무료</div>
-                <div className="service-card-content">
-                  <div className="service-icon">⚡</div>
-                  <h3>MBTI × 팔자유형 시너지</h3>
-                  <p>
-                    MBTI와 팔자유형의 만남
-                    <br />
-                    당신의 시너지를 발견해보세요
+                <div className="service-image-content">
+                  <h3 className="service-image-title">나와의 궁합 보기</h3>
+                  <p className="service-image-description">
+                    mbti와 팔자유형의 궁합 점수를 알아보세요.
                   </p>
                 </div>
-                <div className="service-card-footer">
-                  <Link href="/synergy" className="service-btn primary">
-                    시너지 분석하기
-                  </Link>
+              </Link>
+              <a
+                href="https://smore.im/form/2RQBeyh8f3"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="service-image-item"
+              >
+                <div className="service-image-badge premium">프리미엄</div>
+                <div className="service-image-wrapper">
+                  <img
+                    src="/assets/images/service-3.png"
+                    alt="토리와의 개별 상담"
+                  />
                 </div>
-              </div>
-              <div className="service-card premium">
-                <div className="service-badge">프리미엄</div>
-                <div className="service-card-content">
-                  <div className="service-icon">📜</div>
-                  <h3>상세 운명 리포트</h3>
-                  <p>
-                    개인 맞춤 상세 분석과
-                    <br />
-                    토리의 특별한 조언이 담긴 상세 리포트
+                <div className="service-image-content">
+                  <h3 className="service-image-title">인생 스포일러 보기</h3>
+                  <p className="service-image-description">
+                    토리에게 상세 해석을 의뢰해보세요.
                   </p>
                 </div>
-                <div className="service-card-footer">
-                  <a href="#premium" className="service-btn secondary">
-                    준비중
-                  </a>
+              </a>
+              <a
+                href="http://pf.kakao.com/_BxnBxmn/friend"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="service-image-item"
+              >
+                <div className="service-image-badge premium">프리미엄</div>
+                <div className="service-image-wrapper">
+                  <img
+                    src="/assets/images/service-4.png"
+                    alt="토리와 소통하기"
+                  />
                 </div>
-              </div>
-              <div className="service-card premium">
-                <div className="service-badge">프리미엄</div>
-                <div className="service-card-content">
-                  <div className="service-icon">💝</div>
-                  <h3>궁합 분석 서비스</h3>
-                  <p>
-                    연인, 친구, 동료와의 깊이 있는
-                    <br />
-                    궁합 분석과 관계 개선 조언
+                <div className="service-image-content">
+                  <h3 className="service-image-title">인연 스포일러 보기</h3>
+                  <p className="service-image-description">
+                    연인, 친구, 동료와의 인연 스포일러를 확인하세요.
                   </p>
                 </div>
-                <div className="service-card-footer">
-                  <a href="#premium" className="service-btn secondary">
-                    준비중
-                  </a>
-                </div>
-              </div>
-              <div className="service-card consultation">
-                <div className="service-badge">1:1 상담</div>
-                <div className="service-card-content">
-                  <div className="service-icon">🍵</div>
-                  <h3>토리와의 개별 상담</h3>
-                  <p>
-                    토리의 발전을 위한
-                    <br />
-                    사전예약 및 설문조사를 진행해주세요
-                  </p>
-                </div>
-                <div className="service-card-footer">
-                  <a
-                    href="https://smore.im/form/2RQBeyh8f3"
-                    target="_blank"
-                    className="service-btn accent"
-                    rel="noopener noreferrer"
-                  >
-                    상담 신청하기
-                  </a>
-                </div>
-              </div>
-              <div className="service-card social">
-                <div className="service-badge">소통</div>
-                <div className="service-card-content">
-                  <div className="service-icon">📱</div>
-                  <h3>토리와 소통하기</h3>
-                  <p>
-                    성격팔자의 최신 소식과
-                    <br />
-                    특별한 혜택을 가장 먼저 받아보세요
-                  </p>
-                </div>
-                <div className="service-card-footer">
-                  <div className="social-service-buttons">
-                    <a
-                      href="http://pf.kakao.com/_BxnBxmn/friend"
-                      target="_blank"
-                      className="service-btn kakao"
-                      rel="noopener noreferrer"
-                    >
-                      카카오톡 채널 추가
-                    </a>
-                    <a
-                      href="https://www.instagram.com/palja_tory/"
-                      target="_blank"
-                      className="service-btn instagram"
-                      rel="noopener noreferrer"
-                    >
-                      인스타그램 팔로우
-                    </a>
-                  </div>
-                </div>
-              </div>
+              </a>
+            </div>
+            <div className="flex justify-center mt-[20px]">
+              <Link href="/services" className="text-[#EAEAEA] text-[14px]">
+                더 많은 서비스 보기
+              </Link>
             </div>
           </div>
         </section>
-
-        {/* Features Preview */}
-        <section className="features-preview">
+        {/* Customer Stories Section */}
+        <section className="customer-stories-section">
           <div className="container">
-            <h2 className="sage-title">
-              토리의 찻집에서 만나는 세 가지 깨달음
+            <h2 className="ml-[15px] text-[24px] text-[#FCA311] text-left">
+              먼저 다녀간 손님들의 이야기
             </h2>
-            <div className="feature-cards">
-              <div className="card ink-brush-effect">
-                <div className="card-icon">🎋</div>
-                <h3 className="sage-subtitle">16가지 팔자의 길</h3>
-                <p>
-                  고대 명리학과 현대 심리학이 만나 탄생한 당신만의 성격 해석
-                </p>
-              </div>
-              <div className="card ink-brush-effect">
-                <div className="card-icon">🍃</div>
-                <h3 className="sage-subtitle">인연의 실타래</h3>
-                <p>당신과 기운이 통하는 사람들을 찾아 운명의 실을 엮어보세요</p>
-              </div>
-              <div className="card ink-brush-effect">
-                <div className="card-icon">🌸</div>
-                <h3 className="sage-subtitle">토리의 조언</h3>
-                <p>
-                  무림 고수 토리가 전하는 당신만의 인생 지혜와 앞날에 대한 통찰
-                </p>
+            <div className="flex flex-col items-center mb-[20px] mt-[12px]">
+              <div className="w-[calc(100%-30px)] h-[1px] bg-[#FCA311]" />
+            </div>
+
+            <CustomerStoriesSlider />
+
+            <div
+              className="story-info-box"
+              style={{ border: "1px solid #FCA311" }}
+            >
+              <p className="story-info-header">
+                이미 수많은 나그네들이 <br />
+                토리의 찻집에서{" "}
+                <span style={{ color: "#FCA311" }}>자신의 길</span>을
+                찾았습니다.
+              </p>
+              <p className="story-info-title">이제, 당신의 차례입니다.</p>
+              <Link href="/analyze" className="story-cta-button">
+                의뢰하기
+              </Link>
+              <p className="story-info-subtitle">
+                토리는 아직 들려주지 못한, 당신만의 이야기를 기다리고 있습니다.{" "}
+                <br />
+                찻집의 단골이 되어, 가장 먼저 새로운 소식을 받아보시겠습니까?
+              </p>
+              <div className="story-social-buttons">
+                <a
+                  href="http://pf.kakao.com/_BxnBxmn/friend"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="story-social-button story-kakao-button"
+                >
+                  <img
+                    src="/assets/images/kakao_symbol.png"
+                    alt="카카오톡 채널 추가"
+                    className="social-icon-img"
+                  />
+                </a>
+                <a
+                  href="https://www.instagram.com/palja_tory/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="story-social-button story-instagram-button"
+                >
+                  <img
+                    src="/assets/images/instagram_symbol.png"
+                    alt="인스타그램 팔로우"
+                    className="social-icon-img"
+                  />
+                </a>
               </div>
             </div>
           </div>
