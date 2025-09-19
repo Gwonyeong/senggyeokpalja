@@ -46,6 +46,14 @@ When testing a specific page or component:
 - `lib/share-data.js`: In-memory store for temporary share data
 - `lib/user-utils.js`: User profile and authentication utilities
 
+### Database Operations
+**IMPORTANT**: All database operations MUST use Prisma ORM exclusively.
+- **Server-side only**: Import `import { prisma } from '@/lib/prisma'` ONLY in API routes
+- **Client-side**: NEVER import Prisma directly - use API routes instead
+- NEVER use direct Supabase database calls (`.from()`, `.insert()`, `.update()`, `.delete()`)
+- Use Supabase ONLY for authentication, not data operations
+- Pattern: Client → API Route → Prisma → Database
+
 ### Database Schema (Prisma)
 Main tables:
 - `profiles`: User profiles extending Supabase auth.users

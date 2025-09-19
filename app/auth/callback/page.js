@@ -23,12 +23,16 @@ export default function AuthCallback() {
         }
 
         if (data.session) {
+          console.log('Session user data:', data.session.user);
+
           // 사용자 프로필 생성/업데이트
-          await upsertProfile(data.session.user);
+          const profile = await upsertProfile();
+          console.log('Profile creation result:', profile);
 
           // 홈페이지로 리디렉트
           router.push('/');
         } else {
+          console.log('No session found, redirecting to login');
           router.push('/auth/login');
         }
       } catch (error) {
