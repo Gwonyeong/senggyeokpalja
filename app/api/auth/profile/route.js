@@ -1,11 +1,33 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 
 export async function POST() {
   try {
-    // Supabase 클라이언트 생성 및 인증 확인
-    const supabase = createClient();
+    // 서버 사이드용 Supabase 클라이언트 생성
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                cookieStore.set(name, value, options);
+              });
+            } catch (error) {
+              // 서버 컴포넌트에서는 쿠키 설정이 불가능할 수 있음
+            }
+          },
+        },
+      }
+    );
+
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
