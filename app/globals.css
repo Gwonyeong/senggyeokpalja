@@ -430,6 +430,7 @@ header {
 /* 메뉴 섹션 */
 .slide-menu-section {
   margin-bottom: 0px;
+  margin-top: 10px;
 }
 
 .slide-menu-label {

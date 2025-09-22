@@ -19,6 +19,7 @@ export default function Navigation() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [menuToggleOpen, setMenuToggleOpen] = useState(true);
   const [serviceToggleOpen, setServiceToggleOpen] = useState(true);
+  const [userProfile, setUserProfile] = useState(null);
 
   useEffect(() => {
     // Supabase 인증 상태 감시
@@ -27,6 +28,21 @@ export default function Navigation() {
     } = onAuthStateChange((authUser) => {
       setUser(authUser);
       setIsAdmin(authUser ? checkAdminAccess(authUser) : false);
+
+      // 사용자 프로필 정보 설정 (mypage와 동일한 방식)
+      if (authUser) {
+        setUserProfile({
+          name:
+            authUser.user_metadata?.full_name ||
+            authUser.email?.split("@")[0] ||
+            "Unknown",
+          email: authUser.email,
+          photoURL: authUser.user_metadata?.avatar_url || "",
+          joinDate: authUser.created_at,
+        });
+      } else {
+        setUserProfile(null);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -172,6 +188,97 @@ export default function Navigation() {
             </div>
           )}
 
+          {/* 프로필 섹션 (로그인 상태일 때) */}
+          {user && userProfile && (
+            <div
+              className="slide-profile-section"
+              style={{
+                border: "1px solid #FCA311",
+                backgroundColor: "#131316",
+                borderRadius: "8px",
+                padding: "16px",
+                margin: "16px 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "12px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  width: "100%",
+                }}
+              >
+                {userProfile.photoURL ? (
+                  <Image
+                    src={userProfile.photoURL}
+                    alt="프로필 이미지"
+                    width={40}
+                    height={40}
+                    style={{
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      backgroundColor: "#FCA311",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                      color: "#000",
+                    }}
+                  >
+                    {userProfile.name?.charAt(0)?.toUpperCase() || "U"}
+                  </div>
+                )}
+                <div style={{ flex: 1, textAlign: "left" }}>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#FCA311",
+                    }}
+                  >
+                    {userProfile.name}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#888" }}>
+                    {userProfile.email}
+                  </div>
+                </div>
+              </div>
+              <Link
+                href="/mypage"
+                onClick={closeMobileMenu}
+                style={{
+                  width: "100%",
+                  padding: "8px 16px",
+                  backgroundColor: "#FCA311",
+                  color: "#000",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  textDecoration: "none",
+                  textAlign: "center",
+                  display: "block",
+                  transition: "all 0.3s ease",
+                }}
+              >
+                마이페이지
+              </Link>
+            </div>
+          )}
+
           {/* 메뉴 섹션 */}
           <div className="slide-menu-section">
             <div
@@ -246,17 +353,7 @@ export default function Navigation() {
                     토리와 상담하기
                   </a>
                 </li>
-                {user && (
-                  <li>
-                    <Link
-                      href="/mypage"
-                      className="slide-menu-item"
-                      onClick={closeMobileMenu}
-                    >
-                      마이페이지
-                    </Link>
-                  </li>
-                )}
+
                 {isAdmin && (
                   <li>
                     <Link
@@ -311,7 +408,10 @@ export default function Navigation() {
                 이제 의뢰하기 버튼을 클릭해보세요.
               </p>
               <div style={{ display: "flex", justifyContent: "center" }}>
-                <button className="service-card-btn" onClick={handlePremiumClick}>
+                <button
+                  className="service-card-btn"
+                  onClick={handlePremiumClick}
+                >
                   의뢰하기
                 </button>
               </div>
@@ -325,17 +425,26 @@ export default function Navigation() {
                 <br />
                 특별한 혜택을 가장 먼저 받아보세요.
               </p>
-              <div className="social-links" style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+              <div
+                className="social-links"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "20px",
+                }}
+              >
                 <a
                   href="https://open.kakao.com/your-link"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
                     display: "inline-block",
-                    transition: "transform 0.3s ease"
+                    transition: "transform 0.3s ease",
                   }}
-                  onMouseEnter={(e) => e.target.style.transform = "scale(1.1)"}
-                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                  onMouseEnter={(e) =>
+                    (e.target.style.transform = "scale(1.1)")
+                  }
+                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
                   <Image
                     src="/assets/images/kakao_symbol.png"
@@ -350,10 +459,12 @@ export default function Navigation() {
                   rel="noopener noreferrer"
                   style={{
                     display: "inline-block",
-                    transition: "transform 0.3s ease"
+                    transition: "transform 0.3s ease",
                   }}
-                  onMouseEnter={(e) => e.target.style.transform = "scale(1.1)"}
-                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                  onMouseEnter={(e) =>
+                    (e.target.style.transform = "scale(1.1)")
+                  }
+                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
                   <Image
                     src="/assets/images/instagram_symbol.png"
