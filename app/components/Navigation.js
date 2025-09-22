@@ -310,9 +310,11 @@ export default function Navigation() {
                 <br />
                 이제 의뢰하기 버튼을 클릭해보세요.
               </p>
-              <button className="service-card-btn" onClick={handlePremiumClick}>
-                의뢰하기
-              </button>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <button className="service-card-btn" onClick={handlePremiumClick}>
+                  의뢰하기
+                </button>
+              </div>
             </div>
 
             {/* 토리와 소통하기 카드 */}
@@ -323,22 +325,42 @@ export default function Navigation() {
                 <br />
                 특별한 혜택을 가장 먼저 받아보세요.
               </p>
-              <div className="social-links">
+              <div className="social-links" style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
                 <a
                   href="https://open.kakao.com/your-link"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-icon kakao"
+                  style={{
+                    display: "inline-block",
+                    transition: "transform 0.3s ease"
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = "scale(1.1)"}
+                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
                 >
-                  TALK
+                  <Image
+                    src="/assets/images/kakao_symbol.png"
+                    alt="카카오톡"
+                    width={32}
+                    height={32}
+                  />
                 </a>
                 <a
                   href="https://instagram.com/your-link"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="social-icon instagram"
+                  style={{
+                    display: "inline-block",
+                    transition: "transform 0.3s ease"
+                  }}
+                  onMouseEnter={(e) => e.target.style.transform = "scale(1.1)"}
+                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
                 >
-                  <span className="instagram-gradient">📷</span>
+                  <Image
+                    src="/assets/images/instagram_symbol.png"
+                    alt="인스타그램"
+                    width={32}
+                    height={32}
+                  />
                 </a>
               </div>
             </div>
