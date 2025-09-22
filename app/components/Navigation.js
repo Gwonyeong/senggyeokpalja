@@ -17,17 +17,20 @@ export default function Navigation() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [menuToggleOpen, setMenuToggleOpen] = useState(true);
+  const [serviceToggleOpen, setServiceToggleOpen] = useState(true);
 
   useEffect(() => {
     // Supabase 인증 상태 감시
-    const { data: { subscription } } = onAuthStateChange((authUser) => {
+    const {
+      data: { subscription },
+    } = onAuthStateChange((authUser) => {
       setUser(authUser);
       setIsAdmin(authUser ? checkAdminAccess(authUser) : false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
 
   const handleLogout = async () => {
     try {
@@ -79,7 +82,6 @@ export default function Navigation() {
               <span className="tagline">내 인생, 합법적 스포일러</span>
             </div>
 
-
             <button
               className="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -95,109 +97,263 @@ export default function Navigation() {
 
       {/* 딤드 오버레이 - 헤더 밖으로 이동 */}
       <div
-        className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`}
+        className={`mobile-menu-overlay ${mobileMenuOpen ? "active" : ""}`}
         onClick={handleOverlayClick}
       />
 
       {/* 슬라이드 메뉴 - PC와 모바일 통합 */}
-      <div className={`mobile-menu ${mobileMenuOpen ? 'mobile-menu-open' : ''}`} id="mobileNav">
-          <nav className="mobile-nav" role="navigation">
-            <ul>
-              <li>
-                <Link
-                  href="/analyze"
-                  className="nav-link"
-                  onClick={closeMobileMenu}
-                >
-                  찻집
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/synergy"
-                  className="nav-link"
-                  onClick={closeMobileMenu}
-                >
-                  시너지
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="#premium"
-                  className="nav-link"
-                  onClick={handlePremiumClick}
-                >
-                  의뢰하기
-                </a>
-              </li>
-              {isAdmin && (
-                <li>
-                  <Link
-                    href="/admin"
-                    className="nav-link admin-only"
-                    onClick={closeMobileMenu}
-                  >
-                    🔐 관리자
-                  </Link>
-                </li>
-              )}
-              {user && (
-                <li>
-                  <Link
-                    href="/mypage"
-                    className="nav-link"
-                    onClick={closeMobileMenu}
-                  >
-                    👤 마이페이지
-                  </Link>
-                </li>
-              )}
-            </ul>
+      <div
+        className={`mobile-menu ${mobileMenuOpen ? "mobile-menu-open" : ""}`}
+        id="mobileNav"
+      >
+        <div className="slide-menu-container">
+          {/* 헤더 섹션 */}
+          <div className="slide-menu-header">
+            <div
+              className="slide-menu-title"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: "12px",
+              }}
+            >
+              <Image
+                src="/assets/images/logo.png"
+                alt="성격팔자"
+                width={40}
+                height={40}
+                priority
+                style={{ display: "block" }}
+              />
+              <span
+                className="title-sub"
+                style={{
+                  color: "#FCA311",
+                  fontWeight: "300",
+                  fontSize: "12px",
+                }}
+              >
+                내 인생, 합법적 스포일러
+              </span>
+            </div>
+            <button
+              className="slide-menu-close"
+              onClick={closeMobileMenu}
+              aria-label="메뉴 닫기"
+            >
+              ✕
+            </button>
+          </div>
 
-            {/* 인증 섹션 */}
-            <div className="mobile-auth-section">
-              <ul>
-                {user ? (
+          {/* 로그인 버튼 섹션 */}
+          {!user && (
+            <div
+              className="slide-auth-buttons"
+              style={{
+                border: "1px solid #FCA311",
+                backgroundColor: "#131316",
+                borderRadius: "8px",
+                padding: "16px",
+                margin: "16px 0",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <button
+                className="slide-btn-signup"
+                onClick={handleLogin}
+                style={{ width: "80px", padding: "8px 16px" }}
+              >
+                로그인
+              </button>
+              <div className="slide-auth-note">로그인시 리포트 보관 가능</div>
+            </div>
+          )}
+
+          {/* 메뉴 섹션 */}
+          <div className="slide-menu-section">
+            <div
+              // className="slide-menu-label"
+              onClick={() => setMenuToggleOpen(!menuToggleOpen)}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                cursor: "pointer",
+
+                paddingBottom: "8px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  color: "#FCA311",
+                }}
+              >
+                메뉴
+              </span>
+              <span
+                style={{
+                  transform: menuToggleOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.3s ease",
+                }}
+              >
+                ▼
+              </span>
+            </div>
+            <div
+              className="slide-menu-label"
+              style={{ backgroundColor: "#FCA311", height: "1px" }}
+            ></div>
+            {menuToggleOpen && (
+              <ul className="slide-menu-list">
+                <li>
+                  <Link
+                    href="/"
+                    className="slide-menu-item"
+                    onClick={closeMobileMenu}
+                  >
+                    홈
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/analyze"
+                    className="slide-menu-item"
+                    onClick={closeMobileMenu}
+                  >
+                    찻집
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/synergy"
+                    className="slide-menu-item"
+                    onClick={closeMobileMenu}
+                  >
+                    나와의 궁합 보기
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="#premium"
+                    className="slide-menu-item"
+                    onClick={handlePremiumClick}
+                  >
+                    토리와 상담하기
+                  </a>
+                </li>
+                {user && (
                   <li>
-                    <button
-                      className="nav-link"
-                      onClick={handleLogout}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        width: '100%',
-                        textAlign: 'left',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        padding: '15px 30px'
-                      }}
+                    <Link
+                      href="/mypage"
+                      className="slide-menu-item"
+                      onClick={closeMobileMenu}
                     >
-                      🚪 로그아웃
-                    </button>
+                      마이페이지
+                    </Link>
                   </li>
-                ) : (
+                )}
+                {isAdmin && (
                   <li>
-                    <button
-                      className="nav-link"
-                      onClick={handleLogin}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        width: '100%',
-                        textAlign: 'left',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        padding: '15px 30px'
-                      }}
+                    <Link
+                      href="/admin"
+                      className="slide-menu-item admin-item"
+                      onClick={closeMobileMenu}
                     >
-                      🔑 로그인
-                    </button>
+                      관리자
+                    </Link>
                   </li>
                 )}
               </ul>
+            )}
+          </div>
+
+          {/* 토리의 서비스 섹션 */}
+          <div className="slide-menu-section">
+            <div
+              onClick={() => setServiceToggleOpen(!serviceToggleOpen)}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                cursor: "pointer",
+                paddingBottom: "8px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  color: "#FCA311",
+                }}
+              >
+                토리의 서비스
+              </span>
             </div>
-          </nav>
+            <div
+              className="slide-menu-label"
+              style={{ backgroundColor: "#FCA311", height: "1px" }}
+            ></div>
+          </div>
+
+          {/* 유료 서비스 카드 */}
+
+          <>
+            <div className="slide-service-card">
+              <h4 className="service-card-title">유료 서비스</h4>
+              <p className="service-card-desc">
+                상세한 내용들이 궁금하다면
+                <br />
+                이제 의뢰하기 버튼을 클릭해보세요.
+              </p>
+              <button className="service-card-btn" onClick={handlePremiumClick}>
+                의뢰하기
+              </button>
+            </div>
+
+            {/* 토리와 소통하기 카드 */}
+            <div className="slide-service-card">
+              <h4 className="service-card-title">토리와 소통하기</h4>
+              <p className="service-card-desc">
+                성격팔자의 최신 소식과
+                <br />
+                특별한 혜택을 가장 먼저 받아보세요.
+              </p>
+              <div className="social-links">
+                <a
+                  href="https://open.kakao.com/your-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-icon kakao"
+                >
+                  TALK
+                </a>
+                <a
+                  href="https://instagram.com/your-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-icon instagram"
+                >
+                  <span className="instagram-gradient">📷</span>
+                </a>
+              </div>
+            </div>
+          </>
+
+          {/* 로그아웃 버튼 (로그인 상태일 때) */}
+          {user && (
+            <div className="slide-logout-section">
+              <button className="slide-logout-btn" onClick={handleLogout}>
+                로그아웃
+              </button>
+            </div>
+          )}
         </div>
+      </div>
 
       {/* 로그인 모달 */}
       <LoginModal
