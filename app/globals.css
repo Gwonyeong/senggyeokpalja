@@ -340,6 +340,8 @@ header {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* 슬라이드 메뉴 헤더 */
@@ -3027,6 +3029,7 @@ input[type="text"]::placeholder {
   border-radius: 12px;
   padding: 25px;
   backdrop-filter: blur(10px);
+  margin-bottom: 25px;
   transition: all 0.3s ease;
 }
 

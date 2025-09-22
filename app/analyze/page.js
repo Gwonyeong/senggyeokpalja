@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function AnalyzePage() {
   const [formData, setFormData] = useState({
@@ -42,19 +43,19 @@ export default function AnalyzePage() {
   // 코드 해석 함수
   const getCodeLegend = (typeCode) => {
     const legendData = {
-      W: "<strong>W(외강형):</strong> 에너지가 넘치고 자기 주도적인 성향이에요.",
-      N: "<strong>N(내유형):</strong> 신중하고 주변과의 조화를 중시하는 성향이에요.",
-      S: "<strong>S(실리형):</strong> 현실 감각이 뛰어나고 구체적인 성과를 중요하게 생각해요.",
-      G: "<strong>G(관념형):</strong> 정신적인 가치와 의미를 탐구하는 것을 좋아해요.",
-      I: "<strong>I(이성형):</strong> 객관적인 원칙과 논리에 따라 판단하는 편이에요.",
-      H: "<strong>H(화합형):</strong> 사람들과의 관계와 조화를 우선적으로 생각해요.",
-      J: "<strong>J(정주형):</strong> 계획적이고 안정적인 삶의 리듬을 가지고 있어요.",
-      Y: "<strong>Y(유랑형):</strong> 변화무쌍하고 자율적인 삶의 리듬을 가지고 있어요.",
+      W: "<strong>W(외강형)</strong> <br /> 에너지가 넘치고 자기 주도적인 성향이에요.",
+      N: "<strong>N(내유형)</strong> <br /> 신중하고 주변과의 조화를 중시하는 성향이에요.",
+      S: "<strong>S(실리형)</strong> <br /> 현실 감각이 뛰어나고 구체적인 성과를 중요하게 생각해요.",
+      G: "<strong>G(관념형)</strong> <br /> 정신적인 가치와 의미를 탐구하는 것을 좋아해요.",
+      I: "<strong>I(이성형)</strong> <br /> 객관적인 원칙과 논리에 따라 판단하는 편이에요.",
+      H: "<strong>H(화합형)</strong> <br /> 사람들과의 관계와 조화를 우선적으로 생각해요.",
+      J: "<strong>J(정주형)</strong> <br /> 계획적이고 안정적인 삶의 리듬을 가지고 있어요.",
+      Y: "<strong>Y(유랑형)</strong> <br /> 변화무쌍하고 자율적인 삶의 리듬을 가지고 있어요.",
     };
 
     let legendHTML = "";
     typeCode.split("").forEach((code) => {
-      legendHTML += legendData[code] + "<br>";
+      legendHTML += legendData[code] + "<br> <br>";
     });
     return legendHTML;
   };
@@ -159,10 +160,10 @@ export default function AnalyzePage() {
 
       // 로그인한 사용자의 경우 데이터베이스에 저장
       try {
-        const saveResponse = await fetch('/api/analysis/save', {
-          method: 'POST',
+        const saveResponse = await fetch("/api/analysis/save", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             personalityType,
@@ -174,20 +175,23 @@ export default function AnalyzePage() {
               hour: formData.hour,
               gender: formData.gender,
               calendar: formData.calendar,
-              isLeapMonth: formData.isLeapMonth
+              isLeapMonth: formData.isLeapMonth,
             },
             sajuData,
-            analysisDate: new Date().toISOString()
-          })
+            analysisDate: new Date().toISOString(),
+          }),
         });
 
         const saveResult = await saveResponse.json();
         if (saveResult.success && saveResult.resultId) {
-          console.log('Analysis result saved to database:', saveResult.resultId);
+          console.log(
+            "Analysis result saved to database:",
+            saveResult.resultId
+          );
         }
       } catch (saveError) {
         // 저장 실패는 조용히 처리 (사용자 경험에 영향 없음)
-        console.error('Failed to save analysis result:', saveError);
+        console.error("Failed to save analysis result:", saveError);
       }
     } catch (error) {
       console.error("분석 중 오류 발생:", error);
@@ -201,40 +205,41 @@ export default function AnalyzePage() {
   const handleShare = async () => {
     try {
       // 서버에 공유 데이터 저장 요청
-      const response = await fetch('/api/share', {
-        method: 'POST',
+      const response = await fetch("/api/share", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: result.personalityType
-        })
+          type: result.personalityType,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('공유 데이터 생성 실패');
+        throw new Error("공유 데이터 생성 실패");
       }
 
       const { shareId } = await response.json();
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      const siteUrl =
+        process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
       const shareUrl = `${siteUrl}/share/${shareId}`;
 
       if (navigator.share) {
         navigator.share({
           title: `나는 ${result.typeData.alias}! - 성격팔자`,
           text: `내 팔자 유형은 "${result.typeData.alias}"입니다. ${result.typeData.description}`,
-          url: shareUrl
+          url: shareUrl,
         });
       } else {
         // Web Share API를 지원하지 않는 브라우저에서는 클립보드 복사
         const shareText = `나는 ${result.typeData.alias}! 내 팔자 유형: ${result.personalityType}\n${result.typeData.description}\n\n성격팔자에서 확인해보세요: ${shareUrl}`;
         navigator.clipboard.writeText(shareText).then(() => {
-          alert('공유 링크가 클립보드에 복사되었습니다!');
+          alert("공유 링크가 클립보드에 복사되었습니다!");
         });
       }
     } catch (error) {
-      console.error('공유 실패:', error);
-      alert('공유 기능에 오류가 발생했습니다.');
+      console.error("공유 실패:", error);
+      alert("공유 기능에 오류가 발생했습니다.");
     }
   };
 
@@ -521,24 +526,6 @@ export default function AnalyzePage() {
                       }}
                     />
                   </div>
-
-                  <div className="interview-cta">
-                    <h3>토리가 건네는 특별한 초대장</h3>
-                    <p>
-                      당신의 이야기는 '성격팔자'를 완성하는 마지막 조각입니다.
-                      <br />
-                      지금 1:1 면담에 참여하고, 정식 출시의 'VVIP'가 되어주세요.
-                    </p>
-                    <a
-                      href="https://smore.im/form/2RQBeyh8f3"
-                      target="_blank"
-                      className="cta-button"
-                      rel="noopener noreferrer"
-                    >
-                      1:1 면담 시작하기 💌
-                    </a>
-                  </div>
-
                   <div className="compatibility-section">
                     <h3 className="compatibility-title">
                       [나의 인연 스포일러]
@@ -572,7 +559,9 @@ export default function AnalyzePage() {
                         </p>
                       </div>
                       <div className="compatibility-item">
-                        <p className="compatibility-item-title">성장의 파트너</p>
+                        <p className="compatibility-item-title">
+                          성장의 파트너
+                        </p>
                         <img
                           id="growth-image"
                           className="compatibility-image"
@@ -603,6 +592,22 @@ export default function AnalyzePage() {
                       상세한 궁합 풀이는 <strong>[기능 준비중]</strong>입니다!
                     </p>
                   </div>
+                  <div className="interview-cta">
+                    <h3>토리가 건네는 특별한 초대장</h3>
+                    <p>
+                      당신의 이야기는 '성격팔자'를 완성하는 마지막 조각입니다.
+                      <br />
+                      지금 1:1 면담에 참여하고, 정식 출시의 'VVIP'가 되어주세요.
+                    </p>
+                    <a
+                      href="https://smore.im/form/2RQBeyh8f3"
+                      target="_blank"
+                      className="cta-button"
+                      rel="noopener noreferrer"
+                    >
+                      1:1 면담 시작하기 💌
+                    </a>
+                  </div>
 
                   <div className="share-card">
                     <h3>내 팔자 유형 자랑하기</h3>
@@ -628,20 +633,6 @@ export default function AnalyzePage() {
                     </a>
                   </div>
 
-                  <div className="save-to-mypage-card">
-                    <h3>📝 나의 결과 저장하기</h3>
-                    <p>
-                      이 소중한 분석 결과를
-                      <br />
-                      마이페이지에 저장하고 언제든지
-                      <br />
-                      다시 확인해보세요!
-                    </p>
-                    <button id="save-to-mypage-btn" className="btn btn-primary">
-                      마이페이지에 저장하기
-                    </button>
-                  </div>
-
                   <div className="cta-card">
                     <h3>업데이트 소식이 궁금하다면?</h3>
                     <p>
@@ -649,24 +640,61 @@ export default function AnalyzePage() {
                       <br />
                       다양한 혜택을 놓치지 마세요!
                     </p>
-                    <div className="social-buttons">
+                    <div
+                      className="social-buttons"
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        gap: "20px",
+                        marginTop: "20px",
+                      }}
+                    >
                       <a
                         id="kakao-channel-button"
-                        className="social-button"
                         href="http://pf.kakao.com/_BxnBxmn/friend"
                         target="_blank"
                         rel="noopener noreferrer"
+                        style={{
+                          display: "inline-block",
+                          transition: "transform 0.3s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.transform = "scale(1.1)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.transform = "scale(1)")
+                        }
                       >
-                        <span>카카오톡 채널 추가</span>
+                        <Image
+                          src="/assets/images/kakao_symbol.png"
+                          alt="카카오톡 채널 추가"
+                          width={40}
+                          height={40}
+                        />
                       </a>
                       <a
                         id="instagram-button"
-                        className="social-button"
                         href="https://www.instagram.com/palja_tory/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        style={{
+                          display: "inline-block",
+                          transition: "transform 0.3s ease",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.transform = "scale(1.1)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.transform = "scale(1)")
+                        }
                       >
-                        <span>인스타그램 보러가기</span>
+                        <Image
+                          src="/assets/images/instagram_symbol.png"
+                          alt="인스타그램 보러가기"
+                          width={40}
+                          height={40}
+                        />
                       </a>
                     </div>
                   </div>

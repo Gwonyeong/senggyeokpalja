@@ -48,6 +48,22 @@ export default function Navigation() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // 메뉴 열림/닫힘에 따른 body 스크롤 제어
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      // 메뉴가 열렸을 때 body 스크롤 방지
+      document.body.style.overflow = 'hidden';
+    } else {
+      // 메뉴가 닫혔을 때 body 스크롤 복원
+      document.body.style.overflow = 'unset';
+    }
+
+    // 컴포넌트 언마운트 시 스크롤 복원
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [mobileMenuOpen]);
+
   const handleLogout = async () => {
     try {
       await signOut();
