@@ -278,7 +278,7 @@ header {
 
 /* 모바일 메뉴 */
 .mobile-menu-toggle {
-  display: none;
+  display: block;
   background: none;
   border: none;
   color: var(--starlight-orange);
@@ -292,9 +292,78 @@ header {
   transform: scale(1.1);
 }
 
-/* PC에서는 모바일 네비게이션 숨김 */
+/* 모바일 네비게이션 - PC와 모바일 모두 표시 */
 .mobile-nav {
-  display: none;
+  display: flex;
+}
+
+/* 딤드 오버레이 */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 1999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 모바일 메뉴 스타일 - PC와 모바일 공통 */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(26, 26, 29, 0.98);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid var(--border-color);
+  padding: 80px 0 20px 0;
+  z-index: 2000;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+.mobile-menu-open {
+  transform: translateX(0);
+}
+
+.mobile-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-menu .nav-link {
+  display: block;
+  padding: 15px 30px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mobile-menu .nav-link:hover {
+  background: rgba(252, 163, 17, 0.1);
+  padding-left: 40px;
+  color: var(--starlight-orange);
+}
+
+.mobile-auth-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* 모바일에서는 데스크톱 네비게이션 숨김 */
@@ -315,69 +384,14 @@ header {
   main {
   }
 
-  .desktop-nav {
-    display: none !important;
-  }
 
-  .mobile-nav {
-    display: flex;
-  }
 
-  .mobile-menu-toggle {
-    display: block;
-  }
 
+  /* 모바일에서 메뉴 패딩 조정 */
   .mobile-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: rgba(26, 26, 29, 0.98);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border-color);
-    padding: 20px 0;
-    z-index: 1000;
+    padding-top: 70px;
   }
 
-  .mobile-menu ul {
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    gap: 0;
-    align-items: stretch;
-    margin: 0;
-    padding: 0;
-  }
-
-  .mobile-menu .nav-link {
-    display: block;
-    padding: 15px 20px;
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-    border-bottom: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-  }
-
-  .mobile-menu .nav-link:hover {
-    color: var(--starlight-orange);
-    background: rgba(252, 163, 17, 0.1);
-  }
-
-  .mobile-auth-section {
-    border-top: 2px solid var(--border-color);
-    margin-top: 10px;
-    padding-top: 10px;
-  }
-
-  .mobile-auth-section .nav-link,
-  .mobile-auth-section .header-auth-btn {
-    background: none;
-    border: none;
-    width: 100%;
-    text-align: left;
-  }
 }
 
 /* ============================================= */

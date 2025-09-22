@@ -28,6 +28,7 @@ export default function Navigation() {
     return () => subscription.unsubscribe();
   }, []);
 
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -51,35 +52,62 @@ export default function Navigation() {
     setMobileMenuOpen(false);
   };
 
-  return (
-    <header>
-      <div className="container">
-        <div className="header-content">
-          <div className="logo-section">
-            <Link href="/" className="logo">
-              <Image
-                src="/assets/images/logo.png"
-                alt="성격팔자"
-                width={50}
-                height={50}
-                priority
-                style={{ display: "block" }}
-              />
-            </Link>
-            <span className="tagline">내 인생, 합법적 스포일러</span>
-          </div>
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
 
-          <nav
-            className="nav-menu desktop-nav"
-            role="navigation"
-            aria-label="주요 메뉴"
-          >
+  const handleOverlayClick = () => {
+    setMobileMenuOpen(false);
+  };
+
+  return (
+    <>
+      <header>
+        <div className="container">
+          <div className="header-content">
+            <div className="logo-section">
+              <Link href="/" className="logo">
+                <Image
+                  src="/assets/images/logo.png"
+                  alt="성격팔자"
+                  width={50}
+                  height={50}
+                  priority
+                  style={{ display: "block" }}
+                />
+              </Link>
+              <span className="tagline">내 인생, 합법적 스포일러</span>
+            </div>
+
+
+            <button
+              className="mobile-menu-toggle"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="모바일 메뉴 열기"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobileNav"
+            >
+              ☰
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* 딤드 오버레이 - 헤더 밖으로 이동 */}
+      <div
+        className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`}
+        onClick={handleOverlayClick}
+      />
+
+      {/* 슬라이드 메뉴 - PC와 모바일 통합 */}
+      <div className={`mobile-menu ${mobileMenuOpen ? 'mobile-menu-open' : ''}`} id="mobileNav">
+          <nav className="mobile-nav" role="navigation">
             <ul>
               <li>
                 <Link
                   href="/analyze"
                   className="nav-link"
-                  aria-label="팔자 분석하러 가기"
+                  onClick={closeMobileMenu}
                 >
                   찻집
                 </Link>
@@ -88,7 +116,7 @@ export default function Navigation() {
                 <Link
                   href="/synergy"
                   className="nav-link"
-                  aria-label="시너지 분석하러 가기"
+                  onClick={closeMobileMenu}
                 >
                   시너지
                 </Link>
@@ -97,7 +125,6 @@ export default function Navigation() {
                 <a
                   href="#premium"
                   className="nav-link"
-                  aria-label="프리미엄 서비스 보기"
                   onClick={handlePremiumClick}
                 >
                   의뢰하기
@@ -108,102 +135,46 @@ export default function Navigation() {
                   <Link
                     href="/admin"
                     className="nav-link admin-only"
-                    style={{ color: "#FF6B6B" }}
-                    aria-label="관리자 대시보드"
+                    onClick={closeMobileMenu}
                   >
                     🔐 관리자
                   </Link>
                 </li>
               )}
+              {user && (
+                <li>
+                  <Link
+                    href="/mypage"
+                    className="nav-link"
+                    onClick={closeMobileMenu}
+                  >
+                    👤 마이페이지
+                  </Link>
+                </li>
+              )}
             </ul>
-          </nav>
 
-          <button
-            className="mobile-menu-toggle"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="모바일 메뉴 열기"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobileNav"
-          >
-            ☰
-          </button>
-        </div>
-
-        {/* 모바일 메뉴 */}
-        {mobileMenuOpen && (
-          <div className="mobile-menu" id="mobileNav">
-            <nav className="mobile-nav" role="navigation">
+            {/* 인증 섹션 */}
+            <div className="mobile-auth-section">
               <ul>
-                <li>
-                  <Link
-                    href="/analyze"
-                    className="nav-link"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    찻집
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/synergy"
-                    className="nav-link"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    시너지
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    href="#premium"
-                    className="nav-link"
-                    onClick={handlePremiumClick}
-                  >
-                    의뢰하기
-                  </a>
-                </li>
-                {isAdmin && (
-                  <li>
-                    <Link
-                      href="/admin"
-                      className="nav-link admin-only"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      🔐 관리자
-                    </Link>
-                  </li>
-                )}
-              </ul>
-
-              {/* 모바일 인증 섹션 */}
-              <div className="mobile-auth-section">
                 {user ? (
-                  <>
-                    <li>
-                      <Link
-                        href="/mypage"
-                        className="nav-link"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        👤 마이페이지
-                      </Link>
-                    </li>
-                    <li>
-                      <button
-                        className="nav-link"
-                        onClick={handleLogout}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          width: '100%',
-                          textAlign: 'left',
-                          cursor: 'pointer',
-                          fontSize: '16px'
-                        }}
-                      >
-                        🚪 로그아웃
-                      </button>
-                    </li>
-                  </>
+                  <li>
+                    <button
+                      className="nav-link"
+                      onClick={handleLogout}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        width: '100%',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        padding: '15px 30px'
+                      }}
+                    >
+                      🚪 로그아웃
+                    </button>
+                  </li>
                 ) : (
                   <li>
                     <button
@@ -215,18 +186,18 @@ export default function Navigation() {
                         width: '100%',
                         textAlign: 'left',
                         cursor: 'pointer',
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        padding: '15px 30px'
                       }}
                     >
                       🔑 로그인
                     </button>
                   </li>
                 )}
-              </div>
-            </nav>
-          </div>
-        )}
-      </div>
+              </ul>
+            </div>
+          </nav>
+        </div>
 
       {/* 로그인 모달 */}
       <LoginModal
@@ -239,6 +210,6 @@ export default function Navigation() {
         isOpen={showPremiumModal}
         onClose={() => setShowPremiumModal(false)}
       />
-    </header>
+    </>
   );
 }
