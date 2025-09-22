@@ -19,6 +19,30 @@ export default function AnalyzePage() {
   });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [savedToDb, setSavedToDb] = useState(false);
+
+  // 사용자 인증 상태 확인
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    // 인증 상태 변경 감지
+    const supabase = createClient();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription?.unsubscribe();
+  }, []);
 
   // 궁합 데이터
   const compatibilityData = {
@@ -150,6 +174,7 @@ export default function AnalyzePage() {
       };
 
       setResult(resultData);
+      setSavedToDb(false);
 
       // 로컬 스토리지에 결과 저장
       const savedResults = JSON.parse(
@@ -158,40 +183,43 @@ export default function AnalyzePage() {
       savedResults.unshift(resultData);
       localStorage.setItem("sajuResults", JSON.stringify(savedResults));
 
-      // 로그인한 사용자의 경우 데이터베이스에 저장
-      try {
-        const saveResponse = await fetch("/api/analysis/save", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            personalityType,
-            birthInfo: {
-              name: formData.name || null,
-              year: formData.year,
-              month: formData.month,
-              day: formData.day,
-              hour: formData.hour,
-              gender: formData.gender,
-              calendar: formData.calendar,
-              isLeapMonth: formData.isLeapMonth,
+      // 로그인한 사용자의 경우에만 데이터베이스에 저장
+      if (user) {
+        try {
+          const saveResponse = await fetch("/api/analysis/save", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-            sajuData,
-            analysisDate: new Date().toISOString(),
-          }),
-        });
+            body: JSON.stringify({
+              personalityType,
+              birthInfo: {
+                name: formData.name || null,
+                year: formData.year,
+                month: formData.month,
+                day: formData.day,
+                hour: formData.hour,
+                gender: formData.gender,
+                calendar: formData.calendar,
+                isLeapMonth: formData.isLeapMonth,
+              },
+              sajuData,
+              analysisDate: new Date().toISOString(),
+            }),
+          });
 
-        const saveResult = await saveResponse.json();
-        if (saveResult.success && saveResult.resultId) {
-          console.log(
-            "Analysis result saved to database:",
-            saveResult.resultId
-          );
+          const saveResult = await saveResponse.json();
+          if (saveResult.success && saveResult.resultId) {
+            console.log(
+              "Analysis result saved to database:",
+              saveResult.resultId
+            );
+            setSavedToDb(true);
+          }
+        } catch (saveError) {
+          // 저장 실패는 조용히 처리 (사용자 경험에 영향 없음)
+          console.error("Failed to save analysis result:", saveError);
         }
-      } catch (saveError) {
-        // 저장 실패는 조용히 처리 (사용자 경험에 영향 없음)
-        console.error("Failed to save analysis result:", saveError);
       }
     } catch (error) {
       console.error("분석 중 오류 발생:", error);
@@ -620,6 +648,8 @@ export default function AnalyzePage() {
                       공유하기
                     </button>
                   </div>
+
+                  {/* 저장 상태 알림 */}
 
                   <div className="synergy-card">
                     <h3>🔮 MBTI × 팔자 시너지 분석</h3>

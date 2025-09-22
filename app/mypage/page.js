@@ -7,6 +7,7 @@ import Image from 'next/image';
 
 export default function MyPage() {
   const [savedResults, setSavedResults] = useState([]);
+  const [analysisResults, setAnalysisResults] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('types');
@@ -42,6 +43,9 @@ export default function MyPage() {
         );
         setFavoriteMatches(userFavoriteMatches);
 
+        // 데이터베이스에서 분석 결과 불러오기
+        fetchAnalysisHistory();
+
         setLoading(false);
       } else {
         // 로그인하지 않은 경우 로그인 페이지로 리디렉트
@@ -51,6 +55,18 @@ export default function MyPage() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchAnalysisHistory = async () => {
+    try {
+      const response = await fetch('/api/analysis/history');
+      if (response.ok) {
+        const data = await response.json();
+        setAnalysisResults(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch analysis history:', error);
+    }
+  };
 
   const deleteResult = (index) => {
     if (confirm('이 결과를 삭제하시겠습니까?')) {
@@ -269,31 +285,55 @@ export default function MyPage() {
               <p className="card-description" style={{color: 'var(--text-muted-color)', fontSize: '14px'}}>그대와 나눈 운명의 이야기들</p>
             </div>
             <div id="analysis-history">
-              {savedResults.length === 0 ? (
+              {analysisResults.length === 0 ? (
                 <p className="no-data" style={{textAlign: 'center', color: 'var(--text-muted-color)', padding: '20px'}}>
                   아직 분석 결과가 없습니다. <a href="/analyze" style={{color: 'var(--accent-color)'}}>지금 분석해보세요!</a>
                 </p>
               ) : (
                 <div style={{maxHeight: '300px', overflowY: 'auto'}}>
-                  {savedResults.slice(0, 3).map((result, index) => (
+                  {analysisResults.slice(0, 3).map((result) => (
                     <div
-                      key={index}
+                      key={result.id}
                       style={{
                         padding: '15px',
                         borderBottom: '1px solid var(--border-color)',
                         cursor: 'pointer'
                       }}
                       onClick={() => {
-                        localStorage.setItem('selectedResult', JSON.stringify(result));
-                        router.push('/result');
+                        router.push(`/result/${result.id}`);
                       }}
                     >
-                      <h4 style={{color: 'var(--accent-color)', fontSize: '14px', marginBottom: '5px'}}>
-                        {result.personalityType || 'Unknown'}
-                      </h4>
-                      <p style={{color: 'var(--text-muted-color)', fontSize: '12px'}}>
-                        {new Date(result.date).toLocaleDateString()}
-                      </p>
+                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px'}}>
+                        <h4 style={{color: 'var(--accent-color)', fontSize: '14px', marginBottom: '0'}}>
+                          {result.personalityType || 'Unknown'}
+                        </h4>
+                        {result.mbtiType && (
+                          <span style={{
+                            fontSize: '12px',
+                            color: 'var(--text-muted-color)',
+                            background: 'var(--border-color)',
+                            padding: '2px 6px',
+                            borderRadius: '4px'
+                          }}>
+                            {result.mbtiType}
+                          </span>
+                        )}
+                      </div>
+                      {result.paljaType && (
+                        <p style={{color: 'var(--text-color)', fontSize: '13px', marginBottom: '5px'}}>
+                          {result.paljaType}
+                        </p>
+                      )}
+                      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <p style={{color: 'var(--text-muted-color)', fontSize: '12px', marginBottom: '0'}}>
+                          {new Date(result.createdAt).toLocaleDateString('ko-KR')}
+                        </p>
+                        {result.birthDate && (
+                          <p style={{color: 'var(--text-muted-color)', fontSize: '12px', marginBottom: '0'}}>
+                            {new Date(result.birthDate).toLocaleDateString('ko-KR')} 생
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

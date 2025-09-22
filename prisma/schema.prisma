@@ -41,7 +41,6 @@ model PersonalityType {
   createdAt   DateTime @default(now()) @map("created_at")
 
   // Relations
-  analysisResults     AnalysisResult[]
   synergyAsPartner    SynergyAnalysis[] @relation("PartnerType")
   synergyAsUser       SynergyAnalysis[] @relation("UserType")
 
@@ -50,7 +49,7 @@ model PersonalityType {
 
 // Analysis Results
 model AnalysisResult {
-  id              String    @id @default(cuid()) @db.Uuid
+  id              String    @id @default(uuid()) @db.Uuid
   userId          String    @map("user_id") @db.Uuid
   personalityType String    @map("personality_type") @db.VarChar(4)
   mbtiType        String?   @map("mbti_type") @db.VarChar(4)
@@ -63,7 +62,6 @@ model AnalysisResult {
 
   // Relations
   user            Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  personalityTypeRef PersonalityType @relation(fields: [personalityType], references: [code])
 
   @@index([userId])
   @@index([personalityType])
@@ -72,7 +70,7 @@ model AnalysisResult {
 
 // Synergy Analysis
 model SynergyAnalysis {
-  id                String   @id @default(cuid()) @db.Uuid
+  id                String   @id @default(uuid()) @db.Uuid
   userId            String   @map("user_id") @db.Uuid
   partnerType       String   @map("partner_type") @db.VarChar(4)
   userType          String   @map("user_type") @db.VarChar(4)
@@ -91,7 +89,7 @@ model SynergyAnalysis {
 
 // Saved Results
 model SavedResult {
-  id         String   @id @default(cuid()) @db.Uuid
+  id         String   @id @default(uuid()) @db.Uuid
   userId     String   @map("user_id") @db.Uuid
   resultType String   @map("result_type") @db.VarChar(20)
   resultId   String?  @map("result_id") @db.Uuid
@@ -108,7 +106,7 @@ model SavedResult {
 
 // Admin Settings
 model AdminSetting {
-  id           String   @id @default(cuid()) @db.Uuid
+  id           String   @id @default(uuid()) @db.Uuid
   settingKey   String   @unique @map("setting_key") @db.VarChar(100)
   settingValue Json?    @map("setting_value")
   updatedBy    String?  @map("updated_by") @db.Uuid
