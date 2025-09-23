@@ -24,9 +24,10 @@ model Profile {
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   // Relations
-  analysisResults AnalysisResult[]
-  synergyAnalysis SynergyAnalysis[]
-  savedResults    SavedResult[]
+  analysisResults    AnalysisResult[]
+  synergyAnalysis    SynergyAnalysis[]
+  savedResults       SavedResult[]
+  consultationResults ConsultationResult[]
 
   @@map("profiles")
 }
@@ -102,6 +103,66 @@ model SavedResult {
 
   @@index([userId])
   @@map("saved_results")
+}
+
+// Consultation Results (상담 신청 결과)
+model ConsultationResult {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+
+  // 생년월일 정보
+  birthDate         DateTime  @map("birth_date") @db.Date
+  birthTime         DateTime? @map("birth_time") @db.Time
+  lunarCalendar     Boolean   @default(false) @map("lunar_calendar")
+
+  // 사주팔자 (Four Pillars of Destiny)
+  yearStem          String    @map("year_stem") @db.VarChar(10)      // 년주 천간
+  yearBranch        String    @map("year_branch") @db.VarChar(10)    // 년주 지지
+  monthStem         String    @map("month_stem") @db.VarChar(10)     // 월주 천간
+  monthBranch       String    @map("month_branch") @db.VarChar(10)   // 월주 지지
+  dayStem           String    @map("day_stem") @db.VarChar(10)       // 일주 천간
+  dayBranch         String    @map("day_branch") @db.VarChar(10)     // 일주 지지
+  timeStem          String?   @map("time_stem") @db.VarChar(10)      // 시주 천간
+  timeBranch        String?   @map("time_branch") @db.VarChar(10)    // 시주 지지
+
+  // 오행 (Five Elements)
+  woodCount         Int       @map("wood_count") @default(0)         // 목(木)
+  fireCount         Int       @map("fire_count") @default(0)         // 화(火)
+  earthCount        Int       @map("earth_count") @default(0)        // 토(土)
+  metalCount        Int       @map("metal_count") @default(0)        // 금(金)
+  waterCount        Int       @map("water_count") @default(0)        // 수(水)
+  dominantElement   String?   @map("dominant_element") @db.VarChar(10) // 주된 오행
+
+  // 십신 (Ten Gods)
+  tenGods           Json?     @map("ten_gods")                       // 십신 분석 데이터
+
+  // 추가 분석 데이터
+  personalityType   String?   @map("personality_type") @db.VarChar(4) // MBTI x 팔자 유형
+  fortuneData       Json?     @map("fortune_data")                   // 운세 분석 데이터
+  compatibilityData Json?     @map("compatibility_data")            // 궁합 데이터
+  additionalData    Json?     @map("additional_data")                // 기타 추가 데이터
+
+  // 결제 정보
+  isPaid            Boolean   @default(false) @map("is_paid")        // 결제 여부
+  paidAt            DateTime? @map("paid_at")                        // 결제 일시
+  paymentMethod     String?   @map("payment_method") @db.VarChar(50) // 결제 수단
+  paymentAmount     Int?      @map("payment_amount")                 // 결제 금액
+
+  // 상담 정보
+  consultationType  String?   @map("consultation_type") @db.VarChar(50) // 상담 유형
+  consultationNote  String?   @map("consultation_note") @db.Text     // 상담 메모
+
+  // 타임스탬프
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user              Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isPaid])
+  @@index([createdAt])
+  @@map("consultation_results")
 }
 
 // Admin Settings

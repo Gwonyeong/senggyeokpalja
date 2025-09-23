@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { calculateSaju } from "../../lib/saju-utils";
+import { createClient } from "../../lib/supabase";
 
 export default function ConsultationPage() {
+  const router = useRouter();
+  const supabase = createClient();
+  const [user, setUser] = useState(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   const [formData, setFormData] = useState({
     name: "",
     year: "",
@@ -11,20 +18,50 @@ export default function ConsultationPage() {
     day: "",
     hour: "unknown",
     gender: "male",
+    mbti: "",
     calendar: "solar",
     isLeapMonth: false,
-    email: "",
-    phone: "",
-    consultationType: "",
-    message: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [sajuResult, setSajuResult] = useState(null);
   const [sibsinDetails, setSibsinDetails] = useState(null);
 
+  // 로그인 상태 확인
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Auth check error:', error);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkUser();
+
+    // Auth 상태 변경 리스너
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 로그인 체크
+    if (!user) {
+      alert('상담 신청을 위해서는 로그인이 필요합니다.');
+      router.push('/');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -231,6 +268,7 @@ export default function ConsultationPage() {
           day: formData.day,
           hour: formData.hour,
           gender: formData.gender,
+          mbti: formData.mbti,
           calendar: formData.calendar,
         }
       });
@@ -239,15 +277,45 @@ export default function ConsultationPage() {
       console.log("지지 기반 십신 정보:", jijiSibsinInfo);
       console.log("주요 십신:", primarySibsin);
 
-      // 상담 의뢰 데이터와 함께 전송 (실제 구현 시)
+      // 상담 의뢰 데이터를 서버에 저장
       const consultationData = {
-        ...formData,
         sajuData: sajuData,
         sibsin: jijiSibsinInfo,
-        primarySibsin: primarySibsin
+        primarySibsin: primarySibsin,
+        birthInfo: {
+          name: formData.name,
+          year: formData.year,
+          month: formData.month,
+          day: formData.day,
+          hour: formData.hour,
+          gender: formData.gender,
+          mbti: formData.mbti,
+          calendar: formData.calendar,
+        }
       };
 
-      console.log("상담 의뢰 데이터:", consultationData);
+      // API로 데이터 전송
+      const response = await fetch('/api/consultation/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(consultationData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('상담 신청이 성공적으로 접수되었습니다!');
+        console.log("상담 ID:", result.consultationId);
+      } else {
+        if (response.status === 401) {
+          alert('로그인이 필요합니다.');
+          router.push('/');
+        } else {
+          alert(result.error || '상담 신청 중 오류가 발생했습니다.');
+        }
+      }
     } catch (error) {
       console.error("제출 중 오류:", error);
       alert("의뢰 제출 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -255,6 +323,29 @@ export default function ConsultationPage() {
       setLoading(false);
     }
   };
+
+  // 로딩 중일 때 표시
+  if (checkingAuth) {
+    return (
+      <div className="analyze-page">
+        <main>
+          <section id="analyzer">
+            <div className="container">
+              <div className="analyzer-layout">
+                <div className="card analyzer-card">
+                  <div className="card-header">
+                    <h2 className="card-title sage-title">
+                      <span className="sage-subtitle">로딩 중...</span>
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="analyze-page">
@@ -270,6 +361,13 @@ export default function ConsultationPage() {
                   <p className="sage-description">
                     그대의 이야기를 들려주시게. 토리가 정성껏 답변드리겠네.
                   </p>
+                  {!user && (
+                    <div className="info-card" style={{ marginTop: "15px", padding: "10px", backgroundColor: "#2a2a2a", borderRadius: "8px" }}>
+                      <p style={{ fontSize: "14px", color: "#d4af37", textAlign: "center" }}>
+                        ⚠️ 상담 신청을 위해서는 로그인이 필요합니다
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <form
@@ -473,37 +571,34 @@ export default function ConsultationPage() {
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="form-section">
-                    <div className="form-row">
-                      <div className="input-group">
-                        <label htmlFor="email">이메일 *</label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          required
-                          value={formData.email}
-                          onChange={(e) =>
-                            setFormData({ ...formData, email: e.target.value })
-                          }
-                          placeholder="example@email.com"
-                        />
-                      </div>
-                      <div className="input-group">
-                        <label htmlFor="phone">연락처</label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={(e) =>
-                            setFormData({ ...formData, phone: e.target.value })
-                          }
-                          placeholder="010-0000-0000"
-                        />
-                      </div>
+                    <div className="input-group">
+                      <label htmlFor="mbti">MBTI 성격유형</label>
+                      <select
+                        id="mbti"
+                        name="mbti"
+                        value={formData.mbti}
+                        onChange={(e) =>
+                          setFormData({ ...formData, mbti: e.target.value })
+                        }
+                      >
+                        <option value="">모르겠어요</option>
+                        <option value="INTJ">INTJ - 전략가</option>
+                        <option value="INTP">INTP - 논리술사</option>
+                        <option value="ENTJ">ENTJ - 통솔자</option>
+                        <option value="ENTP">ENTP - 변론가</option>
+                        <option value="INFJ">INFJ - 옹호자</option>
+                        <option value="INFP">INFP - 중재자</option>
+                        <option value="ENFJ">ENFJ - 선도자</option>
+                        <option value="ENFP">ENFP - 활동가</option>
+                        <option value="ISTJ">ISTJ - 현실주의자</option>
+                        <option value="ISFJ">ISFJ - 수호자</option>
+                        <option value="ESTJ">ESTJ - 경영자</option>
+                        <option value="ESFJ">ESFJ - 집정관</option>
+                        <option value="ISTP">ISTP - 장인</option>
+                        <option value="ISFP">ISFP - 모험가</option>
+                        <option value="ESTP">ESTP - 사업가</option>
+                        <option value="ESFP">ESFP - 연예인</option>
+                      </select>
                     </div>
                   </div>
 

@@ -15,6 +15,7 @@
     "migrate:firebase": "node scripts/migrate-firebase-to-supabase.js"
   },
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.4",
     "dotenv": "^17.2.2",
