@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { calculateSaju } from "../../lib/saju-utils";
 
 export default function ConsultationPage() {
   const [formData, setFormData] = useState({
@@ -19,14 +20,234 @@ export default function ConsultationPage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [sajuResult, setSajuResult] = useState(null);
+  const [sibsinDetails, setSibsinDetails] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      console.log("의뢰 제출:", formData);
-      alert("상담 의뢰가 접수되었습니다. 토리가 곧 연락드리겠습니다.");
+      // 날짜 객체 생성
+      const birthDate = new Date(
+        parseInt(formData.year),
+        parseInt(formData.month) - 1,
+        parseInt(formData.day)
+      );
+
+      // 시간 인덱스 변환 (unknown인 경우 오시(6) 기본값)
+      let timeIndex = 6;
+      if (formData.hour !== "unknown") {
+        timeIndex = parseInt(formData.hour);
+      }
+
+      // 사주팔자 계산
+      const sajuData = calculateSaju(birthDate, timeIndex);
+
+      // 지지만을 이용한 십신 계산
+      const calculateJijiSibsin = (palja, ilgan) => {
+        const jiInfo = {
+          "子": { ohaeng: "水", eumYang: "陽" },
+          "丑": { ohaeng: "土", eumYang: "陰" },
+          "寅": { ohaeng: "木", eumYang: "陽" },
+          "卯": { ohaeng: "木", eumYang: "陰" },
+          "辰": { ohaeng: "土", eumYang: "陽" },
+          "巳": { ohaeng: "火", eumYang: "陽" },
+          "午": { ohaeng: "火", eumYang: "陰" },
+          "未": { ohaeng: "土", eumYang: "陰" },
+          "申": { ohaeng: "金", eumYang: "陽" },
+          "酉": { ohaeng: "金", eumYang: "陰" },
+          "戌": { ohaeng: "土", eumYang: "陽" },
+          "亥": { ohaeng: "水", eumYang: "陰" }
+        };
+
+        const ohaengSaeng = { '水': '木', '木': '火', '火': '土', '土': '金', '金': '水' };
+        const ohaengGeuk = { '水': '火', '火': '金', '金': '木', '木': '土', '土': '水' };
+
+        const sibsinCount = {};
+        const ilganOhaeng = ilgan.ohaeng;
+        const ilganEumYang = ilgan.eumYang;
+
+        // 4개의 지지 (연지, 월지, 일지, 시지)에서 십신 계산
+        const jijiList = [
+          palja.yunju?.ji,
+          palja.wolju?.ji,
+          palja.ilju?.ji,
+          palja.siju?.ji
+        ].filter(ji => ji && ji.han);
+
+        jijiList.forEach(ji => {
+          const jiOhaeng = jiInfo[ji.han]?.ohaeng;
+          const jiEumYang = jiInfo[ji.han]?.eumYang;
+
+          if (!jiOhaeng) return;
+
+          let sibsinType = null;
+
+          // 일간과의 관계로 십신 결정
+          if (jiOhaeng === ilganOhaeng) {
+            // 같은 오행
+            sibsinType = (jiEumYang === ilganEumYang) ? "비견" : "겁재";
+          } else if (ohaengSaeng[ilganOhaeng] === jiOhaeng) {
+            // 일간이 생하는 오행 (생출)
+            sibsinType = (jiEumYang === ilganEumYang) ? "식신" : "상관";
+          } else if (ohaengGeuk[ilganOhaeng] === jiOhaeng) {
+            // 일간이 극하는 오행 (극출)
+            sibsinType = (jiEumYang === ilganEumYang) ? "편재" : "정재";
+          } else if (ohaengGeuk[jiOhaeng] === ilganOhaeng) {
+            // 일간을 극하는 오행 (극입)
+            sibsinType = (jiEumYang === ilganEumYang) ? "편관" : "정관";
+          } else if (ohaengSaeng[jiOhaeng] === ilganOhaeng) {
+            // 일간을 생하는 오행 (생입)
+            sibsinType = (jiEumYang === ilganEumYang) ? "편인" : "정인";
+          }
+
+          if (sibsinType) {
+            sibsinCount[sibsinType] = (sibsinCount[sibsinType] || 0) + 1;
+          }
+        });
+
+        return sibsinCount;
+      };
+
+      // 지지 기반 십신 계산
+      const jijiSibsinInfo = calculateJijiSibsin(sajuData.palja, sajuData.ilgan);
+
+      // 가장 관련 깊은 십신 찾기
+      const findPrimarySibsin = (sibsin, ohaeng, ilgan) => {
+        // 십신의 의미와 중요도 정의
+        const sibsinMeaning = {
+          "비견": { priority: 5, meaning: "자아, 독립성, 경쟁심", element: "동일" },
+          "겁재": { priority: 5, meaning: "경쟁, 도전, 야망", element: "동일" },
+          "식신": { priority: 3, meaning: "재능, 표현력, 창조성", element: "생출" },
+          "상관": { priority: 3, meaning: "비판력, 개혁성, 독창성", element: "생출" },
+          "정재": { priority: 2, meaning: "안정적 재물, 계획성", element: "극출" },
+          "편재": { priority: 2, meaning: "투자, 사업, 모험", element: "극출" },
+          "정관": { priority: 1, meaning: "명예, 권위, 책임감", element: "극입" },
+          "편관": { priority: 1, meaning: "권력, 추진력, 결단력", element: "극입" },
+          "정인": { priority: 4, meaning: "학문, 지혜, 인덕", element: "생입" },
+          "편인": { priority: 4, meaning: "특수재능, 종교성, 예술성", element: "생입" }
+        };
+
+        // 1. 가장 많은 십신 찾기
+        let maxCount = 0;
+        let primarySibsin = null;
+
+        for (const [key, value] of Object.entries(sibsin)) {
+          if (value > maxCount) {
+            maxCount = value;
+            primarySibsin = key;
+          } else if (value === maxCount && primarySibsin) {
+            // 같은 수라면 우선순위로 결정
+            if (sibsinMeaning[key].priority < sibsinMeaning[primarySibsin].priority) {
+              primarySibsin = key;
+            }
+          }
+        }
+
+        // 2. 만약 모든 십신이 0이거나 없으면 일간의 오행을 기반으로 기본 십신 설정
+        if (!primarySibsin || maxCount === 0) {
+          // 오행의 강약을 보고 결정
+          const ohaengTotal = Object.values(ohaeng).reduce((sum, val) => sum + val, 0);
+          const ilganOhaeng = ilgan.ohaeng;
+          const ilganOhaengCount = ohaeng[ilganOhaeng] || 0;
+
+          // 일간 오행이 강하면 식신/상관, 약하면 정인/편인 추천
+          if (ilganOhaengCount > ohaengTotal / 5) {
+            primarySibsin = ilgan.eumYang === "陽" ? "식신" : "상관";
+          } else {
+            primarySibsin = ilgan.eumYang === "陽" ? "정인" : "편인";
+          }
+        }
+
+        return {
+          name: primarySibsin,
+          count: sibsin[primarySibsin] || 0,
+          meaning: sibsinMeaning[primarySibsin]?.meaning || "운명의 길",
+          description: `${primarySibsin}(${sibsinMeaning[primarySibsin]?.meaning || ""})이 당신의 핵심 성향입니다.`
+        };
+      };
+
+      // 지지 기반 십신으로 주요 십신 찾기
+      const primarySibsin = findPrimarySibsin(jijiSibsinInfo, sajuData.ohaeng, sajuData.ilgan);
+
+      // 십신 상세 정보 로드
+      const loadSibsinDetails = async (sibsinName) => {
+        try {
+          const fileNames = [
+            `${sibsinName}_성격_완성.json`,
+            `${sibsinName}_총운_완성.json`,
+            `${sibsinName}_연애운_완성.json`,
+            `${sibsinName}_재물운_완성.json`,
+            `${sibsinName}_커리어_완성.json`,
+            `${sibsinName}_건강운_완성.json`,
+            `${sibsinName}_가족운_완성.json`,
+            `${sibsinName}_조언가이드_완성.json`
+          ];
+
+          const results = {};
+
+          for (const fileName of fileNames) {
+            try {
+              const response = await fetch(`/documents/십신/${sibsinName}/${fileName}`);
+              if (response.ok) {
+                const data = await response.json();
+                const category = fileName.split('_')[1]; // 성격, 총운, 연애운 등 추출
+                results[category] = data;
+              }
+            } catch (error) {
+              console.log(`Failed to load ${fileName}:`, error);
+            }
+          }
+
+          return results;
+        } catch (error) {
+          console.error("십신 상세 정보 로딩 실패:", error);
+          return {};
+        }
+      };
+
+      // 주요 십신의 상세 정보 로드
+      const sibsinData = await loadSibsinDetails(primarySibsin.name);
+      setSibsinDetails(sibsinData);
+
+      // 십신 결과를 포맷팅 (지지 기반)
+      const sibsinText = Object.entries(jijiSibsinInfo)
+        .map(([key, value]) => `${key}: ${value}개`)
+        .join(", ");
+
+      // 결과 저장
+      setSajuResult({
+        palja: sajuData.palja,
+        ilgan: sajuData.ilgan,
+        ohaeng: sajuData.ohaeng,
+        sibsin: jijiSibsinInfo,  // 지지 기반 십신 정보 사용
+        sibsinText: sibsinText,
+        primarySibsin: primarySibsin,
+        birthInfo: {
+          name: formData.name,
+          year: formData.year,
+          month: formData.month,
+          day: formData.day,
+          hour: formData.hour,
+          gender: formData.gender,
+          calendar: formData.calendar,
+        }
+      });
+
+      console.log("사주팔자 계산 결과:", sajuData);
+      console.log("지지 기반 십신 정보:", jijiSibsinInfo);
+      console.log("주요 십신:", primarySibsin);
+
+      // 상담 의뢰 데이터와 함께 전송 (실제 구현 시)
+      const consultationData = {
+        ...formData,
+        sajuData: sajuData,
+        sibsin: jijiSibsinInfo,
+        primarySibsin: primarySibsin
+      };
+
+      console.log("상담 의뢰 데이터:", consultationData);
     } catch (error) {
       console.error("제출 중 오류:", error);
       alert("의뢰 제출 중 오류가 발생했습니다. 다시 시도해주세요.");
@@ -317,6 +538,248 @@ export default function ConsultationPage() {
                   </div>
                 </form>
               </div>
+
+              {/* 십신 결과 표시 */}
+              {sajuResult && (
+                <div className="card result-card" style={{ marginTop: "30px" }}>
+                  <div className="card-header">
+                    <h3 className="card-title">십신(十神) 분석 결과</h3>
+                  </div>
+                  <div className="info-card">
+                    <h4 style={{ color: "#d4af37", marginBottom: "15px" }}>
+                      {formData.name ? `${formData.name}님의` : "당신의"} 십신 구성
+                    </h4>
+
+                    {/* 주요 십신 표시 */}
+                    {sajuResult.primarySibsin && (
+                      <div style={{
+                        marginBottom: "25px",
+                        padding: "20px",
+                        background: "linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)",
+                        borderRadius: "10px",
+                        border: "2px solid #d4af37",
+                        textAlign: "center"
+                      }}>
+                        <h3 style={{ color: "#d4af37", fontSize: "24px", marginBottom: "10px" }}>
+                          핵심 십신: {sajuResult.primarySibsin.name}
+                        </h3>
+                        <p style={{ color: "#e5d5b7", fontSize: "16px", marginBottom: "5px" }}>
+                          {sajuResult.primarySibsin.meaning}
+                        </p>
+                        <p style={{ color: "#a8956d", fontSize: "14px" }}>
+                          {sajuResult.primarySibsin.description}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 사주 팔자 표시 */}
+                    <div style={{ marginBottom: "20px", padding: "15px", backgroundColor: "#0a0a0a", borderRadius: "8px" }}>
+                      <p style={{ color: "#a8956d", marginBottom: "10px" }}>사주팔자:</p>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", textAlign: "center" }}>
+                        <div>
+                          <p style={{ fontSize: "12px", color: "#888" }}>연주</p>
+                          <p style={{ fontSize: "18px", color: "#d4af37" }}>
+                            {sajuResult.palja.yunju?.gan?.han || "?"}{sajuResult.palja.yunju?.ji?.han || "?"}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: "12px", color: "#888" }}>월주</p>
+                          <p style={{ fontSize: "18px", color: "#d4af37" }}>
+                            {sajuResult.palja.wolju?.gan?.han || "?"}{sajuResult.palja.wolju?.ji?.han || "?"}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: "12px", color: "#888" }}>일주</p>
+                          <p style={{ fontSize: "18px", color: "#d4af37" }}>
+                            {sajuResult.palja.ilju?.gan?.han || "?"}{sajuResult.palja.ilju?.ji?.han || "?"}
+                          </p>
+                        </div>
+                        <div>
+                          <p style={{ fontSize: "12px", color: "#888" }}>시주</p>
+                          <p style={{ fontSize: "18px", color: "#d4af37" }}>
+                            {sajuResult.palja.siju?.gan?.han || "?"}{sajuResult.palja.siju?.ji?.han || "?"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 십신 분포 */}
+                    <div style={{ marginBottom: "20px" }}>
+                      <p style={{ color: "#a8956d", marginBottom: "10px" }}>지지(地支) 기반 십신 분포:</p>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+                        {Object.entries(sajuResult.sibsin).map(([key, value]) => (
+                          <div key={key} style={{
+                            padding: "8px 12px",
+                            backgroundColor: "#1a1a1a",
+                            borderRadius: "6px",
+                            border: value > 0 ? "1px solid #d4af37" : "1px solid #333"
+                          }}>
+                            <span style={{ color: value > 0 ? "#d4af37" : "#666" }}>
+                              {key}: {value}개
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 오행 분포 */}
+                    <div style={{ marginBottom: "20px" }}>
+                      <p style={{ color: "#a8956d", marginBottom: "10px" }}>오행 분포:</p>
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        {Object.entries(sajuResult.ohaeng).map(([key, value]) => (
+                          <div key={key} style={{
+                            padding: "6px 12px",
+                            backgroundColor: value > 0 ? "#2a2a2a" : "#1a1a1a",
+                            borderRadius: "4px",
+                            border: value > 0 ? "1px solid #666" : "1px solid #333"
+                          }}>
+                            <span style={{ color: value > 0 ? "#e5d5b7" : "#555" }}>
+                              {key}: {value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="sage-advice" style={{ marginTop: "20px", padding: "15px", backgroundColor: "#1a1a1a", borderRadius: "8px" }}>
+                      <p style={{ fontSize: "14px", color: "#a8956d", fontStyle: "italic" }}>
+                        &ldquo;그대의 십신이 보여주는 운명의 지도를 토리가 함께 읽어드리겠네.&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 십신 상세 정보 표시 */}
+              {sibsinDetails && Object.keys(sibsinDetails).length > 0 && (
+                <div className="card result-card" style={{ marginTop: "30px" }}>
+                  <div className="card-header">
+                    <h3 className="card-title">
+                      {sajuResult?.primarySibsin?.name} 상세 해석
+                    </h3>
+                  </div>
+
+                  {/* 성격 정보 */}
+                  {sibsinDetails.성격 && (
+                    <div className="info-card" style={{ marginBottom: "20px" }}>
+                      <h4 style={{ color: "#d4af37", marginBottom: "15px" }}>성격적 특징</h4>
+                      <div style={{
+                        padding: "15px",
+                        backgroundColor: "#0a0a0a",
+                        borderRadius: "8px",
+                        lineHeight: "1.8"
+                      }}>
+                        <p style={{ color: "#e5d5b7", fontSize: "14px", whiteSpace: "pre-line" }}>
+                          {sibsinDetails.성격.categories?.personality}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 총운 정보 */}
+                  {sibsinDetails.총운 && (
+                    <div className="info-card" style={{ marginBottom: "20px" }}>
+                      <h4 style={{ color: "#d4af37", marginBottom: "15px" }}>전체 운세</h4>
+                      <div style={{
+                        padding: "15px",
+                        backgroundColor: "#0a0a0a",
+                        borderRadius: "8px",
+                        lineHeight: "1.8"
+                      }}>
+                        <p style={{ color: "#e5d5b7", fontSize: "14px", whiteSpace: "pre-line" }}>
+                          {sibsinDetails.총운.categories?.overall}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 카테고리별 운세 탭 */}
+                  <div className="info-card">
+                    <h4 style={{ color: "#d4af37", marginBottom: "15px" }}>영역별 운세</h4>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "15px" }}>
+
+                      {/* 연애운 */}
+                      {sibsinDetails.연애운 && (
+                        <div style={{
+                          padding: "15px",
+                          backgroundColor: "#1a1a1a",
+                          borderRadius: "8px",
+                          border: "1px solid #333"
+                        }}>
+                          <h5 style={{ color: "#d4af37", marginBottom: "10px" }}>💕 연애운</h5>
+                          <p style={{ color: "#a8956d", fontSize: "13px", lineHeight: "1.6", whiteSpace: "pre-line" }}>
+                            {sibsinDetails.연애운.categories?.love}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* 재물운 */}
+                      {sibsinDetails.재물운 && (
+                        <div style={{
+                          padding: "15px",
+                          backgroundColor: "#1a1a1a",
+                          borderRadius: "8px",
+                          border: "1px solid #333"
+                        }}>
+                          <h5 style={{ color: "#d4af37", marginBottom: "10px" }}>💰 재물운</h5>
+                          <p style={{ color: "#a8956d", fontSize: "13px", lineHeight: "1.6", whiteSpace: "pre-line" }}>
+                            {sibsinDetails.재물운.categories?.wealth}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* 커리어 */}
+                      {sibsinDetails.커리어 && (
+                        <div style={{
+                          padding: "15px",
+                          backgroundColor: "#1a1a1a",
+                          borderRadius: "8px",
+                          border: "1px solid #333"
+                        }}>
+                          <h5 style={{ color: "#d4af37", marginBottom: "10px" }}>🏢 커리어</h5>
+                          <p style={{ color: "#a8956d", fontSize: "13px", lineHeight: "1.6", whiteSpace: "pre-line" }}>
+                            {sibsinDetails.커리어.categories?.career}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* 건강운 */}
+                      {sibsinDetails.건강운 && (
+                        <div style={{
+                          padding: "15px",
+                          backgroundColor: "#1a1a1a",
+                          borderRadius: "8px",
+                          border: "1px solid #333"
+                        }}>
+                          <h5 style={{ color: "#d4af37", marginBottom: "10px" }}>🏥 건강운</h5>
+                          <p style={{ color: "#a8956d", fontSize: "13px", lineHeight: "1.6", whiteSpace: "pre-line" }}>
+                            {sibsinDetails.건강운.categories?.health}
+                          </p>
+                        </div>
+                      )}
+
+                    </div>
+                  </div>
+
+                  {/* 조언 가이드 */}
+                  {sibsinDetails.조언가이드 && (
+                    <div className="cta-card" style={{ marginTop: "20px" }}>
+                      <h3>토리의 조언</h3>
+                      <div style={{
+                        padding: "20px",
+                        backgroundColor: "#0a0a0a",
+                        borderRadius: "10px",
+                        marginTop: "15px",
+                        lineHeight: "1.8"
+                      }}>
+                        <p style={{ color: "#e5d5b7", fontSize: "14px", whiteSpace: "pre-line" }}>
+                          {sibsinDetails.조언가이드.categories?.advice}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </section>
