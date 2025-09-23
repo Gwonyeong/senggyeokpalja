@@ -361,13 +361,13 @@ export default function Navigation() {
                   </Link>
                 </li>
                 <li>
-                  <a
-                    href="#premium"
+                  <Link
+                    href="/consultation"
                     className="slide-menu-item"
-                    onClick={handlePremiumClick}
+                    onClick={closeMobileMenu}
                   >
                     토리와 상담하기
-                  </a>
+                  </Link>
                 </li>
 
                 {isAdmin && (
