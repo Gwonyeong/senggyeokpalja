@@ -64,12 +64,38 @@ export default function ConsultationPage() {
     setLoading(true);
 
     try {
-      // 날짜 객체 생성
-      const birthDate = new Date(
-        parseInt(formData.year),
-        parseInt(formData.month) - 1,
-        parseInt(formData.day)
-      );
+      let birthDate;
+
+      // 음력인 경우 양력으로 변환
+      if (formData.calendar === "lunar") {
+        const lunIl = formData.isLeapMonth ? '1' : '0';
+        const convertResponse = await fetch(
+          `/api/calendar/convert?lunYear=${formData.year}&lunMonth=${formData.month}&lunDay=${formData.day}&lunIl=${lunIl}`
+        );
+
+        if (!convertResponse.ok) {
+          const errorData = await convertResponse.json();
+          throw new Error(errorData.error || "음력 변환 중 오류가 발생했습니다.");
+        }
+
+        const convertResult = await convertResponse.json();
+
+        // 변환된 양력 날짜로 Date 객체 생성
+        birthDate = new Date(
+          parseInt(convertResult.solarYear),
+          parseInt(convertResult.solarMonth) - 1,
+          parseInt(convertResult.solarDay)
+        );
+
+        console.log(`음력 ${formData.year}.${formData.month}.${formData.day} → 양력 ${convertResult.solarYear}.${convertResult.solarMonth}.${convertResult.solarDay}`);
+      } else {
+        // 양력인 경우 그대로 사용
+        birthDate = new Date(
+          parseInt(formData.year),
+          parseInt(formData.month) - 1,
+          parseInt(formData.day)
+        );
+      }
 
       // 시간 인덱스 변환 (unknown인 경우 오시(6) 기본값)
       let timeIndex = 6;
