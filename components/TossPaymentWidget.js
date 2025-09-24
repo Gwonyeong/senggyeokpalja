@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const TossPaymentWidget = ({
   consultationId,
@@ -8,66 +8,64 @@ const TossPaymentWidget = ({
   orderName = "플라자 상담 서비스",
   onPaymentSuccess
 }) => {
-  const paymentRef = useRef(null);
-  const agreementRef = useRef(null);
-  const widgetsRef = useRef(null);
-  const [ready, setReady] = useState(false);
-  const [customerKey] = useState(() => `customer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [isLoading, setIsLoading] = useState(false);
+  const [tossPayments, setTossPayments] = useState(null);
 
   useEffect(() => {
-    async function fetchPaymentWidgets() {
-      try {
-        const { loadTossPayments } = await import("@tosspayments/tosspayments-sdk");
-
-        const tossPayments = await loadTossPayments(process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY);
-
-        const widgets = tossPayments.widgets({
-          customerKey: customerKey
-        });
-
-        await widgets.setAmount({ currency: "KRW", value: amount });
-
-        await Promise.all([
-          widgets.renderPaymentMethods({
-            selector: "#payment-method",
-          }),
-          widgets.renderAgreement({
-            selector: "#agreement",
-          })
-        ]);
-
-        widgetsRef.current = widgets;
-        setReady(true);
-      } catch (error) {
-        console.error("결제위젯 로드 실패:", error);
+    // SDK v2 스크립트 로드
+    const script = document.createElement('script');
+    script.src = 'https://js.tosspayments.com/v2/standard';
+    script.async = true;
+    script.onload = () => {
+      if (window.TossPayments) {
+        const tp = window.TossPayments(process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY);
+        setTossPayments(tp);
       }
-    }
+    };
+    document.body.appendChild(script);
 
-    fetchPaymentWidgets();
-  }, [amount, customerKey]);
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const handlePayment = async () => {
-    const widgets = widgetsRef.current;
-
-    if (!widgets) {
-      alert("결제 준비가 완료되지 않았습니다.");
+    if (!tossPayments) {
+      alert("결제 시스템을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.");
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const orderId = `order_${consultationId}_${Date.now()}`;
+      const customerKey = `customer_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
-      await widgets.requestPayment({
+      // SDK v2 결제창 호출 - customerKey 필수
+      const payment = tossPayments.payment({
+        customerKey: customerKey
+      });
+
+      await payment.requestPayment({
+        method: "CARD",  // 영문 대문자로 변경
+        amount: {
+          currency: "KRW",
+          value: amount,
+        },
         orderId: orderId,
         orderName: orderName,
         successUrl: `${window.location.origin}/api/payment/success`,
         failUrl: `${window.location.origin}/api/payment/fail`,
-        metadata: {
-          consultationId: consultationId
-        }
+        customerEmail: "customer@example.com",
+        customerName: "고객"
       });
     } catch (error) {
       console.error("결제 요청 실패:", error);
+      alert("결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,26 +79,23 @@ const TossPaymentWidget = ({
         결제 금액: {amount.toLocaleString()}원
       </p>
 
-      <div id="payment-method" style={{ marginBottom: "20px" }}></div>
-      <div id="agreement" style={{ marginBottom: "20px" }}></div>
-
       <button
         onClick={handlePayment}
-        disabled={!ready}
+        disabled={isLoading || !tossPayments}
         style={{
           width: "100%",
           padding: "15px",
-          backgroundColor: ready ? "#d4af37" : "#666",
-          color: ready ? "#000" : "#999",
+          backgroundColor: (isLoading || !tossPayments) ? "#666" : "#d4af37",
+          color: (isLoading || !tossPayments) ? "#999" : "#000",
           border: "none",
           borderRadius: "6px",
           fontSize: "16px",
           fontWeight: "600",
-          cursor: ready ? "pointer" : "not-allowed",
+          cursor: (isLoading || !tossPayments) ? "not-allowed" : "pointer",
           transition: "all 0.3s ease"
         }}
       >
-        {ready ? "결제하기" : "결제 준비중..."}
+        {isLoading ? "결제 요청중..." : !tossPayments ? "결제 준비중..." : "결제하기"}
       </button>
     </div>
   );

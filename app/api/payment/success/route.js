@@ -35,11 +35,23 @@ export async function GET(request) {
       );
     }
 
-    // metadata에서 consultationId 추출
-    const consultationId = paymentData.metadata?.consultationId;
+    // orderId에서 consultationId 추출 (order_{consultationId}_{timestamp} 형식)
+    let consultationId = paymentData.metadata?.consultationId;
 
     if (!consultationId) {
-      console.error("consultationId가 없습니다:", paymentData);
+      // orderId에서 추출 시도
+      const orderIdParts = orderId.split('_');
+      if (orderIdParts[0] === 'order' && orderIdParts.length >= 3) {
+        // UUID 형식 확인 (예: 58e492ba-8b04-4200-ad34-1e0b703b4c42)
+        const possibleId = orderIdParts[1];
+        if (possibleId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          consultationId = possibleId;
+        }
+      }
+    }
+
+    if (!consultationId) {
+      console.error("consultationId를 찾을 수 없습니다:", { orderId, paymentData });
       return NextResponse.redirect(
         new URL("/payment/fail?message=상담 정보를 찾을 수 없습니다", request.url)
       );
