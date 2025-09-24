@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function SynergyPage() {
   const [selectedMBTI, setSelectedMBTI] = useState("");
@@ -268,7 +269,8 @@ export default function SynergyPage() {
   };
 
   return (
-    <div className="analyze-page">
+    <PageWrapper>
+      <div className="analyze-page">
       <main>
         <section id="analyzer">
           <div className="container">
@@ -515,6 +517,7 @@ export default function SynergyPage() {
           </div>
         </section>
       </main>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

@@ -73,6 +73,63 @@
   box-sizing: border-box;
 }
 
+/* 제한된 레이아웃을 위한 전체 페이지 스타일 */
+body.constrained-layout {
+  background-color: #131316;
+  max-width: 600px;
+  min-width: 320px;
+  margin: 0 auto;
+  position: relative;
+}
+
+body.constrained-layout::before {
+  display: none; /* 수묵화 배경 효과 비활성화 */
+}
+
+/* 양쪽 여백을 #131316으로 채우기 위한 pseudo 요소들 */
+body.constrained-layout::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #131316;
+  z-index: -1;
+}
+
+/* 제한된 레이아웃일 때 헤더 스타일 */
+body.constrained-layout header {
+  background-color: var(--background-color);
+  position: relative;
+  z-index: 1000;
+  width: 100%;
+}
+
+/* 제한된 레이아웃일 때 메인 컨텐츠 스타일 */
+body.constrained-layout main {
+  background-color: var(--background-color);
+  min-height: calc(100vh - 80px);
+  width: 100%;
+}
+
+/* 제한된 레이아웃일 때 모바일 메뉴도 제한 */
+body.constrained-layout .mobile-menu {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+body.constrained-layout .mobile-menu-overlay {
+  background-color: #131316;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 페이지 래퍼 - 메인 페이지를 제외한 모든 페이지 */
+.page-wrapper {
+  width: 100%;
+}
+
 html {
   scroll-behavior: smooth;
 }

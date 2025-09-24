@@ -1,8 +1,11 @@
 'use client';
 
+import PageWrapper from '@/components/PageWrapper';
+
 export default function Terms() {
   return (
-    <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px' }}>
+    <PageWrapper>
+      <div className="container" style={{ padding: '40px 20px' }}>
       <div style={{
         background: 'var(--charcoal-gray)',
         borderRadius: '12px',
@@ -549,6 +552,7 @@ export default function Terms() {
           </section>
         </div>
       </div>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

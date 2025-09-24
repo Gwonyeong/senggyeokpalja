@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChange, checkAdminAccess } from '@/lib/supabase-auth';
 import { useRouter } from 'next/navigation';
+import PageWrapper from '@/components/PageWrapper';
 
 export default function AdminPage() {
   const [user, setUser] = useState(null);
@@ -43,7 +44,8 @@ export default function AdminPage() {
   }
 
   return (
-    <section className="section">
+    <PageWrapper>
+      <section className="section">
       <div className="container">
         <h1 className="section-title sage-title">관리자 대시보드</h1>
         <p className="section-subtitle">토리의 찻집 관리</p>
@@ -86,6 +88,7 @@ export default function AdminPage() {
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    </PageWrapper>
   );
 }

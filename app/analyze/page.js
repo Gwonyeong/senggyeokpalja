@@ -5,6 +5,7 @@ import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
 import Head from "next/head";
 import Image from "next/image";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function AnalyzePage() {
   const [formData, setFormData] = useState({
@@ -279,7 +280,8 @@ export default function AnalyzePage() {
   }, [result]);
 
   return (
-    <div className="analyze-page">
+    <PageWrapper>
+      <div className="analyze-page">
       <main>
         <section id="analyzer">
           <div className="container">
@@ -734,6 +736,7 @@ export default function AnalyzePage() {
           </div>
         </section>
       </main>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

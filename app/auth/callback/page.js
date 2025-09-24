@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase';
 import { upsertProfile } from '@/lib/supabase-auth';
+import PageWrapper from '@/components/PageWrapper';
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -45,7 +46,8 @@ export default function AuthCallback() {
   }, [router]);
 
   return (
-    <div style={{
+    <PageWrapper>
+      <div style={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -55,6 +57,7 @@ export default function AuthCallback() {
     }}>
       <div>🔮</div>
       <p>로그인 처리 중...</p>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

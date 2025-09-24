@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../../../lib/supabase";
 import WebtoonPanel from "../../../../components/consultation/WebtoonPanel";
 import { generateSectionContent } from "../../../../lib/consultation-content-generator";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function ConsultationResultPage({ params }) {
   const router = useRouter();
@@ -140,7 +141,8 @@ export default function ConsultationResultPage({ params }) {
   }
 
   return (
-    <div className="analyze-page">
+    <PageWrapper>
+      <div className="analyze-page">
       <main>
         <section id="analyzer">
           <div className="container">
@@ -220,6 +222,7 @@ export default function ConsultationResultPage({ params }) {
           </div>
         </section>
       </main>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

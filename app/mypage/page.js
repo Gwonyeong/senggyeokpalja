@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { onAuthStateChange, getCurrentUser, signOut, deleteAccount } from '../../lib/supabase-auth';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import PageWrapper from '@/components/PageWrapper';
 
 export default function MyPage() {
   const [savedResults, setSavedResults] = useState([]);
@@ -228,7 +229,8 @@ export default function MyPage() {
   }
 
   return (
-    <div className="analyze-page" style={{paddingTop: '120px'}}>
+    <PageWrapper>
+      <div className="analyze-page" style={{paddingTop: '120px'}}>
       <div className="container">
         {/* 사용자 정보 카드 */}
         <div className="card user-info-card" style={{marginBottom: '30px', background: 'var(--card-bg-color)', padding: '25px', borderRadius: '12px'}}>
@@ -473,6 +475,7 @@ export default function MyPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

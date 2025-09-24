@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import { getShareData } from '../../../lib/share-data';
+import PageWrapper from '@/components/PageWrapper';
 
 // 메타데이터를 동적으로 생성
 export async function generateMetadata({ params }) {
@@ -62,7 +63,8 @@ export default function SharePage({ params }) {
   const { type, alias, description, image } = shareData;
 
   return (
-    <div className="share-page">
+    <PageWrapper>
+      <div className="share-page">
       <div className="container">
         <div className="share-result-card">
           <div className="card result-card">
@@ -86,6 +88,7 @@ export default function SharePage({ params }) {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }

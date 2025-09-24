@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { calculateSaju } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function ConsultationPage() {
   const router = useRouter();
@@ -317,7 +318,8 @@ export default function ConsultationPage() {
   }
 
   return (
-    <div className="analyze-page">
+    <PageWrapper>
+      <div className="analyze-page">
       <main>
         <section id="analyzer">
           <div className="container">
@@ -607,6 +609,7 @@ export default function ConsultationPage() {
           </div>
         </section>
       </main>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }
