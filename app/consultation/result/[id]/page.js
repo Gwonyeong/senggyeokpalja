@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../../../lib/supabase";
-import WebtoonPanel from "../../../../components/consultation/WebtoonPanel";
-import { generateSectionContent } from "../../../../lib/consultation-content-generator";
 import PageWrapper from "@/components/PageWrapper";
 import TossPaymentWidget from "@/components/TossPaymentWidget";
+
+import Section1BasicInfo from "./components/Section1BasicInfo";
+import Section2TenGods from "./components/Section2TenGods";
+import Section3FiveElements from "./components/Section3FiveElements";
+import Section4Personality from "./components/Section4Personality";
+import Section5Fortune from "./components/Section5Fortune";
+import Section6Advice from "./components/Section6Advice";
+import Section7Conclusion from "./components/Section7Conclusion";
 
 export default function ConsultationResultPage({ params }) {
   const router = useRouter();
@@ -99,6 +105,21 @@ export default function ConsultationResultPage({ params }) {
     }
   };
 
+  // 현재 섹션에 따른 컴포넌트 렌더링
+  const renderSectionContent = () => {
+    const sectionComponents = {
+      1: <Section1BasicInfo consultation={consultation} />,
+      2: <Section2TenGods consultation={consultation} />,
+      3: <Section3FiveElements consultation={consultation} />,
+      4: <Section4Personality consultation={consultation} />,
+      5: <Section5Fortune consultation={consultation} />,
+      6: <Section6Advice consultation={consultation} />,
+      7: <Section7Conclusion consultation={consultation} />
+    };
+
+    return sectionComponents[currentSection] || null;
+  };
+
   // 로딩 중
   if (loading) {
     return (
@@ -150,33 +171,12 @@ export default function ConsultationResultPage({ params }) {
   return (
     <PageWrapper>
       <div className="analyze-page">
-      <main>
-        <section id="analyzer">
-          <div className="container">
-            <div className="analyzer-layout">
-              {/* 헤더 */}
-
-              {/* 섹션 내용 */}
-              <div className="card result-card">
-                <div className="card-header">
-                  <h3 className="card-title">섹션 {currentSection} 내용</h3>
-                </div>
-
-                {/* 웹툰 패널 */}
-                <div style={{ marginBottom: "20px" }}>
-                  <WebtoonPanel
-                    sectionNumber={currentSection}
-                    consultation={consultation}
-                    {...generateSectionContent(consultation, currentSection)}
-                    panelStyle={{
-                      minHeight: "600px",
-
-                      background: "transparent",
-                      border: "none",
-                      borderRadius: "0",
-                    }}
-                  />
-                </div>
+        <main>
+          <section id="analyzer">
+            <div className="container">
+              <div className="analyzer-layout">
+                {/* 섹션 내용 렌더링 */}
+                {renderSectionContent()}
 
                 {/* 섹션 1에서 결제가 안됐을 때만 결제 위젯 표시 */}
                 {currentSection === 1 && !consultation.isPaid && (
@@ -221,28 +221,43 @@ export default function ConsultationResultPage({ params }) {
 
                   <button
                     onClick={() => changeSection(currentSection + 1)}
-                    disabled={currentSection === 7 || (currentSection === 1 && !consultation.isPaid)}
+                    disabled={
+                      currentSection === 7 ||
+                      (currentSection === 1 && !consultation.isPaid)
+                    }
                     style={{
                       padding: "12px 24px",
                       backgroundColor:
-                        currentSection === 7 || (currentSection === 1 && !consultation.isPaid) ? "#333" : "#d4af37",
-                      color: currentSection === 7 || (currentSection === 1 && !consultation.isPaid) ? "#666" : "#000",
+                        currentSection === 7 ||
+                        (currentSection === 1 && !consultation.isPaid)
+                          ? "#333"
+                          : "#d4af37",
+                      color:
+                        currentSection === 7 ||
+                        (currentSection === 1 && !consultation.isPaid)
+                          ? "#666"
+                          : "#000",
                       border: "none",
                       borderRadius: "6px",
                       fontSize: "14px",
                       fontWeight: "600",
-                      cursor: currentSection === 7 || (currentSection === 1 && !consultation.isPaid) ? "not-allowed" : "pointer",
+                      cursor:
+                        currentSection === 7 ||
+                        (currentSection === 1 && !consultation.isPaid)
+                          ? "not-allowed"
+                          : "pointer",
                       transition: "all 0.3s ease",
                     }}
                   >
-                    {currentSection === 1 && !consultation.isPaid ? "결제 후 이용 가능" : "다음 섹션"}
+                    {currentSection === 1 && !consultation.isPaid
+                      ? "결제 후 이용 가능"
+                      : "다음 섹션"}
                   </button>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
       </div>
     </PageWrapper>
   );

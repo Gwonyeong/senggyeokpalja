@@ -134,7 +134,8 @@ model ConsultationResult {
   dominantElement   String?   @map("dominant_element") @db.VarChar(10) // 주된 오행
 
   // 십신 (Ten Gods)
-  tenGods           Json?     @map("ten_gods")                       // 십신 분석 데이터
+  tenGods           Json?     @map("ten_gods")                       // 지지 기반 십신 분석 데이터
+  heavenlyStemGods  Json?     @map("heavenly_stem_gods")            // 천간 기반 십신 분석 데이터
 
   // 추가 분석 데이터
   personalityType   String?   @map("personality_type") @db.VarChar(4) // MBTI x 팔자 유형
