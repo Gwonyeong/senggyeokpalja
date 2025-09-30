@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { calculateSaju } from "../../lib/saju-utils";
+// import { calculateSajuWithManseryeok } from "../../lib/saju-utils-manseryeok"; // 서버에서 계산하므로 불필요
 import { createClient } from "../../lib/supabase";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
@@ -65,220 +65,10 @@ export default function ConsultationPage() {
     setLoading(true);
 
     try {
-      let birthDate;
+      // 서버에서 manseryeok 라이브러리로 사주팔자를 계산하므로 클라이언트에서는 계산 불필요
 
-      // 음력인 경우 양력으로 변환
-      if (formData.calendar === "lunar") {
-        const lunIl = formData.isLeapMonth ? '1' : '0';
-        const convertResponse = await fetch(
-          `/api/calendar/convert?lunYear=${formData.year}&lunMonth=${formData.month}&lunDay=${formData.day}&lunIl=${lunIl}`
-        );
-
-        if (!convertResponse.ok) {
-          const errorData = await convertResponse.json();
-          throw new Error(errorData.error || "음력 변환 중 오류가 발생했습니다.");
-        }
-
-        const convertResult = await convertResponse.json();
-
-        // 변환된 양력 날짜로 Date 객체 생성
-        birthDate = new Date(
-          parseInt(convertResult.solarYear),
-          parseInt(convertResult.solarMonth) - 1,
-          parseInt(convertResult.solarDay)
-        );
-
-        console.log(`음력 ${formData.year}.${formData.month}.${formData.day} → 양력 ${convertResult.solarYear}.${convertResult.solarMonth}.${convertResult.solarDay}`);
-      } else {
-        // 양력인 경우 그대로 사용
-        birthDate = new Date(
-          parseInt(formData.year),
-          parseInt(formData.month) - 1,
-          parseInt(formData.day)
-        );
-      }
-
-      // 시간 인덱스 변환 (unknown인 경우 오시(6) 기본값)
-      let timeIndex = 6;
-      if (formData.hour !== "unknown") {
-        timeIndex = parseInt(formData.hour);
-      }
-
-      // 사주팔자 계산
-      const sajuData = calculateSaju(birthDate, timeIndex);
-
-      // 지지만을 이용한 십신 계산
-      const calculateJijiSibsin = (palja, ilgan) => {
-        const jiInfo = {
-          "子": { ohaeng: "水", eumYang: "陽" },
-          "丑": { ohaeng: "土", eumYang: "陰" },
-          "寅": { ohaeng: "木", eumYang: "陽" },
-          "卯": { ohaeng: "木", eumYang: "陰" },
-          "辰": { ohaeng: "土", eumYang: "陽" },
-          "巳": { ohaeng: "火", eumYang: "陽" },
-          "午": { ohaeng: "火", eumYang: "陰" },
-          "未": { ohaeng: "土", eumYang: "陰" },
-          "申": { ohaeng: "金", eumYang: "陽" },
-          "酉": { ohaeng: "金", eumYang: "陰" },
-          "戌": { ohaeng: "土", eumYang: "陽" },
-          "亥": { ohaeng: "水", eumYang: "陰" }
-        };
-
-        const ohaengSaeng = { '水': '木', '木': '火', '火': '土', '土': '金', '金': '水' };
-        const ohaengGeuk = { '水': '火', '火': '金', '金': '木', '木': '土', '土': '水' };
-
-        const sibsinCount = {};
-        const ilganOhaeng = ilgan.ohaeng;
-        const ilganEumYang = ilgan.eumYang;
-
-        // 4개의 지지 (연지, 월지, 일지, 시지)에서 십신 계산
-        const jijiList = [
-          palja.yunju?.ji,
-          palja.wolju?.ji,
-          palja.ilju?.ji,
-          palja.siju?.ji
-        ].filter(ji => ji && ji.han);
-
-        jijiList.forEach(ji => {
-          const jiOhaeng = jiInfo[ji.han]?.ohaeng;
-          const jiEumYang = jiInfo[ji.han]?.eumYang;
-
-          if (!jiOhaeng) return;
-
-          let sibsinType = null;
-
-          // 일간과의 관계로 십신 결정
-          if (jiOhaeng === ilganOhaeng) {
-            // 같은 오행
-            sibsinType = (jiEumYang === ilganEumYang) ? "비견" : "겁재";
-          } else if (ohaengSaeng[ilganOhaeng] === jiOhaeng) {
-            // 일간이 생하는 오행 (생출)
-            sibsinType = (jiEumYang === ilganEumYang) ? "식신" : "상관";
-          } else if (ohaengGeuk[ilganOhaeng] === jiOhaeng) {
-            // 일간이 극하는 오행 (극출)
-            sibsinType = (jiEumYang === ilganEumYang) ? "편재" : "정재";
-          } else if (ohaengGeuk[jiOhaeng] === ilganOhaeng) {
-            // 일간을 극하는 오행 (극입)
-            sibsinType = (jiEumYang === ilganEumYang) ? "편관" : "정관";
-          } else if (ohaengSaeng[jiOhaeng] === ilganOhaeng) {
-            // 일간을 생하는 오행 (생입)
-            sibsinType = (jiEumYang === ilganEumYang) ? "편인" : "정인";
-          }
-
-          if (sibsinType) {
-            sibsinCount[sibsinType] = (sibsinCount[sibsinType] || 0) + 1;
-          }
-        });
-
-        return sibsinCount;
-      };
-
-      // 지지 기반 십신 계산
-      const jijiSibsinInfo = calculateJijiSibsin(sajuData.palja, sajuData.ilgan);
-
-      // 가장 관련 깊은 십신 찾기
-      const findPrimarySibsin = (sibsin, ohaeng, ilgan) => {
-        // 십신의 의미와 중요도 정의
-        const sibsinMeaning = {
-          "비견": { priority: 5, meaning: "자아, 독립성, 경쟁심", element: "동일" },
-          "겁재": { priority: 5, meaning: "경쟁, 도전, 야망", element: "동일" },
-          "식신": { priority: 3, meaning: "재능, 표현력, 창조성", element: "생출" },
-          "상관": { priority: 3, meaning: "비판력, 개혁성, 독창성", element: "생출" },
-          "정재": { priority: 2, meaning: "안정적 재물, 계획성", element: "극출" },
-          "편재": { priority: 2, meaning: "투자, 사업, 모험", element: "극출" },
-          "정관": { priority: 1, meaning: "명예, 권위, 책임감", element: "극입" },
-          "편관": { priority: 1, meaning: "권력, 추진력, 결단력", element: "극입" },
-          "정인": { priority: 4, meaning: "학문, 지혜, 인덕", element: "생입" },
-          "편인": { priority: 4, meaning: "특수재능, 종교성, 예술성", element: "생입" }
-        };
-
-        // 1. 가장 많은 십신 찾기
-        let maxCount = 0;
-        let primarySibsin = null;
-
-        for (const [key, value] of Object.entries(sibsin)) {
-          if (value > maxCount) {
-            maxCount = value;
-            primarySibsin = key;
-          } else if (value === maxCount && primarySibsin) {
-            // 같은 수라면 우선순위로 결정
-            if (sibsinMeaning[key].priority < sibsinMeaning[primarySibsin].priority) {
-              primarySibsin = key;
-            }
-          }
-        }
-
-        // 2. 만약 모든 십신이 0이거나 없으면 일간의 오행을 기반으로 기본 십신 설정
-        if (!primarySibsin || maxCount === 0) {
-          // 오행의 강약을 보고 결정
-          const ohaengTotal = Object.values(ohaeng).reduce((sum, val) => sum + val, 0);
-          const ilganOhaeng = ilgan.ohaeng;
-          const ilganOhaengCount = ohaeng[ilganOhaeng] || 0;
-
-          // 일간 오행이 강하면 식신/상관, 약하면 정인/편인 추천
-          if (ilganOhaengCount > ohaengTotal / 5) {
-            primarySibsin = ilgan.eumYang === "陽" ? "식신" : "상관";
-          } else {
-            primarySibsin = ilgan.eumYang === "陽" ? "정인" : "편인";
-          }
-        }
-
-        return {
-          name: primarySibsin,
-          count: sibsin[primarySibsin] || 0,
-          meaning: sibsinMeaning[primarySibsin]?.meaning || "운명의 길",
-          description: `${primarySibsin}(${sibsinMeaning[primarySibsin]?.meaning || ""})이 당신의 핵심 성향입니다.`
-        };
-      };
-
-      // 지지 기반 십신으로 주요 십신 찾기
-      const primarySibsin = findPrimarySibsin(jijiSibsinInfo, sajuData.ohaeng, sajuData.ilgan);
-
-      // 십신 상세 정보 로드
-      const loadSibsinDetails = async (sibsinName) => {
-        try {
-          const fileNames = [
-            `${sibsinName}_성격_완성.json`,
-            `${sibsinName}_총운_완성.json`,
-            `${sibsinName}_연애운_완성.json`,
-            `${sibsinName}_재물운_완성.json`,
-            `${sibsinName}_커리어_완성.json`,
-            `${sibsinName}_건강운_완성.json`,
-            `${sibsinName}_가족운_완성.json`,
-            `${sibsinName}_조언가이드_완성.json`
-          ];
-
-          const results = {};
-
-          for (const fileName of fileNames) {
-            try {
-              const response = await fetch(`/documents/십신/${sibsinName}/${fileName}`);
-              if (response.ok) {
-                const data = await response.json();
-                const category = fileName.split('_')[1]; // 성격, 총운, 연애운 등 추출
-                results[category] = data;
-              }
-            } catch (error) {
-              console.log(`Failed to load ${fileName}:`, error);
-            }
-          }
-
-          return results;
-        } catch (error) {
-          console.error("십신 상세 정보 로딩 실패:", error);
-          return {};
-        }
-      };
-
-      console.log("사주팔자 계산 결과:", sajuData);
-      console.log("지지 기반 십신 정보:", jijiSibsinInfo);
-      console.log("주요 십신:", primarySibsin);
-
-      // 상담 의뢰 데이터를 서버에 저장
+      // 상담 의뢰 데이터를 서버에 저장 (서버에서 manseryeok으로 재계산)
       const consultationData = {
-        sajuData: sajuData,
-        sibsin: jijiSibsinInfo,
-        primarySibsin: primarySibsin,
         birthInfo: {
           name: formData.name,
           year: formData.year,
@@ -288,6 +78,7 @@ export default function ConsultationPage() {
           gender: formData.gender,
           mbti: formData.mbti,
           calendar: formData.calendar,
+          isLeapMonth: formData.isLeapMonth,
         }
       };
 
@@ -619,8 +410,8 @@ export default function ConsultationPage() {
 
                   <div className="form-footer">
                     <div className="sage-advice">
-                      <div>"그대의 고민,</div>
-                      <div>토리가 차 한 잔과 함께 들어보겠네."</div>
+                      <div>&ldquo;그대의 고민,</div>
+                      <div>토리가 차 한 잔과 함께 들어보겠네.&rdquo;</div>
                     </div>
                     <button
                       type="submit"

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase-server';
+import { calculateSajuForServer } from '@/lib/saju-utils-server';
 
 export async function POST(request) {
   try {
@@ -33,10 +34,9 @@ export async function POST(request) {
 
     // 요청 본문 파싱
     const data = await request.json();
-    const { sajuData, sibsin, primarySibsin, birthInfo } = data;
+    const { birthInfo } = data;
 
-    // 사주팔자 데이터 추출
-    const { palja, ohaeng, ilgan } = sajuData;
+    console.log('받은 birthInfo:', birthInfo);
 
     // 생년월일 처리
     const birthDate = new Date(
@@ -44,6 +44,21 @@ export async function POST(request) {
       parseInt(birthInfo.month) - 1,
       parseInt(birthInfo.day)
     );
+
+    // 시간 인덱스 변환 (unknown인 경우 오시(6) 기본값)
+    let timeIndex = 6;
+    if (birthInfo.hour !== "unknown") {
+      timeIndex = parseInt(birthInfo.hour);
+    }
+
+    // manseryeok 라이브러리로 사주팔자 계산
+    const isLunar = birthInfo.calendar === 'lunar';
+    const sajuData = calculateSajuForServer(birthDate, timeIndex, isLunar);
+
+    console.log('manseryeok으로 계산된 사주데이터:', sajuData);
+
+    // 사주팔자 데이터 추출
+    const { palja, ohaeng, ilgan, sibsin, primarySibsin } = sajuData;
 
     // 시간 처리 (시간을 모르면 null)
     let birthTime = null;
@@ -106,12 +121,13 @@ export async function POST(request) {
           birthInfo: birthInfo
         },
 
-        // 추가 데이터
+        // 추가 데이터 (manseryeok 계산 결과 포함)
         additionalData: {
           ilgan: ilgan,
           gender: birthInfo.gender,
           name: birthInfo.name,
           mbti: birthInfo.mbti || null,
+          sajuData: sajuData, // manseryeok 전체 결과를 additionalData에 저장
         },
 
         // 상담 정보

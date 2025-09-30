@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import SpeechBubble from "./SpeechBubble";
+import SajuTable from "./SajuTable";
 
 const WebtoonPanel = ({
   sectionNumber,
@@ -11,6 +12,7 @@ const WebtoonPanel = ({
   speechBubbles = [],
   panelStyle = {},
   className = "",
+  consultation = null,
 }) => {
   // 기본 패널 스타일
   const defaultPanelStyle = {
@@ -90,6 +92,22 @@ const WebtoonPanel = ({
           maxWidth={bubble.maxWidth}
         />
       ))}
+
+      {/* 섹션 1에서 사주팔자 표 표시 */}
+      {sectionNumber === 1 && consultation && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 15,
+            pointerEvents: "auto",
+          }}
+        >
+          <SajuTable consultation={consultation} />
+        </div>
+      )}
 
       {/* 추가 오버레이 요소들 */}
       <div

@@ -166,6 +166,7 @@ export default function ConsultationResultPage({ params }) {
                 <div style={{ marginBottom: "20px" }}>
                   <WebtoonPanel
                     sectionNumber={currentSection}
+                    consultation={consultation}
                     {...generateSectionContent(consultation, currentSection)}
                     panelStyle={{
                       minHeight: "600px",
