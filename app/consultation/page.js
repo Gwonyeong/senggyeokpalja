@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { calculateSaju } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
 import PageWrapper from "@/components/PageWrapper";
+import AuthProtectedPage from "../components/AuthProtectedPage";
 
 export default function ConsultationPage() {
   const router = useRouter();
@@ -344,9 +345,10 @@ export default function ConsultationPage() {
   }
 
   return (
-    <PageWrapper>
-      <div className="analyze-page">
-      <main>
+    <AuthProtectedPage>
+      <PageWrapper>
+        <div className="analyze-page">
+        <main>
         <section id="analyzer">
           <div className="container">
             <div className="analyzer-layout">
@@ -637,5 +639,6 @@ export default function ConsultationPage() {
       </main>
       </div>
     </PageWrapper>
+    </AuthProtectedPage>
   );
 }

@@ -6,6 +6,7 @@ import { createClient } from "../../lib/supabase";
 import Head from "next/head";
 import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
+import AuthProtectedPage from "../components/AuthProtectedPage";
 
 export default function AnalyzePage() {
   const [formData, setFormData] = useState({
@@ -306,9 +307,10 @@ export default function AnalyzePage() {
   }, [result]);
 
   return (
-    <PageWrapper>
-      <div className="analyze-page">
-      <main>
+    <AuthProtectedPage>
+      <PageWrapper>
+        <div className="analyze-page">
+        <main>
         <section id="analyzer">
           <div className="container">
             <div className="analyzer-layout">
@@ -764,5 +766,6 @@ export default function AnalyzePage() {
       </main>
       </div>
     </PageWrapper>
+    </AuthProtectedPage>
   );
 }

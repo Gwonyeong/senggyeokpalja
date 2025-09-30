@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navigation from "./components/Navigation";
+import { Toaster } from "sonner";
 
 export const metadata = {
   metadataBase: new URL(
@@ -49,6 +50,16 @@ export default function RootLayout({ children }) {
       <body>
         <Navigation />
         <main>{children}</main>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#131316",
+              color: "#FCA311",
+              border: "1px solid #FCA311",
+            },
+          }}
+        />
       </body>
     </html>
   );

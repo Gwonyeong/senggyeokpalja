@@ -95,6 +95,18 @@ export default function Navigation() {
     setMobileMenuOpen(false);
   };
 
+  // 인증이 필요한 메뉴 항목 클릭 처리
+  const handleProtectedNavigation = (e, href) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLoginModal(true);
+      setMobileMenuOpen(false);
+    } else {
+      closeMobileMenu();
+      window.location.href = href;
+    }
+  };
+
   return (
     <>
       <header>
@@ -346,7 +358,7 @@ export default function Navigation() {
                   <Link
                     href="/analyze"
                     className="slide-menu-item"
-                    onClick={closeMobileMenu}
+                    onClick={(e) => handleProtectedNavigation(e, "/analyze")}
                   >
                     찻집
                   </Link>
@@ -355,7 +367,7 @@ export default function Navigation() {
                   <Link
                     href="/synergy"
                     className="slide-menu-item"
-                    onClick={closeMobileMenu}
+                    onClick={(e) => handleProtectedNavigation(e, "/synergy")}
                   >
                     나와의 궁합 보기
                   </Link>
@@ -364,7 +376,7 @@ export default function Navigation() {
                   <Link
                     href="/consultation"
                     className="slide-menu-item"
-                    onClick={closeMobileMenu}
+                    onClick={(e) => handleProtectedNavigation(e, "/consultation")}
                   >
                     토리와 상담하기
                   </Link>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PageWrapper from "@/components/PageWrapper";
+import AuthProtectedPage from "../components/AuthProtectedPage";
 
 export default function SynergyPage() {
   const [selectedMBTI, setSelectedMBTI] = useState("");
@@ -269,9 +270,10 @@ export default function SynergyPage() {
   };
 
   return (
-    <PageWrapper>
-      <div className="analyze-page">
-      <main>
+    <AuthProtectedPage>
+      <PageWrapper>
+        <div className="analyze-page">
+        <main>
         <section id="analyzer">
           <div className="container">
             <div className="analyzer-layout">
@@ -519,5 +521,6 @@ export default function SynergyPage() {
       </main>
       </div>
     </PageWrapper>
+    </AuthProtectedPage>
   );
 }
