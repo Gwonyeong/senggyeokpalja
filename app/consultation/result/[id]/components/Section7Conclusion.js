@@ -185,6 +185,8 @@ export default function Section7Conclusion({ consultation }) {
         </div>
       )}
 
+      {/* 설문조사 유도 박스 */}
+
       {/* 두 번째 웹툰 퍼널 */}
       <div style={{ marginTop: "150px" }}>
         <WebtoonPanel
@@ -198,6 +200,72 @@ export default function Section7Conclusion({ consultation }) {
             borderRadius: "0",
           }}
         />
+      </div>
+      <div
+        style={{
+          marginTop: "180px",
+          marginBottom: "50px",
+          padding: "30px",
+          backgroundColor: "rgba(212, 175, 55, 0.08)",
+          borderRadius: "16px",
+          border: "2px solid rgba(212, 175, 55, 0.4)",
+          boxShadow: "0 6px 24px rgba(212, 175, 55, 0.15)",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            marginBottom: "25px",
+            fontSize: "16px",
+            lineHeight: "1.7",
+            color: "rgba(255, 255, 255, 0.9)",
+            fontFamily: "Noto Serif KR",
+          }}
+        >
+          마지막으로, 이 여정에 대한 그대의 소중한 생각을 들려준다면, 감사의
+          의미로 나의 찻집에서 다음 여정에 사용할 수 있는{" "}
+          <span
+            style={{
+              color: "#d4af37",
+              fontWeight: "600",
+            }}
+          >
+            &apos;특별 할인 쿠폰&apos;
+          </span>
+          을 선물로 주겠네.
+        </div>
+
+        <button
+          style={{
+            backgroundColor: "#3BBF3F",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: "12px",
+            padding: "16px 32px",
+            fontSize: "16px",
+            fontWeight: "700",
+            fontFamily: "Noto Serif KR",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            boxShadow: "0 4px 16px rgba(59, 191, 63, 0.3)",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.backgroundColor = "#33a937";
+            e.target.style.transform = "translateY(-2px)";
+            e.target.style.boxShadow = "0 6px 20px rgba(59, 191, 63, 0.4)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.backgroundColor = "#3BBF3F";
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 4px 16px rgba(59, 191, 63, 0.3)";
+          }}
+          onClick={() => {
+            // 설문조사 링크 또는 페이지로 이동
+            window.open("https://smore.im/form/2RQBeyh8f3", "_blank");
+          }}
+        >
+          🍃 토리와 특별 면담하기
+        </button>
       </div>
     </div>
   );
