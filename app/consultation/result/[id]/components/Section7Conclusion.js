@@ -56,7 +56,7 @@ export default function Section7Conclusion({ consultation }) {
     conclusion: {
       backgroundImage: "/assets/images/results/7장/2.png",
       imageStyle: {
-        objectFit: "cover",
+        objectFit: "contain",
         objectPosition: "center center",
         width: "100%",
         height: "100%",
@@ -65,17 +65,13 @@ export default function Section7Conclusion({ consultation }) {
       speechBubbles: [
         {
           text: "성격팔자에 찾아와줘서 정말 고맙네",
-          position: { top: "15%", left: "25%" },
-          size: "large",
+          position: { top: "5%", left: "30%" },
+          size: "medium",
           direction: "bottom-right",
-          backgroundColor: "#e2e3e5",
-          borderColor: "#383d41",
-          textColor: "#383d41",
-          maxWidth: "400px",
         },
         {
           text: "그대와의 긴 이야기가 끝났네. 이 지도가 그대의 항해에 등불이 되기를 바라네.",
-          position: { top: "85%", right: "25%" },
+          position: { top: "95%", right: "35%" },
           size: "medium",
           direction: "bottom-right",
           maxWidth: "320px",
