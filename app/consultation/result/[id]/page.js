@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../../../lib/supabase";
 import PageWrapper from "@/components/PageWrapper";
-import TossPaymentWidget from "@/components/TossPaymentWidget";
+// import TossPaymentWidget from "@/components/TossPaymentWidget";
+import ChuseokEventModal from "@/components/ChuseokEventModal";
 
 import Section1BasicInfo from "./components/Section1BasicInfo";
 import Section2TenGods from "./components/Section2TenGods";
@@ -23,6 +24,7 @@ export default function ConsultationResultPage({ params }) {
   const [consultation, setConsultation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentSection, setCurrentSection] = useState(1);
+  const [showEventModal, setShowEventModal] = useState(false);
 
   // URL 파라미터에서 섹션 번호 가져오기
   useEffect(() => {
@@ -178,8 +180,45 @@ export default function ConsultationResultPage({ params }) {
                 {/* 섹션 내용 렌더링 */}
                 {renderSectionContent()}
 
-                {/* 섹션 1에서 결제가 안됐을 때만 결제 위젯 표시 */}
+                {/* 섹션 1에서 결제가 안됐을 때만 결제 버튼 표시 */}
                 {currentSection === 1 && !consultation.isPaid && (
+                  <div style={{ padding: "20px", border: "1px solid #ddd", borderRadius: "8px", marginBottom: "20px" }}>
+                    <h3 style={{ marginBottom: "15px", color: "#d4af37" }}>결제 정보</h3>
+                    <p style={{ marginBottom: "15px", color: "#ccc" }}>
+                      전체 상담 내용을 확인하려면 결제가 필요합니다.
+                    </p>
+                    <p style={{ marginBottom: "20px", fontSize: "18px", fontWeight: "bold", color: "#d4af37" }}>
+                      결제 금액: 10,000원
+                    </p>
+                    <button
+                      onClick={() => setShowEventModal(true)}
+                      style={{
+                        width: "100%",
+                        padding: "15px",
+                        backgroundColor: "#d4af37",
+                        color: "#000",
+                        border: "none",
+                        borderRadius: "6px",
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease"
+                      }}
+                    >
+                      결제하기
+                    </button>
+                  </div>
+                )}
+
+                {/* 추석 이벤트 모달 */}
+                <ChuseokEventModal
+                  isOpen={showEventModal}
+                  onClose={() => setShowEventModal(false)}
+                  consultationId={consultation.id}
+                />
+
+                {/* 기존 토스 페이먼츠 위젯 (임시 주석 처리) */}
+                {/* {currentSection === 1 && !consultation.isPaid && (
                   <TossPaymentWidget
                     consultationId={consultation.id}
                     amount={10000}
@@ -189,7 +228,7 @@ export default function ConsultationResultPage({ params }) {
                       window.location.reload();
                     }}
                   />
-                )}
+                )} */}
 
                 {/* 네비게이션 버튼 */}
                 <div
