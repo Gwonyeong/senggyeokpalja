@@ -13,9 +13,21 @@ export function useAuth(requireAuth = false) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const { data: { subscription } } = onAuthStateChange((authUser) => {
+    const { data: { subscription } } = onAuthStateChange(async (authUser) => {
       setUser(authUser);
       setLoading(false);
+
+      // 새 사용자 프로필 자동 생성
+      if (authUser) {
+        try {
+          const { upsertProfile } = await import("../../lib/supabase-auth");
+          const profile = await upsertProfile();
+          console.log('useAuth: Profile auto-created/updated:', profile);
+        } catch (error) {
+          console.error('useAuth: Failed to auto-create profile:', error);
+          // 프로필 생성 실패는 로그만 남기고 계속 진행
+        }
+      }
 
       // 인증이 필요한 페이지에서 로그인하지 않은 경우
       if (requireAuth && !authUser) {
