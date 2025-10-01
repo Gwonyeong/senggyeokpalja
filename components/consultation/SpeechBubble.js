@@ -5,7 +5,6 @@ import React from 'react';
 const SpeechBubble = ({
   text,
   position = { top: '20%', left: '30%' },
-  type = 'normal',
   size = 'medium',
   direction = 'bottom-left',
   textColor = '#000',
@@ -13,12 +12,24 @@ const SpeechBubble = ({
   borderColor = '#333',
   maxWidth = '300px'
 }) => {
-  // 말풍선 크기 설정
+  // 말풍선 크기 설정 - 600px까지만 반응형, 이후 고정 크기
   const getSizeStyles = (size) => {
     const sizes = {
-      small: { fontSize: '12px', padding: '8px 12px', borderRadius: '8px' },
-      medium: { fontSize: '14px', padding: '12px 16px', borderRadius: '10px' },
-      large: { fontSize: '16px', padding: '16px 20px', borderRadius: '12px' }
+      small: {
+        fontSize: 'min(20px, max(14px, 2.5vw))',
+        padding: 'min(16px, max(12px, 2vw)) min(24px, max(18px, 3vw))',
+        borderRadius: '50%'
+      },
+      medium: {
+        fontSize: 'min(24px, max(16px, 3vw))',
+        padding: 'min(20px, max(16px, 2.5vw)) min(32px, max(24px, 4vw))',
+        borderRadius: '50%'
+      },
+      large: {
+        fontSize: 'min(24px, max(18px, 3.5vw))',
+        padding: 'min(24px, max(18px, 3vw)) min(40px, max(30px, 5vw))',
+        borderRadius: '50%'
+      }
     };
     return sizes[size] || sizes.medium;
   };
@@ -100,7 +111,7 @@ const SpeechBubble = ({
   };
 
   const sizeStyles = getSizeStyles(size);
-  const bubbleId = `bubble-${Math.random().toString(36).substr(2, 9)}`;
+  const bubbleId = `bubble-${Math.random().toString(36).substring(2, 11)}`;
 
   return (
     <>
@@ -116,20 +127,28 @@ const SpeechBubble = ({
         style={{
           position: 'absolute',
           top: position.top,
-          left: position.left,
-          maxWidth: maxWidth,
+          ...(position.left && { left: position.left }),
+          ...(position.right && { right: position.right }),
+          transform: position.right ? 'translate(50%, -50%)' : 'translate(-50%, -50%)',
+          minWidth: 'min(200px, max(150px, 25vw))',
+          maxWidth: `min(${maxWidth}, max(250px, 40vw))`,
           backgroundColor: backgroundColor,
           color: textColor,
-          border: `2px solid ${borderColor}`,
-          borderRadius: sizeStyles.borderRadius,
+          border: `min(3px, max(2px, 0.3vw)) solid ${borderColor}`,
+          borderRadius: '50%',
           padding: sizeStyles.padding,
           fontSize: sizeStyles.fontSize,
-          fontWeight: '500',
+          fontWeight: '600',
           lineHeight: '1.4',
-          zIndex: 10,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          zIndex: 10000,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
           wordWrap: 'break-word',
-          whiteSpace: 'pre-wrap'
+          whiteSpace: 'pre-wrap',
+          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          aspectRatio: '1.5 / 1'
         }}
       >
         {text}

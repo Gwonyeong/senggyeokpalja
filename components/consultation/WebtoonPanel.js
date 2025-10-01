@@ -13,16 +13,16 @@ const WebtoonPanel = ({
   panelStyle = {},
   className = "",
   consultation = null,
+  imageStyle = {},
 }) => {
   // 기본 패널 스타일
   const defaultPanelStyle = {
     position: "relative",
     width: "100%",
-
     background: "transparent",
     border: "none",
     borderRadius: "0",
-    overflow: "hidden",
+    overflow: "visible",
     ...panelStyle,
   };
 
@@ -33,18 +33,26 @@ const WebtoonPanel = ({
         <div
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
+            top: imageStyle.top || 0,
+            left: imageStyle.left || 0,
+            width: imageStyle.width || "100%",
+            height: imageStyle.height || "100%",
+            aspectRatio: imageStyle.aspectRatio || "auto",
+            border: imageStyle.border || "none",
+            borderRadius: imageStyle.borderRadius || "0",
             zIndex: 1,
+            transform: imageStyle.transform || "none",
           }}
         >
           <Image
             src={backgroundImage}
             alt={`섹션 ${sectionNumber} 배경`}
             fill
-            style={{ objectFit: "cover" }}
+            style={{
+              objectFit: imageStyle.objectFit || "contain",
+              objectPosition: imageStyle.objectPosition || "center center",
+              borderRadius: imageStyle.borderRadius || "0",
+            }}
             priority={sectionNumber <= 2}
           />
         </div>
@@ -93,22 +101,6 @@ const WebtoonPanel = ({
         />
       ))}
 
-      {/* 섹션 1에서 사주팔자 표 표시 */}
-      {sectionNumber === 1 && consultation && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "20px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 15,
-            pointerEvents: "auto",
-          }}
-        >
-          <SajuTable consultation={consultation} />
-        </div>
-      )}
-
       {/* 추가 오버레이 요소들 */}
       <div
         className="panel-overlay"
@@ -118,27 +110,10 @@ const WebtoonPanel = ({
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: 20,
+          zIndex: 5,
           pointerEvents: "none",
         }}
-      >
-        {/* 패널 번호 표시 (선택사항) */}
-        <div
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            backgroundColor: "rgba(0,0,0,0.7)",
-            color: "#fff",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            fontWeight: "600",
-          }}
-        >
-          {sectionNumber}
-        </div>
-      </div>
+      ></div>
     </div>
   );
 };

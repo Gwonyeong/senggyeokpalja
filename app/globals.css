@@ -88,7 +88,7 @@ body.constrained-layout::before {
 
 /* 양쪽 여백을 #131316으로 채우기 위한 pseudo 요소들 */
 body.constrained-layout::after {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
@@ -932,9 +932,6 @@ section {
 /* ============================================= */
 /* 8. 분석 페이지                               */
 /* ============================================= */
-.analyze-page {
-  padding: 40px 0;
-}
 
 .analyze-header {
   text-align: center;
@@ -1119,7 +1116,7 @@ section {
 #result-section .card-title {
   font-size: 2rem;
   color: var(--starlight-orange);
-  text-align: center;
+
   margin-bottom: 20px;
   text-shadow: 0 0 15px rgba(252, 163, 17, 0.4);
   font-family: var(--heading-font);
@@ -1224,8 +1221,7 @@ section {
 .analyze-page .card-title {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--text-color);
-  text-align: center;
+
   margin-bottom: 15px;
   font-family: var(--heading-font);
 }
@@ -2485,9 +2481,6 @@ input[type="text"]::placeholder {
 /* ============================================= */
 /* 15. Analyze Page Layout */
 /* ============================================= */
-.analyze-page {
-  padding: 40px 0;
-}
 
 .analyzer-layout {
   max-width: 600px;
@@ -2553,11 +2546,13 @@ input[type="text"]::placeholder {
 
 .card-title {
   font-family: var(--heading-font);
-  font-size: 2rem;
+  font-size: 24px;
   font-weight: 700;
-  color: var(--starlight-orange);
+  color: #fca311;
+  text-align: left;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #fca311;
   margin-bottom: 20px;
-  text-align: center;
 }
 
 .card-title span {
@@ -3021,7 +3016,7 @@ input[type="text"]::placeholder {
 
   .analyzer-layout {
     max-width: 100%;
-    padding: 0 15px;
+    /* padding: 0 15px; */
   }
 
   .analyzer-card {
@@ -3035,7 +3030,12 @@ input[type="text"]::placeholder {
   }
 
   .card-title {
-    font-size: 1.5rem;
+    font-size: 24px;
+    color: #fca311;
+    text-align: left;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #fca311;
+    margin-bottom: 20px;
   }
 
   .form-row {
@@ -3213,10 +3213,6 @@ input[type="text"]::placeholder {
 
 /* 모바일 대응 */
 @media (max-width: 768px) {
-  .analyze-page {
-    padding-top: 100px !important;
-  }
-
   .mypage-grid {
     grid-template-columns: 1fr !important;
     gap: 20px !important;

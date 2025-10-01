@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { getFiveElementDescription, getFiveElementBasicInfo } from "../../lib/five-elements-utils";
 
 export default function FiveElementsChart({ consultation }) {
   const canvasRef = useRef(null);
+  const [elementDescription, setElementDescription] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // 오행 데이터 추출 (목 → 화 → 수 → 금 → 토 순서)
   const elements = {
@@ -22,6 +25,23 @@ export default function FiveElementsChart({ consultation }) {
     금: "#e5e7eb", // 은색
     수: "#3b82f6", // 파란색
   };
+
+  // 가장 강한 오행의 설명 데이터 로드
+  useEffect(() => {
+    if (consultation?.dominantElement) {
+      setLoading(true);
+      getFiveElementDescription(consultation.dominantElement)
+        .then(data => {
+          setElementDescription(data);
+        })
+        .catch(error => {
+          console.error('Failed to load element description:', error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [consultation?.dominantElement]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -267,6 +287,131 @@ export default function FiveElementsChart({ consultation }) {
           })}
         </div>
       </div>
+
+      {/* 가장 강한 오행에 대한 상세 설명 */}
+      {consultation?.dominantElement && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "20px",
+            backgroundColor: "rgba(212, 175, 55, 0.05)",
+            borderRadius: "12px",
+            border: "2px solid rgba(212, 175, 55, 0.3)",
+            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "16px",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                color: "#d4af37",
+              }}
+            >
+              ⭐
+            </span>
+            <h4
+              style={{
+                color: "#d4af37",
+                fontSize: "18px",
+                fontWeight: "700",
+                margin: 0,
+                fontFamily: "Noto Serif KR",
+              }}
+            >
+              당신의 대표 오행: {getFiveElementBasicInfo(consultation.dominantElement)?.name}
+            </h4>
+          </div>
+
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "12px 16px",
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              borderRadius: "8px",
+              border: "1px solid rgba(212, 175, 55, 0.2)",
+            }}
+          >
+            <p
+              style={{
+                color: "rgba(255, 255, 255, 0.8)",
+                fontSize: "14px",
+                margin: 0,
+                lineHeight: "1.5",
+              }}
+            >
+              <span style={{ color: "#d4af37", fontWeight: "600" }}>특성:</span>{" "}
+              {getFiveElementBasicInfo(consultation.dominantElement)?.characteristic}
+            </p>
+            <p
+              style={{
+                color: "rgba(255, 255, 255, 0.8)",
+                fontSize: "14px",
+                margin: "8px 0 0 0",
+                lineHeight: "1.5",
+              }}
+            >
+              <span style={{ color: "#d4af37", fontWeight: "600" }}>성향:</span>{" "}
+              {getFiveElementBasicInfo(consultation.dominantElement)?.personality}
+            </p>
+          </div>
+
+          {loading ? (
+            <div
+              style={{
+                padding: "20px",
+                textAlign: "center",
+                color: "rgba(255, 255, 255, 0.6)",
+                fontSize: "14px",
+              }}
+            >
+              상세 해석을 불러오는 중...
+            </div>
+          ) : elementDescription ? (
+            <>
+              <h5
+                style={{
+                  color: "#d4af37",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  marginBottom: "16px",
+                  fontFamily: "Noto Serif KR",
+                }}
+              >
+                🔮 상세 운세 해석
+              </h5>
+              <div
+                style={{
+                  color: "rgba(255, 255, 255, 0.8)",
+                  fontSize: "14px",
+                  lineHeight: "1.7",
+                  whiteSpace: "pre-line",
+                }}
+              >
+                {elementDescription.chapters?.스토리형_리포트 || "상세 설명을 불러올 수 없습니다."}
+              </div>
+            </>
+          ) : (
+            <div
+              style={{
+                padding: "20px",
+                textAlign: "center",
+                color: "rgba(255, 255, 255, 0.5)",
+                fontSize: "14px",
+              }}
+            >
+              상세 해석 정보를 불러올 수 없습니다.
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
