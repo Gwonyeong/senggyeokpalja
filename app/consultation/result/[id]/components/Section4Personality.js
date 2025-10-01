@@ -7,6 +7,70 @@ export default function Section4Personality({ consultation }) {
   const [databaseData, setDatabaseData] = useState({});
   const [detailedDescriptions, setDetailedDescriptions] = useState({});
 
+  // 지지를 오행으로 변환하는 헬퍼 함수
+  const getOhaengFromJiji = useCallback((jiji) => {
+    const jijiOhaengMap = {
+      子: "수",
+      丑: "土",
+      寅: "木",
+      卯: "木",
+      辰: "土",
+      巳: "火",
+      午: "火",
+      未: "土",
+      申: "金",
+      酉: "金",
+      戌: "土",
+      亥: "수",
+    };
+    return jijiOhaengMap[jiji] || "土";
+  }, []);
+
+  // 오행 개수 계산 (간략화된 버전)
+  const calculateOhaengCount = useCallback((consultation) => {
+    const count = { 木: 0, 火: 0, 土: 0, 金: 0, 수: 0 };
+
+    // 천간 오행
+    const ganOhaengMap = {
+      甲: "木",
+      乙: "木",
+      丙: "火",
+      丁: "火",
+      戊: "土",
+      己: "土",
+      庚: "金",
+      辛: "金",
+      壬: "수",
+      癸: "수",
+    };
+
+    [
+      consultation.yearStem,
+      consultation.monthStem,
+      consultation.dayStem,
+      consultation.timeStem,
+    ].forEach((stem) => {
+      if (stem && ganOhaengMap[stem]) {
+        count[ganOhaengMap[stem]]++;
+      }
+    });
+
+    // 지지 오행
+    [
+      consultation.yearBranch,
+      consultation.monthBranch,
+      consultation.dayBranch,
+      consultation.timeBranch,
+    ].forEach((branch) => {
+      if (branch) {
+        const ohaeng = getOhaengFromJiji(branch);
+        count[ohaeng]++;
+      }
+    });
+
+    return count;
+  }, [getOhaengFromJiji]);
+
   // 팔자 유형 데이터베이스 로드
   useEffect(() => {
     const loadData = async () => {
@@ -90,71 +154,7 @@ export default function Section4Personality({ consultation }) {
         console.error("팔자 유형 계산 실패:", error);
       }
     }
-  }, [consultation, databaseData, detailedDescriptions, calculateOhaengCount]);
-
-  // 지지를 오행으로 변환하는 헬퍼 함수
-  const getOhaengFromJiji = (jiji) => {
-    const jijiOhaengMap = {
-      子: "수",
-      丑: "土",
-      寅: "木",
-      卯: "木",
-      辰: "土",
-      巳: "火",
-      午: "火",
-      未: "土",
-      申: "金",
-      酉: "金",
-      戌: "土",
-      亥: "수",
-    };
-    return jijiOhaengMap[jiji] || "土";
-  };
-
-  // 오행 개수 계산 (간략화된 버전)
-  const calculateOhaengCount = useCallback((consultation) => {
-    const count = { 木: 0, 火: 0, 土: 0, 金: 0, 수: 0 };
-
-    // 천간 오행
-    const ganOhaengMap = {
-      甲: "木",
-      乙: "木",
-      丙: "火",
-      丁: "火",
-      戊: "土",
-      己: "土",
-      庚: "金",
-      辛: "金",
-      壬: "수",
-      癸: "수",
-    };
-
-    [
-      consultation.yearStem,
-      consultation.monthStem,
-      consultation.dayStem,
-      consultation.timeStem,
-    ].forEach((stem) => {
-      if (stem && ganOhaengMap[stem]) {
-        count[ganOhaengMap[stem]]++;
-      }
-    });
-
-    // 지지 오행
-    [
-      consultation.yearBranch,
-      consultation.monthBranch,
-      consultation.dayBranch,
-      consultation.timeBranch,
-    ].forEach((branch) => {
-      if (branch) {
-        const ohaeng = getOhaengFromJiji(branch);
-        count[ohaeng]++;
-      }
-    });
-
-    return count;
-  }, []);
+  }, [consultation, databaseData, detailedDescriptions, calculateOhaengCount, getOhaengFromJiji]);
 
   // 십성 개수 계산 (데이터베이스에서 가져오기)
   const calculateSibsinCount = (consultation) => {
@@ -655,19 +655,22 @@ export default function Section4Personality({ consultation }) {
                 border: "1px solid rgba(212, 175, 55, 0.2)",
               }}
             >
-              {paljaTypeData.detailedData.그림자.토리의처방전
-                .split(/[.!?]/)
-                .filter(sentence => sentence.trim())
-                .map((sentence, index) => (
+              {(() => {
+                const sentences = paljaTypeData.detailedData.그림자.토리의처방전
+                  .split(/[.!?]/)
+                  .filter(sentence => sentence.trim());
+
+                return sentences.map((sentence, index) => (
                   <div
                     key={index}
                     style={{
-                      marginBottom: index < paljaTypeData.detailedData.그림자.토리의처방전.split(/[.!?]/).filter(sentence => sentence.trim()).length - 1 ? "8px" : "0"
+                      marginBottom: index < sentences.length - 1 ? "8px" : "0"
                     }}
                   >
                     {sentence.trim()}.
                   </div>
-                ))}
+                ));
+              })()}
             </div>
           </div>
         </div>
