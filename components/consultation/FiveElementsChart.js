@@ -315,7 +315,7 @@ export default function FiveElementsChart({ consultation }) {
                 color: "#d4af37",
               }}
             >
-              ⭐
+
             </span>
             <h4
               style={{
@@ -385,7 +385,7 @@ export default function FiveElementsChart({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                🔮 상세 운세 해석
+                상세 운세 해석
               </h5>
               <div
                 style={{

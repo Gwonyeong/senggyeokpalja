@@ -319,7 +319,7 @@ export default function TenGodsChart({ consultation }) {
                 color: "#d4af37",
               }}
             >
-              ⭐
+
             </span>
             <h4
               style={{
@@ -408,7 +408,7 @@ export default function TenGodsChart({ consultation }) {
                     fontFamily: "Noto Serif KR",
                   }}
                 >
-                  🔮 총운 해석
+                  총운 해석
                 </h5>
                 <div
                   style={{

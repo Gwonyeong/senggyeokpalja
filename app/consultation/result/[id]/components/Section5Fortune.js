@@ -12,8 +12,10 @@ export default function Section5Fortune({ consultation }) {
     if (!consultation?.tenGods) return null;
 
     const tenGodsData = consultation.tenGods;
-    const dominantGod = Object.entries(tenGodsData).reduce((max, [god, value]) =>
-      value > (max.value || 0) ? { god, value } : max, {});
+    const dominantGod = Object.entries(tenGodsData).reduce(
+      (max, [god, value]) => (value > (max.value || 0) ? { god, value } : max),
+      {}
+    );
 
     return dominantGod.value > 0 ? dominantGod.god : null;
   };
@@ -30,7 +32,10 @@ export default function Section5Fortune({ consultation }) {
 
     // 생일이 지났는지 확인
     const monthDiff = currentDate.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
 
@@ -71,14 +76,18 @@ export default function Section5Fortune({ consultation }) {
         }
 
         // 대운 데이터 로드
-        const daeunResponse = await fetch(`/documents/대운-세운/${dominantGod}_대운전용_완성.json`);
+        const daeunResponse = await fetch(
+          `/documents/대운-세운/${dominantGod}_대운전용_완성.json`
+        );
         let daeunData = null;
         if (daeunResponse.ok) {
           daeunData = await daeunResponse.json();
         }
 
         // 세운 데이터 로드
-        const sewunResponse = await fetch(`/documents/대운-세운/${dominantGod}_세운전용_완성.json`);
+        const sewunResponse = await fetch(
+          `/documents/대운-세운/${dominantGod}_세운전용_완성.json`
+        );
         let sewunData = null;
         if (sewunResponse.ok) {
           sewunData = await sewunResponse.json();
@@ -86,7 +95,9 @@ export default function Section5Fortune({ consultation }) {
 
         // 현재 나이와 대운 기간 계산
         const currentAge = getCurrentAge(consultation);
-        const daeunPeriod = currentAge ? getCurrentDaeunPeriod(currentAge) : "31-40";
+        const daeunPeriod = currentAge
+          ? getCurrentDaeunPeriod(currentAge)
+          : "31-40";
 
         // 대운 내용 추출 (모든 나이대)
         let daeunAllPeriods = {};
@@ -113,7 +124,6 @@ export default function Section5Fortune({ consultation }) {
             year: "2026",
           },
         });
-
       } catch (error) {
         console.error("대운-세운 데이터 로드 실패:", error);
         setFortuneData({
@@ -136,8 +146,8 @@ export default function Section5Fortune({ consultation }) {
 
   // 섹션 5에서 사용할 이미지 목록
   const imageList = [
-    "/assets/images/results/1장/2.png",
-    "/assets/images/results/1장/3.png",
+    "/assets/images/results/5장/1.png",
+    "/assets/images/results/1장/5.png",
     "/assets/images/results/1장/5.png",
   ];
 
@@ -148,19 +158,18 @@ export default function Section5Fortune({ consultation }) {
       imageStyle: {
         objectFit: "contain",
         objectPosition: "center center",
-        width: "80%",
+        width: "100%",
         height: "100%",
         aspectRatio: "1 / 1",
         top: "0%",
-        maxWidth: "400px",
+        // maxWidth: "400px",
       },
       speechBubbles: [
         {
-          text: "이제 그대의 대운과 세운을 살펴보자...",
-          position: { top: "100%", left: "50%" },
+          text: "대운은 크게 10년 주기로 찾아온다네",
+          position: { top: "90%", right: "30%" },
           size: "large",
           direction: "bottom-right",
-          maxWidth: "320px",
         },
       ],
     },
@@ -246,7 +255,7 @@ export default function Section5Fortune({ consultation }) {
           imageStyle={panelConfigs[0].imageStyle}
           speechBubbles={panelConfigs[0].speechBubbles}
           panelStyle={{
-            height: "300px",
+            minHeight: "500px",
             background: "transparent",
             border: "none",
             borderRadius: "0",
@@ -258,6 +267,7 @@ export default function Section5Fortune({ consultation }) {
       {fortuneData && (
         <div
           style={{
+            marginTop: "100px",
             width: "100%",
             maxWidth: "100%",
             marginBottom: "30px",
@@ -297,65 +307,74 @@ export default function Section5Fortune({ consultation }) {
           )}
 
           {/* 모든 나이대별 대운 설명 */}
-          {Object.entries(fortuneData.daeun.allPeriods || {}).map(([period, content]) => {
-            const isCurrentPeriod = period === fortuneData.daeun.currentPeriod;
+          {Object.entries(fortuneData.daeun.allPeriods || {}).map(
+            ([period, content]) => {
+              const isCurrentPeriod =
+                period === fortuneData.daeun.currentPeriod;
 
-            return (
-              <div
-                key={period}
-                style={{
-                  marginBottom: "24px",
-                  padding: "16px",
-                  backgroundColor: isCurrentPeriod
-                    ? "rgba(212, 175, 55, 0.1)"
-                    : "rgba(255, 255, 255, 0.02)",
-                  borderRadius: "8px",
-                  border: isCurrentPeriod
-                    ? "2px solid rgba(212, 175, 55, 0.4)"
-                    : "1px solid rgba(255, 255, 255, 0.1)",
-                  boxShadow: isCurrentPeriod
-                    ? "0 0 15px rgba(212, 175, 55, 0.2)"
-                    : "none",
-                }}
-              >
-                <h5
-                  style={{
-                    color: isCurrentPeriod ? "#d4af37" : "rgba(255, 255, 255, 0.9)",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    marginBottom: "12px",
-                    fontFamily: "Noto Serif KR",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                >
-                  {isCurrentPeriod && <span style={{ fontSize: "14px" }}>🎯</span>}
-                  {period}세 대운
-                  {isCurrentPeriod && (
-                    <span style={{
-                      fontSize: "12px",
-                      color: "#d4af37",
-                      fontWeight: "normal",
-                      marginLeft: "auto"
-                    }}>
-                      현재 시기
-                    </span>
-                  )}
-                </h5>
+              return (
                 <div
+                  key={period}
                   style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: "14px",
-                    lineHeight: "1.7",
-                    whiteSpace: "pre-line",
+                    marginBottom: "24px",
+                    padding: "16px",
+                    backgroundColor: isCurrentPeriod
+                      ? "rgba(212, 175, 55, 0.1)"
+                      : "rgba(255, 255, 255, 0.02)",
+                    borderRadius: "8px",
+                    border: isCurrentPeriod
+                      ? "2px solid rgba(212, 175, 55, 0.4)"
+                      : "1px solid rgba(255, 255, 255, 0.1)",
+                    boxShadow: isCurrentPeriod
+                      ? "0 0 15px rgba(212, 175, 55, 0.2)"
+                      : "none",
                   }}
                 >
-                  {content}
+                  <h5
+                    style={{
+                      color: isCurrentPeriod
+                        ? "#d4af37"
+                        : "rgba(255, 255, 255, 0.9)",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      marginBottom: "12px",
+                      fontFamily: "Noto Serif KR",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    {isCurrentPeriod && (
+                      <span style={{ fontSize: "14px" }}>🎯</span>
+                    )}
+                    {period}세 대운
+                    {isCurrentPeriod && (
+                      <span
+                        style={{
+                          fontSize: "12px",
+                          color: "#d4af37",
+                          fontWeight: "normal",
+                          marginLeft: "auto",
+                        }}
+                      >
+                        현재 시기
+                      </span>
+                    )}
+                  </h5>
+                  <div
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      fontSize: "14px",
+                      lineHeight: "1.7",
+                      whiteSpace: "pre-line",
+                    }}
+                  >
+                    {content}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            }
+          )}
 
           {Object.keys(fortuneData.daeun.allPeriods || {}).length === 0 && (
             <div

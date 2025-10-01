@@ -106,6 +106,9 @@ export default function ConsultationResultPage({ params }) {
       setCurrentSection(newSection);
       const newUrl = `/consultation/result/${resolvedParams.id}?section=${newSection}`;
       router.push(newUrl, { scroll: false });
+
+      // 스크롤을 최상단으로 이동
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

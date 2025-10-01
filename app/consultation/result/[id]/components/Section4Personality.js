@@ -462,7 +462,7 @@ export default function Section4Personality({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                ✨ 핵심 강점: {paljaTypeData.detailedData.빛.핵심강점.제목}
+                핵심 강점: {paljaTypeData.detailedData.빛.핵심강점.제목}
               </h6>
               <div
                 style={{
@@ -487,7 +487,7 @@ export default function Section4Personality({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                🎭 최고의 무대
+                최고의 무대
               </h6>
               <div
                 style={{
@@ -512,7 +512,7 @@ export default function Section4Personality({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                🔥 강점 활용 비급
+                강점 활용 비급
               </h6>
               <div
                 style={{
@@ -566,7 +566,7 @@ export default function Section4Personality({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                ⚠️ 근원적 약점:{" "}
+                근원적 약점:{" "}
                 {paljaTypeData.detailedData.그림자.근원적약점.제목}
               </h6>
               <div
@@ -592,7 +592,7 @@ export default function Section4Personality({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                🕳️ 함정에 빠지는 순간
+                함정에 빠지는 순간
               </h6>
               <div
                 style={{
@@ -613,33 +613,61 @@ export default function Section4Personality({ consultation }) {
               </div>
             </div>
 
-            {/* 토리의 처방전 */}
-            <div>
-              <h6
-                style={{
-                  color: "#8A2BE2",
-                  fontSize: "12px",
-                  fontWeight: "600",
-                  marginBottom: "8px",
-                  fontFamily: "Noto Serif KR",
-                }}
-              >
-                💊 토리의 처방전
-              </h6>
-              <div
-                style={{
-                  color: "rgba(255, 255, 255, 0.8)",
-                  fontSize: "12px",
-                  lineHeight: "1.6",
-                  fontStyle: "italic",
-                  padding: "12px",
-                  backgroundColor: "rgba(138, 43, 226, 0.1)",
-                  borderRadius: "8px",
-                  border: "1px solid rgba(138, 43, 226, 0.2)",
-                }}
-              >
-                {paljaTypeData.detailedData.그림자.토리의처방전}
-              </div>
+          </div>
+
+          {/* 토리의 처방전 박스 */}
+          <div
+            style={{
+              marginBottom: "20px",
+              padding: "clamp(12px, 4vw, 20px)",
+              backgroundColor: "#131316",
+              borderRadius: "12px",
+              border: "2px solid rgba(212, 175, 55, 0.3)",
+              boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+              boxSizing: "border-box",
+              width: "100%",
+              maxWidth: "100%",
+              overflow: "hidden",
+              wordBreak: "break-word",
+            }}
+          >
+            <h5
+              style={{
+                color: "#d4af37",
+                fontSize: "15px",
+                fontWeight: "600",
+                marginBottom: "16px",
+                fontFamily: "Noto Serif KR",
+                textAlign: "center",
+              }}
+            >
+              토리의 처방전
+            </h5>
+            <div
+              style={{
+                color: "rgba(255, 255, 255, 0.8)",
+                fontSize: "12px",
+                lineHeight: "1.8",
+                fontStyle: "italic",
+                padding: "12px",
+                backgroundColor: "rgba(212, 175, 55, 0.1)",
+                borderRadius: "8px",
+                border: "1px solid rgba(212, 175, 55, 0.2)",
+              }}
+            >
+              {paljaTypeData.detailedData.그림자.토리의처방전
+                .split(/[.!?]/)
+                .filter(sentence => sentence.trim())
+                .map((sentence, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      marginBottom: index < paljaTypeData.detailedData.그림자.토리의처방전.split(/[.!?]/).filter(sentence => sentence.trim()).length - 1 ? "8px" : "0"
+                    }}
+                  >
+                    {sentence.trim()}.
+                  </div>
+                ))}
             </div>
           </div>
         </div>
@@ -671,7 +699,6 @@ export default function Section4Personality({ consultation }) {
                 color: "#d4af37",
               }}
             >
-              🔮
             </span>
             <h4
               style={{
