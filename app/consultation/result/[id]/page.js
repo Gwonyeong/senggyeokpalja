@@ -237,6 +237,9 @@ export default function ConsultationResultPage({ params }) {
                     justifyContent: "space-between",
                     marginTop: "30px",
                     padding: "20px 0",
+                    gap: "10px",
+                    flexWrap: "wrap",
+                    maxWidth: "100%",
                   }}
                 >
                   <button
@@ -253,6 +256,13 @@ export default function ConsultationResultPage({ params }) {
                       fontWeight: "600",
                       cursor: currentSection === 1 ? "not-allowed" : "pointer",
                       transition: "all 0.3s ease",
+                      flex: "1",
+                      minWidth: "0",
+                      maxWidth: "calc(50% - 5px)",
+                      boxSizing: "border-box",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                     }}
                   >
                     이전 섹션
@@ -286,6 +296,13 @@ export default function ConsultationResultPage({ params }) {
                           ? "not-allowed"
                           : "pointer",
                       transition: "all 0.3s ease",
+                      flex: "1",
+                      minWidth: "0",
+                      maxWidth: "calc(50% - 5px)",
+                      boxSizing: "border-box",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {currentSection === 1 && !consultation.isPaid

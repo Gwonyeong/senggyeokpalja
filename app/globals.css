@@ -73,6 +73,17 @@
   box-sizing: border-box;
 }
 
+/* 가로 스크롤 방지를 위한 전역 설정 */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 /* 제한된 레이아웃을 위한 전체 페이지 스타일 */
 body.constrained-layout {
   background-color: #131316;
@@ -193,6 +204,8 @@ body::before {
 @media (max-width: 768px) {
   .container {
     padding: 0 var(--mobile-padding);
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -2560,6 +2573,29 @@ input[type="text"]::placeholder {
   font-weight: 500;
 }
 
+/* Section Container - Consultation Result 페이지용 */
+.section-container {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(45, 45, 48, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-sizing: border-box;
+  overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+}
+
 .sage-description {
   font-size: 1.1rem;
   color: var(--text-muted-color);
@@ -2874,16 +2910,24 @@ input[type="text"]::placeholder {
   .analyze-page .container {
     padding: 0 10px;
     max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .analyze-page .analyzer-layout {
     gap: 20px;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   .analyze-page .analyzer-card {
     padding: 20px 15px;
     margin: 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    word-wrap: break-word;
   }
 
   .analyze-page .card-title {

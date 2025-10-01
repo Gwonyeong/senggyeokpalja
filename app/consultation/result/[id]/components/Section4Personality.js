@@ -299,11 +299,15 @@ export default function Section4Personality({ consultation }) {
         <div
           style={{
             width: "100%",
+            maxWidth: "100%",
             marginBottom: "30px",
             backgroundColor: "rgba(0, 0, 0, 0.3)",
             borderRadius: "12px",
-            padding: "20px",
+            padding: "clamp(12px, 4vw, 20px)",
             border: "1px solid rgba(212, 175, 55, 0.2)",
+            boxSizing: "border-box",
+            overflow: "hidden",
+            wordBreak: "break-word",
           }}
         >
           {/* 팔자 유형 이미지와 정보 */}
@@ -331,8 +335,10 @@ export default function Section4Personality({ consultation }) {
                 src={`/assets/images/${paljaTypeData.personalityType}.png`}
                 alt={paljaTypeData.detailedData.alias}
                 style={{
-                  width: "200px",
-                  height: "200px",
+                  width: "min(200px, 60vw)",
+                  height: "min(200px, 60vw)",
+                  maxWidth: "200px",
+                  maxHeight: "200px",
                   borderRadius: "50%",
                   border: "4px solid #d4af37",
                   objectFit: "cover",
@@ -346,12 +352,15 @@ export default function Section4Personality({ consultation }) {
             {/* 2. 이미지 아래에 팔자 유형과 alias 출력 */}
             <div
               style={{
-                fontSize: "24px",
+                fontSize: "clamp(18px, 5vw, 24px)",
                 fontWeight: "bold",
                 // color: "#d4af37",
                 marginBottom: "8px",
                 fontFamily: "monospace",
-                letterSpacing: "2px",
+                letterSpacing: "1px",
+                wordBreak: "keep-all",
+                overflow: "hidden",
+                textAlign: "center",
               }}
             >
               {paljaTypeData.personalityType}
@@ -359,10 +368,12 @@ export default function Section4Personality({ consultation }) {
             <h4
               style={{
                 color: "#d4af37",
-                fontSize: "28px",
+                fontSize: "clamp(20px, 6vw, 28px)",
                 fontWeight: "700",
                 margin: "0",
                 fontFamily: "Noto Serif KR",
+                wordBreak: "keep-all",
+                textAlign: "center",
               }}
             >
               {paljaTypeData.detailedData.alias}
@@ -375,11 +386,16 @@ export default function Section4Personality({ consultation }) {
           <div
             style={{
               marginBottom: "20px",
-              padding: "20px",
+              padding: "clamp(12px, 4vw, 20px)",
               backgroundColor: "#131316",
               borderRadius: "12px",
               border: "2px solid rgba(212, 175, 55, 0.3)",
               boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+              boxSizing: "border-box",
+              width: "100%",
+              maxWidth: "100%",
+              overflow: "hidden",
+              wordBreak: "break-word",
             }}
           >
             <h5
@@ -410,11 +426,16 @@ export default function Section4Personality({ consultation }) {
           <div
             style={{
               marginBottom: "20px",
-              padding: "20px",
+              padding: "clamp(12px, 4vw, 20px)",
               backgroundColor: "#131316",
               borderRadius: "12px",
               border: "2px solid rgba(255, 215, 0, 0.3)",
               boxShadow: "0 4px 20px rgba(255, 215, 0, 0.1)",
+              boxSizing: "border-box",
+              width: "100%",
+              maxWidth: "100%",
+              overflow: "hidden",
+              wordBreak: "break-word",
             }}
           >
             <h5
@@ -509,11 +530,16 @@ export default function Section4Personality({ consultation }) {
           <div
             style={{
               marginBottom: "20px",
-              padding: "20px",
+              padding: "clamp(12px, 4vw, 20px)",
               backgroundColor: "#131316",
               borderRadius: "12px",
               border: "2px solid rgba(138, 43, 226, 0.3)",
               boxShadow: "0 4px 20px rgba(138, 43, 226, 0.1)",
+              boxSizing: "border-box",
+              width: "100%",
+              maxWidth: "100%",
+              overflow: "hidden",
+              wordBreak: "break-word",
             }}
           >
             <h5

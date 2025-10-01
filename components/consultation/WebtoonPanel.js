@@ -19,10 +19,12 @@ const WebtoonPanel = ({
   const defaultPanelStyle = {
     position: "relative",
     width: "100%",
+    maxWidth: "100%",
     background: "transparent",
     border: "none",
     borderRadius: "0",
-    overflow: "visible",
+    overflow: "hidden",
+    boxSizing: "border-box",
     ...panelStyle,
   };
 
@@ -37,11 +39,14 @@ const WebtoonPanel = ({
             left: imageStyle.left || 0,
             width: imageStyle.width || "100%",
             height: imageStyle.height || "100%",
+            maxWidth: imageStyle.maxWidth || "100%",
             aspectRatio: imageStyle.aspectRatio || "auto",
             border: imageStyle.border || "none",
             borderRadius: imageStyle.borderRadius || "0",
             zIndex: 1,
             transform: imageStyle.transform || "none",
+            boxSizing: "border-box",
+            overflow: "hidden",
           }}
         >
           <Image
