@@ -23,7 +23,7 @@ const WebtoonPanel = ({
     background: "transparent",
     border: "none",
     borderRadius: "0",
-    overflow: "hidden",
+    overflow: "visible", // 말풍선이 박스를 벗어날 수 있도록 변경
     boxSizing: "border-box",
     ...panelStyle,
   };
@@ -46,7 +46,7 @@ const WebtoonPanel = ({
             zIndex: 1,
             transform: imageStyle.transform || "none",
             boxSizing: "border-box",
-            overflow: "hidden",
+            overflow: "hidden", // 이미지는 여전히 hidden으로 유지
           }}
         >
           <Image
@@ -90,20 +90,33 @@ const WebtoonPanel = ({
         </div>
       ))}
 
-      {/* 말풍선들 */}
+      {/* 말풍선들 - 최상단에 표시 */}
       {speechBubbles.map((bubble, index) => (
-        <SpeechBubble
-          key={`bubble-${index}`}
-          text={bubble.text}
-          position={bubble.position}
-          type={bubble.type}
-          size={bubble.size}
-          direction={bubble.direction}
-          textColor={bubble.textColor}
-          backgroundColor={bubble.backgroundColor}
-          borderColor={bubble.borderColor}
-          maxWidth={bubble.maxWidth}
-        />
+        <div
+          key={`bubble-wrapper-${index}`}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 9999, // 매우 높은 z-index로 최상단 표시
+            pointerEvents: "none", // 클릭 이벤트는 통과시킴
+          }}
+        >
+          <SpeechBubble
+            key={`bubble-${index}`}
+            text={bubble.text}
+            position={bubble.position}
+            type={bubble.type}
+            size={bubble.size}
+            direction={bubble.direction}
+            textColor={bubble.textColor}
+            backgroundColor={bubble.backgroundColor}
+            borderColor={bubble.borderColor}
+            maxWidth={bubble.maxWidth}
+          />
+        </div>
       ))}
 
       {/* 추가 오버레이 요소들 */}

@@ -2583,7 +2583,8 @@ input[type="text"]::placeholder {
   border-radius: 12px;
   border: 1px solid rgba(212, 175, 55, 0.2);
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-x: hidden; /* 가로 스크롤만 방지, 세로는 visible */
+  overflow-y: visible; /* 말풍선이 위아래로 나갈 수 있도록 */
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -2918,6 +2919,7 @@ input[type="text"]::placeholder {
     gap: 20px;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: visible; /* 말풍선이 위아래로 나갈 수 있도록 */
   }
 
   .analyze-page .analyzer-card {
@@ -2927,6 +2929,7 @@ input[type="text"]::placeholder {
     max-width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
+    overflow-y: visible; /* 말풍선이 위아래로 나갈 수 있도록 */
     word-wrap: break-word;
   }
 
