@@ -156,21 +156,23 @@ export default function Section4Personality({ consultation }) {
     return count;
   };
 
-  // 십성 개수 계산 (간략화된 버전)
+  // 십성 개수 계산 (데이터베이스에서 가져오기)
   const calculateSibsinCount = (consultation) => {
-    // 실제 십성 계산은 복잡하므로 기본값 반환
-    return {
-      비견: 1,
-      겁재: 0,
-      식신: 1,
-      상관: 0,
-      편재: 1,
-      정재: 0,
-      편관: 1,
-      정관: 0,
-      편인: 0,
-      정인: 1,
-    };
+    // consultation.tenGods에서 실제 십성 데이터 사용
+    return (
+      consultation.tenGods || {
+        비견: 0,
+        겁재: 0,
+        식신: 0,
+        상관: 0,
+        편재: 0,
+        정재: 0,
+        편관: 0,
+        정관: 0,
+        편인: 0,
+        정인: 0,
+      }
+    );
   };
 
   // 섹션 4에서 사용할 이미지 목록
@@ -191,6 +193,7 @@ export default function Section4Personality({ consultation }) {
         height: "100%",
         aspectRatio: "1 / 1",
         top: "0%",
+        maxWidth: "400px",
       },
       speechBubbles: [
         {
@@ -253,7 +256,7 @@ export default function Section4Personality({ consultation }) {
     return (
       <div className="section-container">
         <div className="card-header">
-          <h3 className="card-title">4. 나의 팔자 유형에 대하여</h3>
+          <h3 className="card-title">4. 나의 팔자 유형</h3>
         </div>
         <div style={{ padding: "20px", textAlign: "center", color: "#fff" }}>
           상담 데이터를 불러오는 중...
@@ -266,7 +269,7 @@ export default function Section4Personality({ consultation }) {
     <div className="section-container">
       {/* 1. 상단에 제목 */}
       <div className="card-header">
-        <h3 className="card-title">4. 나의 팔자 유형에 대하여</h3>
+        <h3 className="card-title">4. 나의 팔자 유형</h3>
       </div>
 
       {/* 2. 제목 아래에 웹툰 퍼널 2개 */}
@@ -571,10 +574,16 @@ export default function Section4Personality({ consultation }) {
                   fontSize: "12px",
                   lineHeight: "1.6",
                   marginBottom: "12px",
-                  whiteSpace: "pre-line",
                 }}
               >
-                {paljaTypeData.detailedData.그림자.함정에빠지는순간}
+                {paljaTypeData.detailedData.그림자.함정에빠지는순간
+                  .split("\n\n")
+                  .filter((item) => item.trim())
+                  .map((item, index) => (
+                    <div key={index} style={{ marginBottom: "8px" }}>
+                      {index + 1}. {item.trim()}
+                    </div>
+                  ))}
               </div>
             </div>
 
