@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import PageWrapper from "@/components/PageWrapper";
 
-export default function PaymentFailPage() {
+function PaymentFailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [errorInfo, setErrorInfo] = useState({
@@ -102,5 +102,13 @@ export default function PaymentFailPage() {
         </main>
       </div>
     </PageWrapper>
+  );
+}
+
+export default function PaymentFailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentFailContent />
+    </Suspense>
   );
 }

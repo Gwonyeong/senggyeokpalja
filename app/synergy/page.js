@@ -331,8 +331,8 @@ export default function SynergyPage() {
 
                   <div className="form-footer">
                     <div className="sage-advice">
-                      <div>"두 자아의 만남,</div>
-                      <div>그대의 새로운 길이 열릴지니."</div>
+                      <div>&ldquo;두 자아의 만남,</div>
+                      <div>그대의 새로운 길이 열릴지니.&rdquo;</div>
                     </div>
                     <button
                       type="button"

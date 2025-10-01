@@ -1,6 +1,6 @@
 import WebtoonPanel from "../../../../../components/consultation/WebtoonPanel";
 import { determinePaljaType } from "../../../../../lib/saju-utils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function Section4Personality({ consultation }) {
   const [paljaTypeData, setPaljaTypeData] = useState(null);
@@ -90,7 +90,7 @@ export default function Section4Personality({ consultation }) {
         console.error("팔자 유형 계산 실패:", error);
       }
     }
-  }, [consultation, databaseData, detailedDescriptions]);
+  }, [consultation, databaseData, detailedDescriptions, calculateOhaengCount]);
 
   // 지지를 오행으로 변환하는 헬퍼 함수
   const getOhaengFromJiji = (jiji) => {
@@ -112,7 +112,7 @@ export default function Section4Personality({ consultation }) {
   };
 
   // 오행 개수 계산 (간략화된 버전)
-  const calculateOhaengCount = (consultation) => {
+  const calculateOhaengCount = useCallback((consultation) => {
     const count = { 木: 0, 火: 0, 土: 0, 金: 0, 수: 0 };
 
     // 천간 오행
@@ -154,7 +154,7 @@ export default function Section4Personality({ consultation }) {
     });
 
     return count;
-  };
+  }, []);
 
   // 십성 개수 계산 (데이터베이스에서 가져오기)
   const calculateSibsinCount = (consultation) => {

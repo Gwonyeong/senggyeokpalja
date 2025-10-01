@@ -20,14 +20,14 @@ export default function Home() {
           <div className="container">
             <div className="hero-content">
               <p className="sage-subtitle">
-                "어서 오시게.
+                &ldquo;어서 오시게.
                 <br />
                 그대의 이야기가 담긴 <br />
-                차를 준비하겠네."
+                차를 준비하겠네.&rdquo;
               </p>
               <p className="hero-description">
                 이곳은 당신의 성격과 운명을 블렌딩하여, <br />
-                세상에 단 하나뿐인 '나'라는 차를 맛보는 공간입니다
+                세상에 단 하나뿐인 &lsquo;나&rsquo;라는 차를 맛보는 공간입니다
               </p>
               <Link href="/analyze" className="cta-button ink-brush-effect ">
                 찻 잔, 맛보기

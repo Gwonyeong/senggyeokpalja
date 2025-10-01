@@ -9,10 +9,10 @@ export default function TenGodsChart({ consultation }) {
   const [loading, setLoading] = useState(false);
 
   // 십성 데이터 추출 (JSON에서 추출)
-  const tenGodsData = consultation?.tenGods || {};
+  const tenGodsData = useMemo(() => consultation?.tenGods || {}, [consultation]);
 
   // 십성 개수 계산 (tenGods JSON에서 추출)
-  const tenGods = {
+  const tenGods = useMemo(() => ({
     비견: tenGodsData?.비견 || 0,
     겁재: tenGodsData?.겁재 || 0,
     식신: tenGodsData?.식신 || 0,
@@ -23,10 +23,10 @@ export default function TenGodsChart({ consultation }) {
     정관: tenGodsData?.정관 || 0,
     편인: tenGodsData?.편인 || 0,
     정인: tenGodsData?.정인 || 0,
-  };
+  }), [tenGodsData]);
 
   // 십성 색상 정의
-  const colors = {
+  const colors = useMemo(() => ({
     비견: "#ff6b6b", // 빨간색
     겁재: "#ff8787", // 연빨간색
     식신: "#4ecdc4", // 청록색
@@ -37,7 +37,7 @@ export default function TenGodsChart({ consultation }) {
     정관: "#a569bd", // 진보라색
     편인: "#85c1e2", // 연파란색
     정인: "#5dade2", // 파란색
-  };
+  }), []);
 
   // 십성 설명
   const godDescriptions = {

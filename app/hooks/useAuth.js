@@ -51,6 +51,14 @@ export function useAuth(requireAuth = false) {
 // 보호된 라우트 래퍼 컴포넌트
 export function ProtectedRoute({ children }) {
   const { user, loading, showLoginModal, setShowLoginModal } = useAuth(true);
+  // LoginModal 컴포넌트를 동적으로 import
+  const [LoginModal, setLoginModal] = useState(null);
+
+  useEffect(() => {
+    import("@/app/components/LoginModal").then((module) => {
+      setLoginModal(() => module.default);
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -66,15 +74,6 @@ export function ProtectedRoute({ children }) {
       </div>
     );
   }
-
-  // LoginModal 컴포넌트를 동적으로 import
-  const [LoginModal, setLoginModal] = useState(null);
-
-  useEffect(() => {
-    import("@/app/components/LoginModal").then((module) => {
-      setLoginModal(() => module.default);
-    });
-  }, []);
 
   return (
     <>

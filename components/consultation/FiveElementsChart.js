@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { getFiveElementDescription, getFiveElementBasicInfo } from "../../lib/five-elements-utils";
 
 export default function FiveElementsChart({ consultation }) {
@@ -9,22 +9,22 @@ export default function FiveElementsChart({ consultation }) {
   const [loading, setLoading] = useState(false);
 
   // 오행 데이터 추출 (목 → 화 → 수 → 금 → 토 순서)
-  const elements = {
+  const elements = useMemo(() => ({
     목: consultation?.woodCount || 0,
     화: consultation?.fireCount || 0,
     수: consultation?.waterCount || 0,
     금: consultation?.metalCount || 0,
     토: consultation?.earthCount || 0,
-  };
+  }), [consultation]);
 
   // 오행 색상 정의
-  const colors = {
+  const colors = useMemo(() => ({
     목: "#22c55e", // 녹색
     화: "#ef4444", // 빨강색
     토: "#eab308", // 노란색
     금: "#e5e7eb", // 은색
     수: "#3b82f6", // 파란색
-  };
+  }), []);
 
   // 가장 강한 오행의 설명 데이터 로드
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function FiveElementsChart({ consultation }) {
     ctx.font = "bold 20px Noto Serif KR";
     ctx.textAlign = "center";
     ctx.fillText("오행 분포도", width / 2, 30);
-  }, [consultation, elements]);
+  }, [consultation, elements, colors]);
 
   return (
     <div

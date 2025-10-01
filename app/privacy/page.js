@@ -34,7 +34,7 @@ export default function Privacy() {
             border: '1px solid var(--border-color)'
           }}>
             <p style={{ marginBottom: '0', fontSize: '1.1rem' }}>
-              성격팔자(이하 "회사")는 서비스 이용을 위해 입력한 정보주체의 개인정보 보호를 매우 중요시하며, "개인정보보호법"을 준수하고 있습니다.
+              성격팔자(이하 &ldquo;회사&rdquo;)는 서비스 이용을 위해 입력한 정보주체의 개인정보 보호를 매우 중요시하며, &ldquo;개인정보보호법&rdquo;을 준수하고 있습니다.
             </p>
             <br />
             <p style={{ marginBottom: '0' }}>
@@ -489,7 +489,7 @@ export default function Privacy() {
             }}>12. 개인정보 처리방침 변경에 관한 사항</h2>
 
             <p style={{ marginBottom: '15px', textAlign: 'center' }}>
-              본 개인정보처리방침은 <strong>2025년 9월 16일</strong>에 업데이트되었으며, 변경되는 경우 최소 7일 전부터 홈페이지 '공지사항'을 통해 고지할 것입니다.
+              본 개인정보처리방침은 <strong>2025년 9월 16일</strong>에 업데이트되었으며, 변경되는 경우 최소 7일 전부터 홈페이지 &lsquo;공지사항&rsquo;을 통해 고지할 것입니다.
             </p>
 
             <p style={{ textAlign: 'center', color: 'var(--text-muted-color)' }}>

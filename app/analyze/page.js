@@ -530,8 +530,8 @@ export default function AnalyzePage() {
 
                   <div className="form-footer">
                     <div className="sage-advice">
-                      <div>"그대의 이야기,</div>
-                      <div>토리가 차 한 잔과 함께 들어보겠네."</div>
+                      <div>&ldquo;그대의 이야기,</div>
+                      <div>토리가 차 한 잔과 함께 들어보겠네.&rdquo;</div>
                     </div>
                     <button
                       type="submit"
@@ -653,9 +653,9 @@ export default function AnalyzePage() {
                   <div className="interview-cta">
                     <h3>토리가 건네는 특별한 초대장</h3>
                     <p>
-                      당신의 이야기는 '성격팔자'를 완성하는 마지막 조각입니다.
+                      당신의 이야기는 &lsquo;성격팔자&rsquo;를 완성하는 마지막 조각입니다.
                       <br />
-                      지금 1:1 면담에 참여하고, 정식 출시의 'VVIP'가 되어주세요.
+                      지금 1:1 면담에 참여하고, 정식 출시의 &lsquo;VVIP&rsquo;가 되어주세요.
                     </p>
                     <a
                       href="https://smore.im/form/2RQBeyh8f3"
@@ -696,7 +696,7 @@ export default function AnalyzePage() {
                   <div className="cta-card">
                     <h3>업데이트 소식이 궁금하다면?</h3>
                     <p>
-                      가장 먼저 '성격팔자'의 소식을 받고
+                      가장 먼저 &lsquo;성격팔자&rsquo;의 소식을 받고
                       <br />
                       다양한 혜택을 놓치지 마세요!
                     </p>
