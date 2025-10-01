@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../../../lib/supabase";
 import PageWrapper from "@/components/PageWrapper";
@@ -16,6 +16,8 @@ import Section6Advice from "./components/Section6Advice";
 import Section7Conclusion from "./components/Section7Conclusion";
 
 export default function ConsultationResultPage({ params }) {
+  // Next.js 15에서 params는 Promise이므로 use()로 unwrap
+  const resolvedParams = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
@@ -50,7 +52,7 @@ export default function ConsultationResultPage({ params }) {
         setUser(user);
 
         // 상담 결과 데이터 가져오기
-        const consultationId = (await params).id;
+        const consultationId = resolvedParams.id;
         const response = await fetch(`/api/consultation/${consultationId}`);
         const result = await response.json();
 
@@ -76,7 +78,7 @@ export default function ConsultationResultPage({ params }) {
     };
 
     loadConsultationData();
-  }, [params, router, supabase]);
+  }, [resolvedParams, router, supabase]);
 
   // 섹션 제목 매핑
   const getSectionTitle = (section) => {
@@ -102,7 +104,7 @@ export default function ConsultationResultPage({ params }) {
 
     if (newSection >= 1 && newSection <= 7) {
       setCurrentSection(newSection);
-      const newUrl = `/consultation/result/${params.id}?section=${newSection}`;
+      const newUrl = `/consultation/result/${resolvedParams.id}?section=${newSection}`;
       router.push(newUrl, { scroll: false });
     }
   };
