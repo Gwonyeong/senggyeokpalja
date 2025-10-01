@@ -2,6 +2,7 @@
 
 import WebtoonPanel from "../../../../../components/consultation/WebtoonPanel";
 import { generateSectionContent } from "../../../../../lib/consultation-content-generator";
+import { formatTextToJSX } from "../../../../../lib/text-utils";
 import { useState, useEffect } from "react";
 
 export default function Section5Fortune({ consultation }) {
@@ -178,25 +179,23 @@ export default function Section5Fortune({ consultation }) {
       imageStyle: {
         objectFit: "contain",
         objectPosition: "center center",
-        width: "80%",
+        width: "100%",
         height: "100%",
         aspectRatio: "1 / 1",
-        left: "20%",
       },
       speechBubbles: [
         {
-          text: "대운은 10년 단위로 변화하는 큰 흐름이다.",
-          position: { top: "20%", left: "30%" },
-          size: "medium",
+          text: "다음은 세운이라네. \n세운은 해마다 바뀌는 신년운세로, 절기 입춘을 기준으로",
+          position: { top: "90%" },
+          size: "extraLarge",
           direction: "bottom-right",
-          maxWidth: "300px",
         },
       ],
     },
     {
       backgroundImage: imageList[2],
       imageStyle: {
-        objectFit: "cover",
+        objectFit: "contain",
         objectPosition: "center center",
         width: "100%",
         height: "100%",
@@ -204,7 +203,7 @@ export default function Section5Fortune({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "세운은 매년 변화하는 운의 흐름을 말한다.",
+          text: "다음장은 그대의 운에 대해 알려주겠네.",
           position: { top: "10%", left: "30%" },
           size: "large",
           direction: "bottom-right",
@@ -212,13 +211,6 @@ export default function Section5Fortune({ consultation }) {
           borderColor: "#383d41",
           textColor: "#383d41",
           maxWidth: "400px",
-        },
-        {
-          text: "이제 그대의 운세가 어떻게 흘러갈지 알 수 있을 것이다.",
-          position: { top: "90%", right: "30%" },
-          size: "medium",
-          direction: "bottom-right",
-          maxWidth: "350px",
         },
       ],
     },
@@ -402,7 +394,7 @@ export default function Section5Fortune({ consultation }) {
           imageStyle={panelConfigs[1].imageStyle}
           speechBubbles={panelConfigs[1].speechBubbles}
           panelStyle={{
-            height: "300px",
+            minHeight: "500px",
             background: "transparent",
             border: "none",
             borderRadius: "0",
@@ -416,6 +408,7 @@ export default function Section5Fortune({ consultation }) {
           style={{
             width: "100%",
             maxWidth: "100%",
+            marginTop: "100px",
             marginBottom: "30px",
             backgroundColor: "rgba(0, 0, 0, 0.3)",
             borderRadius: "12px",
@@ -456,10 +449,9 @@ export default function Section5Fortune({ consultation }) {
               color: "rgba(255, 255, 255, 0.8)",
               fontSize: "14px",
               lineHeight: "1.7",
-              whiteSpace: "pre-line",
             }}
           >
-            {fortuneData.sewun.content}
+            {formatTextToJSX(fortuneData.sewun.content)}
           </div>
         </div>
       )}
