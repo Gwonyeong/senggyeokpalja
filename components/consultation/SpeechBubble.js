@@ -29,6 +29,11 @@ const SpeechBubble = ({
         fontSize: 'min(24px, max(18px, 3.5vw))',
         padding: 'min(24px, max(18px, 3vw)) min(40px, max(30px, 5vw))',
         borderRadius: '50%'
+      },
+      extraLarge: {
+        fontSize: 'min(28px, max(20px, 4vw))',
+        padding: 'min(30px, max(24px, 4vw)) min(60px, max(48px, 8vw))',
+        borderRadius: '50%'
       }
     };
     return sizes[size] || sizes.medium;
@@ -127,15 +132,22 @@ const SpeechBubble = ({
         style={{
           position: 'absolute',
           top: position.top,
-          ...(position.left && { left: position.left }),
-          ...(position.right && { right: position.right }),
-          transform: position.right ? 'translate(50%, -50%)' : 'translate(-50%, -50%)',
-          minWidth: 'min(200px, max(150px, 25vw))',
-          maxWidth: `min(${maxWidth}, max(250px, 40vw))`,
+          ...(size === 'extraLarge' ? {
+            left: '5%',
+            right: '5%',
+            transform: 'translateY(-50%)',
+            width: '90%'
+          } : {
+            ...(position.left && { left: position.left }),
+            ...(position.right && { right: position.right }),
+            transform: position.right ? 'translate(50%, -50%)' : 'translate(-50%, -50%)',
+          }),
+          minWidth: size === 'extraLarge' ? 'auto' : 'min(200px, max(150px, 25vw))',
+          maxWidth: size === 'extraLarge' ? 'none' : `min(${maxWidth}, max(250px, 40vw))`,
           backgroundColor: backgroundColor,
           color: textColor,
           border: `min(3px, max(2px, 0.3vw)) solid ${borderColor}`,
-          borderRadius: '50%',
+          borderRadius: sizeStyles.borderRadius,
           padding: sizeStyles.padding,
           fontSize: sizeStyles.fontSize,
           fontWeight: '600',
@@ -148,7 +160,7 @@ const SpeechBubble = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          aspectRatio: '1.5 / 1'
+          aspectRatio: size === 'extraLarge' ? 'auto' : '1.5 / 1'
         }}
       >
         {text}
