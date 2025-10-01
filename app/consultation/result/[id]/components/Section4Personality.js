@@ -254,7 +254,7 @@ export default function Section4Personality({ consultation }) {
   // consultation이 없으면 로딩 표시
   if (!consultation) {
     return (
-      <div className="section-container">
+      <div>
         <div className="card-header">
           <h3 className="card-title">4. 나의 팔자 유형</h3>
         </div>
@@ -266,7 +266,7 @@ export default function Section4Personality({ consultation }) {
   }
 
   return (
-    <div className="section-container">
+    <div>
       {/* 1. 상단에 제목 */}
       <div className="card-header">
         <h3 className="card-title">4. 나의 팔자 유형</h3>

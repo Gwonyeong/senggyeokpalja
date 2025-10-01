@@ -140,7 +140,7 @@ export default function Section3FiveElements({ consultation }) {
   // consultation이 없으면 로딩 표시
   if (!consultation) {
     return (
-      <div className="section-container">
+      <div >
         <div className="card-header">
           <h3 className="card-title">3. 나의 신살에 대하여</h3>
         </div>
@@ -152,7 +152,7 @@ export default function Section3FiveElements({ consultation }) {
   }
 
   return (
-    <div className="section-container">
+    <div >
       {/* 1. 상단에 제목 */}
       <div className="card-header">
         <h3 className="card-title">3. 나의 신살에 대하여</h3>

@@ -3,7 +3,7 @@ import { generateSectionContent } from "../../../../../lib/consultation-content-
 
 export default function Section6Advice({ consultation }) {
   return (
-    <div className="section-container">
+    <div>
       <div className="card-header">
         <h3 className="card-title">섹션 6 - 조언 및 가이드</h3>
       </div>

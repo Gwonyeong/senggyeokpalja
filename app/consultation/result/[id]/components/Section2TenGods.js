@@ -42,7 +42,7 @@ export default function Section2TenGods({ consultation }) {
   // consultation이 없으면 로딩 표시
   if (!consultation) {
     return (
-      <div className="section-container">
+      <div>
         <div className="card-header">
           <h3 className="card-title">2. 나의 십성에 대하여</h3>
         </div>
@@ -54,7 +54,7 @@ export default function Section2TenGods({ consultation }) {
   }
 
   return (
-    <div className="section-container">
+    <div>
       <div className="card-header">
         <h3 className="card-title">2. 나의 십성에 대하여</h3>
       </div>

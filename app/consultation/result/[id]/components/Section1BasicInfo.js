@@ -239,7 +239,7 @@ export default function Section1BasicInfo({ consultation }) {
   ];
 
   return (
-    <div className="section-container">
+    <div>
       <div className="card-header">
         <h3 className="card-title">1. 나의 사주팔자에 대하여</h3>
       </div>
