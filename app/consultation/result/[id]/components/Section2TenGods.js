@@ -44,7 +44,7 @@ export default function Section2TenGods({ consultation }) {
     return (
       <div>
         <div className="card-header">
-          <h3 className="card-title">2. 나의 십성에 대하여</h3>
+          <h3 className="card-title">2. 나의 십성(십신)</h3>
         </div>
         <div style={{ padding: "20px", textAlign: "center", color: "#fff" }}>
           상담 데이터를 불러오는 중...
@@ -56,7 +56,7 @@ export default function Section2TenGods({ consultation }) {
   return (
     <div>
       <div className="card-header">
-        <h3 className="card-title">2. 나의 십성에 대하여</h3>
+        <h3 className="card-title">2. 나의 십성(십신)</h3>
       </div>
 
       {/* 첫 번째 웹툰 패널 - 도입부 */}

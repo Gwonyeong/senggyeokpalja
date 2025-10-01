@@ -140,9 +140,9 @@ export default function Section3FiveElements({ consultation }) {
   // consultation이 없으면 로딩 표시
   if (!consultation) {
     return (
-      <div >
+      <div>
         <div className="card-header">
-          <h3 className="card-title">3. 나의 신살에 대하여</h3>
+          <h3 className="card-title">3. 나의 신살</h3>
         </div>
         <div style={{ padding: "20px", textAlign: "center", color: "#fff" }}>
           상담 데이터를 불러오는 중...
@@ -152,10 +152,10 @@ export default function Section3FiveElements({ consultation }) {
   }
 
   return (
-    <div >
+    <div>
       {/* 1. 상단에 제목 */}
       <div className="card-header">
-        <h3 className="card-title">3. 나의 신살에 대하여</h3>
+        <h3 className="card-title">3. 나의 신살</h3>
       </div>
 
       {/* 2. 제목 아래에 웹툰 퍼널 2개 */}

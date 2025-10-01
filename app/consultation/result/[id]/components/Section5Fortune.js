@@ -185,7 +185,7 @@ export default function Section5Fortune({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "다음은 세운이라네. \n세운은 해마다 바뀌는 신년운세로, 절기 입춘을 기준으로",
+          text: "다음은 세운이라네.\n 세운은 해마다 바뀌는 신년운세로, 절기 입춘을 기준으로 매년 달라진다네.",
           position: { top: "90%" },
           size: "extraLarge",
           direction: "bottom-right",
@@ -221,7 +221,7 @@ export default function Section5Fortune({ consultation }) {
     return (
       <div>
         <div className="card-header">
-          <h3 className="card-title">5. 나의 대운, 세운</h3>
+          <h3 className="card-title">5. 나의 대운, 세운(총운)</h3>
         </div>
         <div style={{ padding: "20px", textAlign: "center", color: "#fff" }}>
           상담 데이터를 불러오는 중...
@@ -234,7 +234,7 @@ export default function Section5Fortune({ consultation }) {
     <div>
       {/* 1. 최상단 제목 */}
       <div className="card-header">
-        <h3 className="card-title">5. 나의 대운, 세운</h3>
+        <h3 className="card-title">5. 나의 대운, 세운(총운)</h3>
       </div>
 
       {/* 2. 그 아래 웹툰 퍼널 */}

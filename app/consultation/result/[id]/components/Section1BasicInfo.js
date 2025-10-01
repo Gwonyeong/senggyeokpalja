@@ -1,5 +1,7 @@
 import FiveElementsChart from "../../../../../components/consultation/FiveElementsChart";
 import WebtoonPanel from "../../../../../components/consultation/WebtoonPanel";
+import IntroWebtoonPanel from "../../../../../components/consultation/IntroWebtoonPanel";
+import SajuChart from "../../../../../components/consultation/SajuChart";
 import { generateSectionContent } from "../../../../../lib/consultation-content-generator";
 
 export default function Section1BasicInfo({ consultation }) {
@@ -243,6 +245,10 @@ export default function Section1BasicInfo({ consultation }) {
       <div className="card-header">
         <h3 className="card-title">1. 나의 사주팔자에 대하여</h3>
       </div>
+
+      {/* 제목 아래 추가된 웹툰 퍼널과 사주 원국표 */}
+      <IntroWebtoonPanel consultation={consultation} />
+      <SajuChart consultation={consultation} />
 
       <div style={{ marginBottom: "20px" }}>
         {panelConfigs.map((config, index) => (

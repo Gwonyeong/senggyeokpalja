@@ -84,7 +84,7 @@ export default function Section7Conclusion({ consultation }) {
     <div>
       {/* 최상단 제목 */}
       <div className="card-header">
-        <h3 className="card-title">7. 종합 결론과 조언</h3>
+        <h3 className="card-title">7. 토리의 마지막 조언</h3>
       </div>
 
       {/* 첫 번째 웹툰 퍼널 */}

@@ -189,7 +189,7 @@ export default function Section6Advice({ consultation }) {
     <div>
       {/* 1. 최상단 제목 */}
       <div className="card-header">
-        <h3 className="card-title">분야별 운세 조언</h3>
+        <h3 className="card-title">6. 나의 세운과 종합 운세</h3>
       </div>
 
       {/* 2. 첫 번째 웹툰 패널 */}
