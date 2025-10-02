@@ -55,10 +55,40 @@ export async function GET() {
       orderBy: {
         createdAt: 'desc'
       },
+      select: {
+        id: true,
+        personalityType: true,
+        mbtiType: true,
+        paljaType: true,
+        birthDate: true,
+        birthTime: true,
+        lunarCalendar: true,
+        analysisData: true,
+        createdAt: true
+      },
       take: 10
     });
 
-    return NextResponse.json(analysisResults);
+    // 응답 데이터 포맷팅
+    const formattedResults = analysisResults.map(result => {
+      // analysisData에서 이름 추출
+      const analysisData = result.analysisData || {};
+      const name = analysisData.name || '';
+
+      return {
+        id: result.id,
+        personalityType: result.personalityType,
+        mbtiType: result.mbtiType,
+        paljaType: result.paljaType,
+        birthDate: result.birthDate,
+        birthTime: result.birthTime,
+        lunarCalendar: result.lunarCalendar,
+        createdAt: result.createdAt,
+        name: name
+      };
+    });
+
+    return NextResponse.json(formattedResults);
   } catch (error) {
     console.error('Error fetching analysis history:', error);
     return NextResponse.json(
