@@ -747,7 +747,7 @@ ${shareUrl}`;
 
                       {/* 저장 상태 알림 */}
 
-                      <div className="synergy-card">
+                      <div className="synergy-card" ref={invitationRef}>
                         <h3>🔮 MBTI × 팔자 시너지 분석</h3>
                         <p>
                           당신의 MBTI와 팔자유형이 만나면
@@ -833,7 +833,13 @@ ${shareUrl}`;
 
           {/* Consultation 유도 모달 */}
           {showConsultationModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+            <div
+              className="fixed inset-0 flex items-center justify-center z-50 p-4"
+              style={{
+                background: "rgba(0, 0, 0, 0.8)",
+                backdropFilter: "blur(2px)"
+              }}
+            >
               <div
                 className="max-w-md w-full mx-4 relative"
                 style={{
@@ -874,42 +880,41 @@ ${shareUrl}`;
                     }}
                   >
                     <h3 className="text-2xl font-bold">
-                      토리의 특별한 제안 🍵
+                      잠깐,<br />
+                      숨겨진 찻잎의 맛이 궁금하지 않으신가?
                     </h3>
                   </div>
                   <p className="text-white mb-6 leading-relaxed text-base">
-                    기본 팔자유형 분석이 마음에 드셨나요?
+                    그대가 방금 맛본 것은,<br />
+                    가장 기본적인 '오늘의 차'일 뿐이라네.<br />
                     <br />
-                    <br />더 상세한{" "}
-                    <strong className="text-[#FCA311]">
-                      토리와의 1:1 상담
-                    </strong>
-                    을 통해
-                    <br />
-                    당신만의 인생 로드맵을 받아보세요!
+                    내 서재에는, 아주 귀한 손님에게만<br />
+                    내어주는 '비밀 찻잎'이 있지.
                   </p>
                   <div className="space-y-4">
                     <Link
                       href="/consultation"
-                      className="block w-full text-black py-4 px-6 font-bold transition-all duration-300 hover:transform hover:scale-105"
+                      className="block w-full text-black font-bold transition-all duration-300 hover:transform hover:scale-105"
                       onClick={() => setShowConsultationModal(false)}
                       style={{
                         background: "linear-gradient(135deg, #FCA311, #d4af37)",
                         borderRadius: "12px",
                         boxShadow: "0 4px 16px rgba(252, 163, 17, 0.3)",
+                        padding: "20px 24px",
                       }}
                     >
-                      토리와 상담하기 💬
+                      토리의 시그니처, 맛보기
                     </Link>
                     <button
                       onClick={() => setShowConsultationModal(false)}
-                      className="block w-full py-4 px-6 transition-all duration-300 hover:transform hover:scale-105"
+                      className="block w-full transition-all duration-300 hover:transform hover:scale-105"
                       style={{
                         background: "rgba(252, 163, 17, 0.1)",
                         border: "2px solid rgba(252, 163, 17, 0.5)",
                         color: "#FCA311",
                         borderRadius: "12px",
                         backdropFilter: "blur(4px)",
+                        padding: "20px 24px",
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.background = "rgba(252, 163, 17, 0.2)";
@@ -920,7 +925,7 @@ ${shareUrl}`;
                         e.target.style.borderColor = "rgba(252, 163, 17, 0.5)";
                       }}
                     >
-                      다음에 할게요
+                      오늘은 이만..
                     </button>
                   </div>
                 </div>

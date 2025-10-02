@@ -151,7 +151,6 @@ body.constrained-layout .mobile-menu {
 }
 
 body.constrained-layout .mobile-menu-overlay {
-  background-color: #131316;
   justify-content: center;
   align-items: center;
 }
@@ -394,9 +393,9 @@ header {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(2px);
-  z-index: 1999;
+  z-index: 99999;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -415,7 +414,7 @@ header {
   width: 320px;
   height: 100vh;
   background: var(--ink-black);
-  z-index: 2000;
+  z-index: 100000;
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
   overflow-y: auto;
