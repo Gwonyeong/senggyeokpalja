@@ -33,24 +33,12 @@ export async function GET() {
       );
     }
 
-    // Supabase Auth user의 email로 profiles 테이블에서 실제 profile 찾기
-    const profile = await prisma.profile.findUnique({
-      where: {
-        email: user.email
-      }
-    });
-
-    if (!profile) {
-      return NextResponse.json(
-        { error: 'Profile not found' },
-        { status: 404 }
-      );
-    }
-
-    // profiles의 id를 사용해서 AnalysisResult 조회
+    // 단일 쿼리로 조인하여 profile 조회와 analysis 조회를 동시에 처리
     const analysisResults = await prisma.analysisResult.findMany({
       where: {
-        userId: profile.id
+        user: {
+          email: user.email
+        }
       },
       orderBy: {
         createdAt: 'desc'

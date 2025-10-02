@@ -132,9 +132,13 @@ body.constrained-layout::after {
 /* 제한된 레이아웃일 때 헤더 스타일 */
 body.constrained-layout header {
   background-color: var(--background-color);
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
   width: 100%;
+  max-width: 600px;
 }
 
 /* 제한된 레이아웃일 때 메인 컨텐츠 스타일 */
@@ -142,6 +146,7 @@ body.constrained-layout main {
   background-color: var(--background-color);
   min-height: calc(100vh - 80px);
   width: 100%;
+  padding-top: 80px;
 }
 
 /* 제한된 레이아웃일 때 모바일 메뉴도 제한 */

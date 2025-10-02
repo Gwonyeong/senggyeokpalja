@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
-import Head from "next/head";
 import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
 import Link from "next/link";
 
-export default function AnalyzePage() {
+function AnalyzeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -952,10 +951,10 @@ ${shareUrl}`;
                   </div>
                   <p className="text-white mb-6 leading-relaxed text-base">
                     그대가 방금 맛본 것은,<br />
-                    가장 기본적인 '오늘의 차'일 뿐이라네.<br />
+                    가장 기본적인 &lsquo;오늘의 차&rsquo;일 뿐이라네.<br />
                     <br />
                     내 서재에는, 아주 귀한 손님에게만<br />
-                    내어주는 '비밀 찻잎'이 있지.
+                    내어주는 &lsquo;비밀 찻잎&rsquo;이 있지.
                   </p>
                   <div className="space-y-4">
                     <Link
@@ -1005,5 +1004,13 @@ ${shareUrl}`;
         </div>
       </PageWrapper>
     </AuthProtectedPage>
+  );
+}
+
+export default function AnalyzePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AnalyzeContent />
+    </Suspense>
   );
 }

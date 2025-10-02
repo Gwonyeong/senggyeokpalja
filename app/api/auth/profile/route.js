@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { DEFAULT_TRANSACTION_OPTIONS } from '@/lib/db-config';
 
 export async function POST() {
   try {
@@ -60,112 +61,51 @@ export async function POST() {
       lastSignInAt: new Date(),
     };
 
-
-    // 1. 먼저 현재 사용자 ID로 프로필 찾기
-    let profile = await prisma.profile.findUnique({
-      where: { id: user.id }
-    });
-
-    if (profile) {
-      // 기존 프로필이 있으면 업데이트
-      profile = await prisma.profile.update({
-        where: { id: user.id },
-        data: {
-          displayName: profileData.displayName,
-          photoUrl: profileData.photoUrl,
-          provider: profileData.provider,
-          emailVerified: profileData.emailVerified,
-          lastSignInAt: profileData.lastSignInAt,
-        }
+    // 단일 트랜잭션으로 모든 작업 처리 (연결 풀 최적화)
+    const profile = await prisma.$transaction(async (tx) => {
+      // 먼저 ID로 조회
+      let existingProfile = await tx.profile.findUnique({
+        where: { id: user.id }
       });
-    } else {
-      // 2. 사용자 ID로 찾을 수 없으면 이메일로 기존 프로필 찾기
-      const existingProfileByEmail = await prisma.profile.findUnique({
+
+      if (existingProfile) {
+        // ID로 찾은 경우 업데이트
+        return await tx.profile.update({
+          where: { id: user.id },
+          data: {
+            displayName: profileData.displayName,
+            photoUrl: profileData.photoUrl,
+            provider: profileData.provider,
+            emailVerified: profileData.emailVerified,
+            lastSignInAt: profileData.lastSignInAt,
+          }
+        });
+      }
+
+      // ID로 못 찾으면 이메일로 조회
+      const existingProfileByEmail = await tx.profile.findUnique({
         where: { email: profileData.email }
       });
 
       if (existingProfileByEmail) {
-        // 이메일로 기존 프로필을 찾은 경우 - 기존 프로필의 ID가 다르면 마이그레이션 처리
+        // 이메일로 찾은 경우 - ID가 다르면 기존 삭제 후 새로 생성
+        await tx.profile.delete({
+          where: { email: profileData.email }
+        });
 
-        if (existingProfileByEmail.id !== user.id) {
-
-          // 트랜잭션을 사용해서 안전하게 프로필 마이그레이션
-          profile = await prisma.$transaction(async (tx) => {
-            // 1. 기존 프로필 삭제
-            await tx.profile.delete({
-              where: { email: profileData.email }
-            });
-
-            // 2. 새 ID로 프로필 생성
-            return await tx.profile.create({
-              data: {
-                ...profileData,
-                // 기존 프로필의 생성일 유지
-                createdAt: existingProfileByEmail.createdAt
-              }
-            });
-          });
-
-        } else {
-          // ID가 같으면 단순 업데이트
-          profile = await prisma.profile.update({
-            where: { email: profileData.email },
-            data: {
-              displayName: profileData.displayName,
-              photoUrl: profileData.photoUrl,
-              provider: profileData.provider,
-              emailVerified: profileData.emailVerified,
-              lastSignInAt: profileData.lastSignInAt,
-            }
-          });
-        }
-      } else {
-        // 3. 완전히 새로운 사용자 - 새 프로필 생성
-        try {
-          profile = await prisma.profile.create({
-            data: profileData
-          });
-        } catch (createError) {
-          if (createError.code === 'P2002') {
-            // 동시성 이슈로 인한 중복 생성 시도 - 다시 조회
-            profile = await prisma.profile.findUnique({
-              where: { email: profileData.email }
-            });
-
-            if (profile) {
-              if (profile.id !== user.id) {
-                // ID가 다르면 마이그레이션 필요
-                profile = await prisma.$transaction(async (tx) => {
-                  await tx.profile.delete({
-                    where: { email: profileData.email }
-                  });
-                  return await tx.profile.create({
-                    data: {
-                      ...profileData,
-                      createdAt: profile.createdAt
-                    }
-                  });
-                });
-              } else {
-                // ID가 같으면 단순 업데이트
-                profile = await prisma.profile.update({
-                  where: { email: profileData.email },
-                  data: {
-                    displayName: profileData.displayName,
-                    photoUrl: profileData.photoUrl,
-                    provider: profileData.provider,
-                    emailVerified: profileData.emailVerified,
-                    lastSignInAt: profileData.lastSignInAt,
-                  }
-                });
-              }
-            }
-          } else {
-            throw createError;
+        return await tx.profile.create({
+          data: {
+            ...profileData,
+            createdAt: existingProfileByEmail.createdAt
           }
-        }
+        });
       }
-    }
+
+      // 완전히 새로운 사용자
+      return await tx.profile.create({
+        data: profileData
+      });
+    }, DEFAULT_TRANSACTION_OPTIONS);
 
     return NextResponse.json({
       success: true,
@@ -174,6 +114,31 @@ export async function POST() {
 
   } catch (error) {
     console.error('Exception in profile upsert:', error);
+
+    // P2002 에러 (unique constraint) 재시도 로직
+    if (error.code === 'P2002') {
+      try {
+        // 단순 조회 후 반환
+        const existingProfile = await prisma.profile.findFirst({
+          where: {
+            OR: [
+              { id: profileData.id },
+              { email: profileData.email }
+            ]
+          }
+        });
+
+        if (existingProfile) {
+          return NextResponse.json({
+            success: true,
+            profile: existingProfile
+          });
+        }
+      } catch (retryError) {
+        console.error('Retry failed:', retryError);
+      }
+    }
+
     return NextResponse.json(
       {
         success: false,
