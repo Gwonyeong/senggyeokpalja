@@ -94,6 +94,11 @@ export default function ConsultationResultPage({ params }) {
     return titles[section] || "알 수 없는 섹션";
   };
 
+  // 스크롤을 최상단으로 이동하는 함수
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   // 섹션 변경 함수
   const changeSection = (newSection) => {
     // 섹션 1이 아닌데 결제가 안됐다면 접근 불가
@@ -108,7 +113,29 @@ export default function ConsultationResultPage({ params }) {
       router.push(newUrl, { scroll: false });
 
       // 스크롤을 최상단으로 이동
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollToTop();
+    }
+  };
+
+  // 버튼 클릭 핸들러 (disabled 상태에서도 스크롤 수행)
+  const handlePreviousClick = () => {
+    if (currentSection === 1) {
+      // 첫 번째 섹션에서는 섹션 변경 없이 스크롤만
+      scrollToTop();
+    } else {
+      changeSection(currentSection - 1);
+    }
+  };
+
+  const handleNextClick = () => {
+    if (currentSection === 7) {
+      // 마지막 섹션에서는 섹션 변경 없이 스크롤만
+      scrollToTop();
+    } else if (currentSection === 1 && !consultation.isPaid) {
+      // 결제가 안된 상태에서는 스크롤만
+      scrollToTop();
+    } else {
+      changeSection(currentSection + 1);
     }
   };
 
@@ -405,18 +432,17 @@ export default function ConsultationResultPage({ params }) {
                   }}
                 >
                   <button
-                    onClick={() => changeSection(currentSection - 1)}
-                    disabled={currentSection === 1}
+                    onClick={handlePreviousClick}
                     style={{
                       padding: "12px 24px",
                       backgroundColor:
-                        currentSection === 1 ? "#333" : "#d4af37",
-                      color: currentSection === 1 ? "#666" : "#000",
+                        currentSection === 1 ? "#666" : "#d4af37",
+                      color: currentSection === 1 ? "#999" : "#000",
                       border: "none",
                       borderRadius: "6px",
                       fontSize: "14px",
                       fontWeight: "600",
-                      cursor: currentSection === 1 ? "not-allowed" : "pointer",
+                      cursor: "pointer",
                       transition: "all 0.3s ease",
                       flex: "1",
                       minWidth: "0",
@@ -427,36 +453,28 @@ export default function ConsultationResultPage({ params }) {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    이전 섹션
+                    {currentSection === 1 ? "맨 위로" : "이전 섹션"}
                   </button>
 
                   <button
-                    onClick={() => changeSection(currentSection + 1)}
-                    disabled={
-                      currentSection === 7 ||
-                      (currentSection === 1 && !consultation.isPaid)
-                    }
+                    onClick={handleNextClick}
                     style={{
                       padding: "12px 24px",
                       backgroundColor:
                         currentSection === 7 ||
                         (currentSection === 1 && !consultation.isPaid)
-                          ? "#333"
+                          ? "#666"
                           : "#d4af37",
                       color:
                         currentSection === 7 ||
                         (currentSection === 1 && !consultation.isPaid)
-                          ? "#666"
+                          ? "#999"
                           : "#000",
                       border: "none",
                       borderRadius: "6px",
                       fontSize: "14px",
                       fontWeight: "600",
-                      cursor:
-                        currentSection === 7 ||
-                        (currentSection === 1 && !consultation.isPaid)
-                          ? "not-allowed"
-                          : "pointer",
+                      cursor: "pointer",
                       transition: "all 0.3s ease",
                       flex: "1",
                       minWidth: "0",
@@ -468,7 +486,9 @@ export default function ConsultationResultPage({ params }) {
                     }}
                   >
                     {currentSection === 1 && !consultation.isPaid
-                      ? "결제 후 이용 가능"
+                      ? "맨 위로"
+                      : currentSection === 7
+                      ? "맨 위로"
                       : "다음 섹션"}
                   </button>
                 </div>

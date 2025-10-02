@@ -278,7 +278,7 @@ export default function Section1BasicInfo({ consultation }) {
       <FiveElementsChart consultation={consultation} />
 
       {/* 오행 해석 후 추가 웹툰 패널 */}
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "120px", marginBottom: "120px" }}>
         <WebtoonPanel
           key="section1-final-panel"
           sectionNumber={1}
