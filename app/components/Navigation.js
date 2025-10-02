@@ -506,7 +506,7 @@ export default function Navigation() {
                 }}
               >
                 <a
-                  href="https://open.kakao.com/your-link"
+                  href="http://pf.kakao.com/_BxnBxmn/friend"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -520,13 +520,13 @@ export default function Navigation() {
                 >
                   <Image
                     src="/assets/images/kakao_symbol.png"
-                    alt="카카오톡"
+                    alt="카카오톡 채널 추가"
                     width={32}
                     height={32}
                   />
                 </a>
                 <a
-                  href="https://instagram.com/your-link"
+                  href="https://www.instagram.com/palja_tory/"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -540,7 +540,7 @@ export default function Navigation() {
                 >
                   <Image
                     src="/assets/images/instagram_symbol.png"
-                    alt="인스타그램"
+                    alt="인스타그램 팔로우"
                     width={32}
                     height={32}
                   />

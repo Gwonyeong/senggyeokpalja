@@ -12,10 +12,6 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
 
   if (!isOpen) return null;
 
-  const handleKakaoClick = () => {
-    // 메인페이지와 동일한 카카오톡 채널 링크
-    window.open("http://pf.kakao.com/_BxnBxmn/friend", "_blank");
-  };
 
   const handlePassCodeClick = () => {
     setShowPasscodeInput(true);
@@ -151,8 +147,10 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                 gap: "15px"
               }}>
                 {/* 카카오톡 채널 추가 버튼 */}
-                <button
-                  onClick={handleKakaoClick}
+                <a
+                  href="http://pf.kakao.com/_BxnBxmn/friend"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
                     flex: 1,
                     padding: "15px 20px",
@@ -167,7 +165,8 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "8px"
+                    gap: "8px",
+                    textDecoration: "none"
                   }}
                   onMouseOver={(e) => e.target.style.backgroundColor = "#FFD700"}
                   onMouseOut={(e) => e.target.style.backgroundColor = "#FEE500"}
@@ -180,7 +179,7 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                     style={{ objectFit: "contain" }}
                   />
                   카카오톡 채널 추가하기
-                </button>
+                </a>
 
                 {/* 통행증 입력하기 버튼 */}
                 <button
