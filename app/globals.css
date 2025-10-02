@@ -3519,3 +3519,42 @@ input[type="text"]::placeholder {
     font-size: 0.9rem;
   }
 }
+
+/* ============================================= */
+/* Mypage Mobile Responsive Styles */
+/* ============================================= */
+@media (max-width: 768px) {
+  .user-profile {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  .user-profile > div:first-child {
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .user-info {
+    text-align: center !important;
+    width: 100% !important;
+    margin-top: 10px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .user-info h3,
+  .user-info p {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  /* 프로필 이미지 컨테이너 중앙 정렬 */
+  .profile-photo {
+    margin: 0 auto !important;
+  }
+}
