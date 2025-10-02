@@ -16,6 +16,8 @@ import Section6Advice from "./components/Section6Advice";
 import Section7Conclusion from "./components/Section7Conclusion";
 import DiscountTimer from "../../../../components/DiscountTimer";
 
+import Image from "next/image";
+
 export default function ConsultationResultPage({ params }) {
   // Next.js 15에서 params는 Promise이므로 use()로 unwrap
   const resolvedParams = use(params);
@@ -213,201 +215,233 @@ export default function ConsultationResultPage({ params }) {
                 {/* 섹션 내용 렌더링 */}
                 {renderSectionContent()}
 
-                {/* 섹션 1에서 결제가 안됐을 때만 결제 버튼 표시 */}
+                {/* 섹션 1에서 결제가 안됐을 때만 웹툰 퍼널과 결제 버튼 표시 */}
                 {currentSection === 1 && !consultation.isPaid && (
-                  <div
-                    style={{
-                      padding: "30px",
-                      background: "rgba(212, 175, 55, 0.05)",
-                      border: "2px solid #FCA311",
-                      borderRadius: "20px",
-                      marginBottom: "30px",
-                      boxShadow: "0 8px 24px rgba(252, 163, 17, 0.2)",
-                      position: "relative",
-                      overflow: "hidden",
-                      marginTop: "100px",
-                    }}
-                  >
-                    {/* 오행 장식 효과 */}
+                  <>
+                    {/* 웹툰 퍼널 */}
+
+                    {/* 결제 박스 */}
                     <div
                       style={{
-                        position: "absolute",
-                        top: "-5px",
-                        left: "-5px",
-                        right: "-5px",
-                        bottom: "-5px",
-                        // background: "linear-gradient(45deg, #22c55e, #ef4444, #3b82f6, #e5e7eb, #eab308)",
-                        opacity: "0.1",
+                        padding: "30px",
+                        background: "rgba(212, 175, 55, 0.05)",
+                        border: "2px solid #FCA311",
                         borderRadius: "20px",
-                        zIndex: "0",
+                        marginBottom: "30px",
+                        boxShadow: "0 8px 24px rgba(252, 163, 17, 0.2)",
+                        position: "relative",
+                        overflow: "hidden",
+                        marginTop: "100px",
                       }}
-                    ></div>
-
-                    <div style={{ position: "relative", zIndex: "1" }}>
-                      <h3
-                        style={{
-                          marginBottom: "20px",
-                          color: "#FCA311",
-                          fontSize: "24px",
-                          fontFamily: "'Noto Serif KR', serif",
-                          textAlign: "center",
-                          letterSpacing: "2px",
-                        }}
-                      >
-                        토리와 상담
-                      </h3>
-
-                      <p
-                        style={{
-                          marginBottom: "15px",
-                          color: "#fff",
-                          fontSize: "16px",
-                          lineHeight: "1.8",
-                          textAlign: "center",
-                          fontFamily: "'Noto Serif KR', serif",
-                        }}
-                      >
-                        &ldquo;그대의 운명이 담긴 두루마리,
-                        <br />
-                        다음 장을 펼치려면 약간의{" "}
-                        <span style={{ color: "#FCA311", fontWeight: "bold" }}>
-                          복채
-                        </span>
-                        가 필요하다네.&rdquo;
-                      </p>
-
-                      <p
-                        style={{
-                          marginBottom: "25px",
-                          fontSize: "14px",
-                          color: "#999",
-                          textAlign: "center",
-                        }}
-                      >
-                        운명의 오행이 그대를 기다리고 있다네
-                      </p>
-
+                    >
+                      {/* 오행 장식 효과 */}
                       <div
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          marginBottom: "25px",
-                          gap: "10px",
+                          position: "absolute",
+                          top: "-5px",
+                          left: "-5px",
+                          right: "-5px",
+                          bottom: "-5px",
+                          // background: "linear-gradient(45deg, #22c55e, #ef4444, #3b82f6, #e5e7eb, #eab308)",
+                          opacity: "0.1",
+                          borderRadius: "20px",
+                          zIndex: "0",
                         }}
-                      >
-                        <div
+                      ></div>
+
+                      <div style={{ position: "relative", zIndex: "1" }}>
+                        <h3
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "15px",
+                            marginBottom: "20px",
+                            color: "#FCA311",
+                            fontSize: "24px",
+                            fontFamily: "'Noto Serif KR', serif",
+                            textAlign: "center",
+                            letterSpacing: "2px",
                           }}
                         >
-                          <div
-                            style={{
-                              width: "60px",
-                              height: "2px",
-                              background:
-                                "linear-gradient(90deg, transparent, #FCA311, transparent)",
-                            }}
-                          ></div>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              gap: "5px",
-                            }}
+                          토리와 상담
+                        </h3>
+
+                        <p
+                          style={{
+                            marginBottom: "15px",
+                            color: "#fff",
+                            fontSize: "16px",
+                            lineHeight: "1.8",
+                            textAlign: "center",
+                            fontFamily: "'Noto Serif KR', serif",
+                          }}
+                        >
+                          &ldquo;그대의 운명이 담긴 두루마리,
+                          <br />
+                          다음 장을 펼치려면 약간의{" "}
+                          <span
+                            style={{ color: "#FCA311", fontWeight: "bold" }}
                           >
-                            <p
-                              style={{
-                                fontSize: "16px",
-                                color: "#666",
-                                textDecoration: "line-through",
-                                fontFamily: "'Noto Serif KR', serif",
-                              }}
-                            >
-                              복채: 49,000원
-                            </p>
-                            <p
-                              style={{
-                                fontSize: "24px",
-                                fontWeight: "bold",
-                                color: "#FCA311",
-                                fontFamily: "'Noto Serif KR', serif",
-                              }}
-                            >
-                              29,000원
-                            </p>
-                          </div>
-                          <div
+                            복채
+                          </span>
+                          가 필요하다네.&rdquo;
+                        </p>
+
+                        <p
+                          style={{
+                            marginBottom: "15px",
+                            fontSize: "14px",
+                            color: "#999",
+                            textAlign: "center",
+                          }}
+                        >
+                          운명의 오행이 그대를 기다리고 있다네
+                        </p>
+
+                        {/* 성격팔자 이미지 */}
+                        <div
+                          style={{
+                            maxWidth: "300px",
+                            margin: "0 auto 25px auto",
+                            borderRadius: "10px",
+                            overflow: "hidden",
+                            boxShadow: "0 6px 16px rgba(252, 163, 17, 0.3)",
+                            border: "2px solid rgba(212, 175, 55, 0.4)",
+                          }}
+                        >
+                          <Image
+                            src="/assets/images/성격팔자.png"
+                            alt="인생 스포일러 목차"
+                            width={300}
+                            height={450}
                             style={{
-                              width: "60px",
-                              height: "2px",
-                              background:
-                                "linear-gradient(90deg, transparent, #FCA311, transparent)",
+                              width: "100%",
+                              height: "auto",
+                              display: "block",
                             }}
-                          ></div>
+                            priority
+                          />
                         </div>
+
                         <div
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
-                            gap: "8px",
+                            justifyContent: "center",
+                            marginBottom: "25px",
+                            gap: "10px",
                           }}
                         >
-                          <span
+                          <div
                             style={{
-                              fontSize: "12px",
-                              color: "#ef4444",
-                              fontWeight: "600",
-                              padding: "4px 12px",
-                              background: "rgba(239, 68, 68, 0.1)",
-                              borderRadius: "12px",
-                              border: "1px solid rgba(239, 68, 68, 0.2)",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "15px",
                             }}
                           >
-                            40% 할인 중
-                          </span>
-                          <DiscountTimer />
+                            <div
+                              style={{
+                                width: "60px",
+                                height: "2px",
+                                background:
+                                  "linear-gradient(90deg, transparent, #FCA311, transparent)",
+                              }}
+                            ></div>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "5px",
+                              }}
+                            >
+                              <p
+                                style={{
+                                  fontSize: "16px",
+                                  color: "#666",
+                                  textDecoration: "line-through",
+                                  fontFamily: "'Noto Serif KR', serif",
+                                }}
+                              >
+                                복채: 49,000원
+                              </p>
+                              <p
+                                style={{
+                                  fontSize: "24px",
+                                  fontWeight: "bold",
+                                  color: "#FCA311",
+                                  fontFamily: "'Noto Serif KR', serif",
+                                }}
+                              >
+                                29,000원
+                              </p>
+                            </div>
+                            <div
+                              style={{
+                                width: "60px",
+                                height: "2px",
+                                background:
+                                  "linear-gradient(90deg, transparent, #FCA311, transparent)",
+                              }}
+                            ></div>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: "12px",
+                                color: "#ef4444",
+                                fontWeight: "600",
+                                padding: "4px 12px",
+                                background: "rgba(239, 68, 68, 0.1)",
+                                borderRadius: "12px",
+                                border: "1px solid rgba(239, 68, 68, 0.2)",
+                              }}
+                            >
+                              40% 할인 중
+                            </span>
+                            <DiscountTimer />
+                          </div>
                         </div>
-                      </div>
 
-                      <button
-                        onClick={() => setShowEventModal(true)}
-                        style={{
-                          width: "100%",
-                          padding: "18px",
-                          background:
-                            "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
-                          color: "#000",
-                          border: "2px solid #FCA311",
-                          borderRadius: "15px",
-                          fontSize: "18px",
-                          fontWeight: "700",
-                          cursor: "pointer",
-                          transition: "all 0.3s ease",
-                          boxShadow: "0 4px 12px rgba(252, 163, 17, 0.3)",
-                          fontFamily: "'Noto Serif KR', serif",
-                          letterSpacing: "1px",
-                        }}
-                        onMouseOver={(e) => {
-                          e.target.style.transform = "translateY(-2px)";
-                          e.target.style.boxShadow =
-                            "0 6px 20px rgba(252, 163, 17, 0.4)";
-                        }}
-                        onMouseOut={(e) => {
-                          e.target.style.transform = "translateY(0)";
-                          e.target.style.boxShadow =
-                            "0 4px 12px rgba(252, 163, 17, 0.3)";
-                        }}
-                      >
-                        토리와 상담받기
-                      </button>
+                        <button
+                          onClick={() => setShowEventModal(true)}
+                          style={{
+                            width: "100%",
+                            padding: "18px",
+                            background:
+                              "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
+                            color: "#000",
+                            border: "2px solid #FCA311",
+                            borderRadius: "15px",
+                            fontSize: "18px",
+                            fontWeight: "700",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 4px 12px rgba(252, 163, 17, 0.3)",
+                            fontFamily: "'Noto Serif KR', serif",
+                            letterSpacing: "1px",
+                          }}
+                          onMouseOver={(e) => {
+                            e.target.style.transform = "translateY(-2px)";
+                            e.target.style.boxShadow =
+                              "0 6px 20px rgba(252, 163, 17, 0.4)";
+                          }}
+                          onMouseOut={(e) => {
+                            e.target.style.transform = "translateY(0)";
+                            e.target.style.boxShadow =
+                              "0 4px 12px rgba(252, 163, 17, 0.3)";
+                          }}
+                        >
+                          토리와 상담받기
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
 
                 {/* 추석 이벤트 모달 */}
