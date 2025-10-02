@@ -205,12 +205,10 @@ export default function Section5Fortune({ consultation }) {
         {
           text: "다음장은 그대의 운에 대해 알려주겠네.",
           position: { top: "10%", left: "30%" },
-          size: "large",
+          size: "medium",
           direction: "bottom-right",
-          backgroundColor: "#e2e3e5",
-          borderColor: "#383d41",
-          textColor: "#383d41",
-          maxWidth: "400px",
+
+          maxWidth: "300px",
         },
       ],
     },
@@ -457,7 +455,7 @@ export default function Section5Fortune({ consultation }) {
       )}
 
       {/* 6. 그 아래 웹툰 퍼널 */}
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "120px" }}>
         <WebtoonPanel
           key="section5-panel-3"
           sectionNumber={5}

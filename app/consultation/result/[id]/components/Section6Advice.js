@@ -193,7 +193,7 @@ export default function Section6Advice({ consultation }) {
       </div>
 
       {/* 2. 첫 번째 웹툰 패널 */}
-      <div style={{ marginBottom: "60px" }}>
+      <div style={{ marginBottom: "120px", marginTop: "120px" }}>
         <WebtoonPanel
           backgroundImage={panelConfigs[0].backgroundImage}
           imageStyle={panelConfigs[0].imageStyle}

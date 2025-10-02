@@ -27,49 +27,52 @@ export default function Section4Personality({ consultation }) {
   }, []);
 
   // 오행 개수 계산 (간략화된 버전)
-  const calculateOhaengCount = useCallback((consultation) => {
-    const count = { 木: 0, 火: 0, 土: 0, 金: 0, 수: 0 };
+  const calculateOhaengCount = useCallback(
+    (consultation) => {
+      const count = { 木: 0, 火: 0, 土: 0, 金: 0, 수: 0 };
 
-    // 천간 오행
-    const ganOhaengMap = {
-      甲: "木",
-      乙: "木",
-      丙: "火",
-      丁: "火",
-      戊: "土",
-      己: "土",
-      庚: "金",
-      辛: "金",
-      壬: "수",
-      癸: "수",
-    };
+      // 천간 오행
+      const ganOhaengMap = {
+        甲: "木",
+        乙: "木",
+        丙: "火",
+        丁: "火",
+        戊: "土",
+        己: "土",
+        庚: "金",
+        辛: "金",
+        壬: "수",
+        癸: "수",
+      };
 
-    [
-      consultation.yearStem,
-      consultation.monthStem,
-      consultation.dayStem,
-      consultation.timeStem,
-    ].forEach((stem) => {
-      if (stem && ganOhaengMap[stem]) {
-        count[ganOhaengMap[stem]]++;
-      }
-    });
+      [
+        consultation.yearStem,
+        consultation.monthStem,
+        consultation.dayStem,
+        consultation.timeStem,
+      ].forEach((stem) => {
+        if (stem && ganOhaengMap[stem]) {
+          count[ganOhaengMap[stem]]++;
+        }
+      });
 
-    // 지지 오행
-    [
-      consultation.yearBranch,
-      consultation.monthBranch,
-      consultation.dayBranch,
-      consultation.timeBranch,
-    ].forEach((branch) => {
-      if (branch) {
-        const ohaeng = getOhaengFromJiji(branch);
-        count[ohaeng]++;
-      }
-    });
+      // 지지 오행
+      [
+        consultation.yearBranch,
+        consultation.monthBranch,
+        consultation.dayBranch,
+        consultation.timeBranch,
+      ].forEach((branch) => {
+        if (branch) {
+          const ohaeng = getOhaengFromJiji(branch);
+          count[ohaeng]++;
+        }
+      });
 
-    return count;
-  }, [getOhaengFromJiji]);
+      return count;
+    },
+    [getOhaengFromJiji]
+  );
 
   // 팔자 유형 데이터베이스 로드
   useEffect(() => {
@@ -154,7 +157,13 @@ export default function Section4Personality({ consultation }) {
         console.error("팔자 유형 계산 실패:", error);
       }
     }
-  }, [consultation, databaseData, detailedDescriptions, calculateOhaengCount, getOhaengFromJiji]);
+  }, [
+    consultation,
+    databaseData,
+    detailedDescriptions,
+    calculateOhaengCount,
+    getOhaengFromJiji,
+  ]);
 
   // 십성 개수 계산 (데이터베이스에서 가져오기)
   const calculateSibsinCount = (consultation) => {
@@ -232,21 +241,19 @@ export default function Section4Personality({ consultation }) {
     },
     speechBubbles: [
       {
-        text: "이제 그대의 팔자 유형이 어떤 의미를 갖는지 알았겠지?",
+        text: "이 특별한 팔자유형이 그대의 인생을 어떻게 이끌어 나갈지 기대되는군.",
         position: { top: "10%", left: "30%" },
-        size: "large",
+        size: "medium",
         direction: "bottom-right",
-        backgroundColor: "#e2e3e5",
-        borderColor: "#383d41",
-        textColor: "#383d41",
-        maxWidth: "400px",
+
+        maxWidth: "250px",
       },
       {
-        text: "이 특별한 성격이 그대의 인생을 어떻게 이끌어 나갈지 기대되는군.",
+        text: "그대의 팔자유형을 봤으니 이제 대운을 보여주겠네.",
         position: { top: "90%", right: "30%" },
         size: "medium",
         direction: "bottom-right",
-        maxWidth: "350px",
+        maxWidth: "250px",
       },
     ],
   };
@@ -566,8 +573,7 @@ export default function Section4Personality({ consultation }) {
                   fontFamily: "Noto Serif KR",
                 }}
               >
-                근원적 약점:{" "}
-                {paljaTypeData.detailedData.그림자.근원적약점.제목}
+                근원적 약점: {paljaTypeData.detailedData.그림자.근원적약점.제목}
               </h6>
               <div
                 style={{
@@ -612,7 +618,6 @@ export default function Section4Personality({ consultation }) {
                   ))}
               </div>
             </div>
-
           </div>
 
           {/* 토리의 처방전 박스 */}
@@ -658,13 +663,13 @@ export default function Section4Personality({ consultation }) {
               {(() => {
                 const sentences = paljaTypeData.detailedData.그림자.토리의처방전
                   .split(/[.!?]/)
-                  .filter(sentence => sentence.trim());
+                  .filter((sentence) => sentence.trim());
 
                 return sentences.map((sentence, index) => (
                   <div
                     key={index}
                     style={{
-                      marginBottom: index < sentences.length - 1 ? "8px" : "0"
+                      marginBottom: index < sentences.length - 1 ? "8px" : "0",
                     }}
                   >
                     {sentence.trim()}.
@@ -701,8 +706,7 @@ export default function Section4Personality({ consultation }) {
                 fontWeight: "bold",
                 color: "#d4af37",
               }}
-            >
-            </span>
+            ></span>
             <h4
               style={{
                 color: "#d4af37",
