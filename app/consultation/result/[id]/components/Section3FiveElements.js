@@ -87,20 +87,18 @@ export default function Section3FiveElements({ consultation }) {
       speechBubbles: [
         {
           text: "신살은 그대의 고난과 시련을 주는 운석이 될 수도 있다네",
-          position: { top: "20%", left: "30%" },
-          size: "large",
+          position: { top: "25%", left: "30%" },
+          size: "small",
           direction: "bottom-right",
-          backgroundColor: "#e2e3e5",
-          borderColor: "#383d41",
-          textColor: "#383d41",
-          maxWidth: "350px",
+
+          maxWidth: "250px",
         },
         {
           text: "고통을 이겨내고 성장할 에너지가 될 수도 있지. 그대의 무기로 만드는게 중요하다네.",
-          position: { top: "80%", right: "30%" },
-          size: "large",
+          position: { top: "75%", right: "30%" },
+          size: "small",
           direction: "bottom-left",
-          maxWidth: "350px",
+          maxWidth: "250px",
         },
       ],
     },
@@ -120,19 +118,17 @@ export default function Section3FiveElements({ consultation }) {
       {
         text: "이제 그대의 신살이 어떤 의미를 갖는지 알았겠지?",
         position: { top: "10%", left: "30%" },
-        size: "large",
+        size: "medium",
         direction: "bottom-right",
-        backgroundColor: "#e2e3e5",
-        borderColor: "#383d41",
-        textColor: "#383d41",
-        maxWidth: "400px",
+
+        maxWidth: "250px",
       },
       {
-        text: "신살은 그대의 인생에 특별한 영향을 미치는 별의 기운이라네.",
+        text: "다음장은 팔자유형에 대해 설명하곘네.",
         position: { top: "90%", right: "30%" },
         size: "medium",
         direction: "bottom-right",
-        maxWidth: "350px",
+        maxWidth: "250px",
       },
     ],
   };
@@ -524,7 +520,7 @@ export default function Section3FiveElements({ consultation }) {
       </div>
 
       {/* 4. 신살 설명 아래 웹툰 퍼널 하나 */}
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "120px", marginBottom: "120px" }}>
         <WebtoonPanel
           key="section3-bottom-panel"
           sectionNumber={3}
