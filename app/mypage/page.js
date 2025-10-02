@@ -730,7 +730,7 @@ export default function MyPage() {
                           card.style.backgroundColor = "var(--card-bg-color)";
                         }}
                         onClick={() => {
-                          router.push(`/result/${result.id}`);
+                          router.push(`/analyze?type=${result.personalityType}`);
                         }}
                       >
                         <div

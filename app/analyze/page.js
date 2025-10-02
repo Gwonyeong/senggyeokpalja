@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
 import Head from "next/head";
@@ -10,6 +11,8 @@ import AuthProtectedPage from "../components/AuthProtectedPage";
 import Link from "next/link";
 
 export default function AnalyzePage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     year: "",
@@ -26,6 +29,7 @@ export default function AnalyzePage() {
   const [savedToDb, setSavedToDb] = useState(false);
   const [showConsultationModal, setShowConsultationModal] = useState(false);
   const [modalShown, setModalShown] = useState(false);
+  const [isQueryMode, setIsQueryMode] = useState(false);
   const invitationRef = useRef(null);
 
   // 사용자 인증 상태 확인
@@ -49,6 +53,55 @@ export default function AnalyzePage() {
 
     return () => subscription?.unsubscribe();
   }, []);
+
+  // Query parameter에서 팔자 유형 확인 및 자동 결과 표시
+  useEffect(() => {
+    const type = searchParams.get('type');
+    if (type && type.length === 4) {
+      // 유효한 팔자 유형인지 확인
+      const validTypes = [
+        'WSIJ', 'WSIY', 'WSHJ', 'WSHY',
+        'WGIJ', 'WGIY', 'WGHJ', 'WGHY',
+        'NSIJ', 'NSIY', 'NSHJ', 'NSHY',
+        'NGIJ', 'NGIY', 'NGHJ', 'NGHY'
+      ];
+
+      if (validTypes.includes(type.toUpperCase())) {
+        setIsQueryMode(true);
+        loadTypeFromQuery(type.toUpperCase());
+      }
+    } else {
+      setIsQueryMode(false);
+    }
+  }, [searchParams]);
+
+  // Query parameter로부터 팔자 유형 로드
+  const loadTypeFromQuery = async (typeCode) => {
+    try {
+      setLoading(true);
+
+      // 데이터베이스 로드
+      const response = await fetch("/database.json");
+      const database = await response.json();
+
+      const typeData = database[typeCode];
+      if (typeData) {
+        const mockResult = {
+          personalityType: typeCode,
+          typeData: typeData,
+          database: database
+        };
+
+        setResult(mockResult);
+        setFormData(prev => ({ ...prev, name: "미리보기" }));
+      }
+    } catch (error) {
+      console.error("Query 타입 로드 실패:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // 궁합 데이터
   const compatibilityData = {
@@ -364,7 +417,8 @@ ${shareUrl}`;
             <section id="analyzer">
               <div className="container">
                 <div className="analyzer-layout">
-                  <div className="card analyzer-card">
+                  {!isQueryMode && (
+                    <div className="card analyzer-card">
                     <div className="card-header">
                       <h2 className="card-title sage-title">
                         <span className="sage-subtitle">
@@ -602,7 +656,8 @@ ${shareUrl}`;
                         </button>
                       </div>
                     </form>
-                  </div>
+                    </div>
+                  )}
 
                   {result && (
                     <div
@@ -834,10 +889,16 @@ ${shareUrl}`;
           {/* Consultation 유도 모달 */}
           {showConsultationModal && (
             <div
-              className="fixed inset-0 flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 flex items-center justify-center p-4"
               style={{
                 background: "rgba(0, 0, 0, 0.8)",
-                backdropFilter: "blur(2px)"
+                backdropFilter: "blur(2px)",
+                zIndex: 999999
+              }}
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setShowConsultationModal(false);
+                }
               }}
             >
               <div
@@ -851,6 +912,8 @@ ${shareUrl}`;
                   backdropFilter: "blur(8px)",
                   boxShadow:
                     "0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(252, 163, 17, 0.2)",
+                  maxHeight: "90vh",
+                  overflowY: "auto"
                 }}
               >
                 <button
@@ -865,6 +928,9 @@ ${shareUrl}`;
                     borderRadius: "50%",
                     background: "rgba(252, 163, 17, 0.1)",
                     border: "1px solid rgba(252, 163, 17, 0.3)",
+                    minHeight: "44px",
+                    minWidth: "44px",
+                    touchAction: "manipulation"
                   }}
                 >
                   ×
@@ -901,6 +967,8 @@ ${shareUrl}`;
                         borderRadius: "12px",
                         boxShadow: "0 4px 16px rgba(252, 163, 17, 0.3)",
                         padding: "20px 24px",
+                        minHeight: "44px",
+                        touchAction: "manipulation"
                       }}
                     >
                       토리의 시그니처, 맛보기
@@ -915,6 +983,8 @@ ${shareUrl}`;
                         borderRadius: "12px",
                         backdropFilter: "blur(4px)",
                         padding: "20px 24px",
+                        minHeight: "44px",
+                        touchAction: "manipulation"
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.background = "rgba(252, 163, 17, 0.2)";
