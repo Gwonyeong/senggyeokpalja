@@ -89,7 +89,7 @@ export default function Section2TenGods({ consultation }) {
       <TenGodsChart consultation={consultation} />
 
       {/* 십성 해석 후 추가 웹툰 패널 */}
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "120px", marginBottom: "120px" }}>
         <WebtoonPanel
           key="section2-final-panel"
           sectionNumber={2}
@@ -106,20 +106,18 @@ export default function Section2TenGods({ consultation }) {
             speechBubbles: [
               {
                 text: "이제 그대의 십성이 어떤 의미를 갖는지 알았겠지?",
-                position: { top: "10%", left: "30%" },
-                size: "large",
+                position: { top: "5%", left: "30%" },
+                size: "medium",
                 direction: "bottom-right",
-                backgroundColor: "#e2e3e5",
-                borderColor: "#383d41",
-                textColor: "#383d41",
-                maxWidth: "400px",
+
+                maxWidth: "300px",
               },
               {
                 text: "십성은 그대의 인생에서 만나는 다양한 관계와 역할을 의미한다네.",
-                position: { top: "90%", right: "30%" },
+                position: { top: "95%", right: "30%" },
                 size: "medium",
                 direction: "bottom-right",
-                maxWidth: "350px",
+                maxWidth: "300px",
               },
             ],
           })}

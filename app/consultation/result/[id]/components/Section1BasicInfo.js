@@ -219,22 +219,17 @@ export default function Section1BasicInfo({ consultation }) {
         {
           text: "세상의 모든 것은 다섯 가지 기운으로 이루어져 있다네.",
           position: { top: "20%", left: "35%" },
-          size: "large",
+          size: "medium",
           direction: "bottom-right",
-          backgroundColor: "#e2e3e5",
-          borderColor: "#383d41",
-          textColor: "#383d41",
-          maxWidth: "330px",
+          maxWidth: "250px",
         },
         {
           text: "그대의 성격과 재능까지 선택한단 말이네. 그럼 이제 그대의 오행 분석을 하겠네.",
           position: { top: "80%", right: "35%" },
-          size: "large",
+          size: "medium",
           direction: "bottom-right",
-          backgroundColor: "#e2e3e5",
-          borderColor: "#383d41",
-          textColor: "#383d41",
-          maxWidth: "600px",
+
+          maxWidth: "300px",
         },
       ],
     },
@@ -248,7 +243,9 @@ export default function Section1BasicInfo({ consultation }) {
 
       {/* 제목 아래 추가된 웹툰 퍼널과 사주 원국표 */}
       <IntroWebtoonPanel consultation={consultation} />
-      <SajuChart consultation={consultation} />
+      <div style={{ marginBottom: "100px" }}>
+        <SajuChart consultation={consultation} />
+      </div>
 
       <div style={{ marginBottom: "20px" }}>
         {panelConfigs.map((config, index) => (
@@ -299,12 +296,10 @@ export default function Section1BasicInfo({ consultation }) {
               {
                 text: "이제 그대의 오행이 어떤 의미를 갖는지 알았겠지?",
                 position: { top: "10%", left: "30%" },
-                size: "large",
+                size: "medium",
                 direction: "bottom-right",
-                backgroundColor: "#e2e3e5",
-                borderColor: "#383d41",
-                textColor: "#383d41",
-                maxWidth: "400px",
+
+                maxWidth: "300px",
               },
               {
                 text: "다음장은 십성에 대하여 알려주겠네.",
@@ -312,7 +307,7 @@ export default function Section1BasicInfo({ consultation }) {
                 size: "medium",
                 direction: "bottom-right",
 
-                maxWidth: "350px",
+                maxWidth: "300px",
               },
             ],
           })}

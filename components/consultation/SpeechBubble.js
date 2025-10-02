@@ -12,27 +12,27 @@ const SpeechBubble = ({
   borderColor = '#333',
   maxWidth = '300px'
 }) => {
-  // 말풍선 크기 설정 - 600px까지만 반응형, 이후 고정 크기
+  // 말풍선 크기 설정 - 고정 크기
   const getSizeStyles = (size) => {
     const sizes = {
       small: {
-        fontSize: 'min(20px, max(14px, 2.5vw))',
-        padding: 'min(16px, max(12px, 2vw)) min(24px, max(18px, 3vw))',
+        fontSize: '14px',
+        padding: '12px 18px',
         borderRadius: '50%'
       },
       medium: {
-        fontSize: 'min(24px, max(16px, 3vw))',
-        padding: 'min(20px, max(16px, 2.5vw)) min(32px, max(24px, 4vw))',
+        fontSize: '16px',
+        padding: '16px 24px',
         borderRadius: '50%'
       },
       large: {
-        fontSize: 'min(24px, max(18px, 3.5vw))',
-        padding: 'min(24px, max(18px, 3vw)) min(40px, max(30px, 5vw))',
+        fontSize: '18px',
+        padding: '18px 30px',
         borderRadius: '50%'
       },
       extraLarge: {
-        fontSize: 'min(28px, max(20px, 4vw))',
-        padding: 'min(30px, max(24px, 4vw)) min(60px, max(48px, 8vw))',
+        fontSize: '20px',
+        padding: '24px 48px',
         borderRadius: '50%'
       }
     };
@@ -142,11 +142,11 @@ const SpeechBubble = ({
             ...(position.right && { right: position.right }),
             transform: position.right ? 'translate(50%, -50%)' : 'translate(-50%, -50%)',
           }),
-          minWidth: size === 'extraLarge' ? 'auto' : 'min(200px, max(150px, 25vw))',
-          maxWidth: size === 'extraLarge' ? 'none' : `min(${maxWidth}, max(250px, 40vw))`,
+          minWidth: size === 'extraLarge' ? 'auto' : '150px',
+          maxWidth: size === 'extraLarge' ? 'none' : maxWidth,
           backgroundColor: backgroundColor,
           color: textColor,
-          border: `min(3px, max(2px, 0.3vw)) solid ${borderColor}`,
+          border: `2px solid ${borderColor}`,
           borderRadius: sizeStyles.borderRadius,
           padding: sizeStyles.padding,
           fontSize: sizeStyles.fontSize,

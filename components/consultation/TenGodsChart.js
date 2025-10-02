@@ -66,8 +66,8 @@ export default function TenGodsChart({ consultation }) {
 
     // 원형 차트 그리기
     const centerX = width / 2;
-    const centerY = height / 2 + 20;
-    const radius = Math.min(width, height) / 3;
+    const centerY = height / 2 + 60;
+    const radius = Math.min(width, height) / 2.5;
 
     // 배경
     ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
@@ -79,9 +79,9 @@ export default function TenGodsChart({ consultation }) {
 
     // 차트 제목
     ctx.fillStyle = "#d4af37";
-    ctx.font = "bold 20px Noto Serif KR";
+    ctx.font = "bold 48px Noto Serif KR";
     ctx.textAlign = "center";
-    ctx.fillText("십성 분포도", centerX, 30);
+    ctx.fillText("십성 분포도", centerX, 80);
 
     // 원형 차트 그리기
     let currentAngle = -Math.PI / 2; // 12시 방향에서 시작
@@ -106,7 +106,7 @@ export default function TenGodsChart({ consultation }) {
 
       // 테두리
       ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 2;
       ctx.stroke();
 
       // 레이블 위치 계산
@@ -117,12 +117,12 @@ export default function TenGodsChart({ consultation }) {
       // 레이블 그리기
       if (value / total > 0.05) { // 5% 이상일 때만 레이블 표시
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 12px Pretendard";
+        ctx.font = "bold 32px Pretendard";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(god, labelX, labelY - 8);
-        ctx.font = "10px Pretendard";
-        ctx.fillText(`${Math.round(value / total * 100)}%`, labelX, labelY + 8);
+        ctx.fillText(god, labelX, labelY - 20);
+        ctx.font = "28px Pretendard";
+        ctx.fillText(`${Math.round(value / total * 100)}%`, labelX, labelY + 20);
       }
 
       currentAngle += sliceAngle;
@@ -134,12 +134,12 @@ export default function TenGodsChart({ consultation }) {
     ctx.fillStyle = "#0a0a0a";
     ctx.fill();
     ctx.strokeStyle = "#d4af37";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     ctx.stroke();
 
     // 중앙 텍스트
     ctx.fillStyle = "#d4af37";
-    ctx.font = "bold 14px Noto Serif KR";
+    ctx.font = "bold 36px Noto Serif KR";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("십성", centerX, centerY);
@@ -179,12 +179,12 @@ export default function TenGodsChart({ consultation }) {
     >
       <canvas
         ref={canvasRef}
-        width={600}
-        height={400}
+        width={1600}
+        height={1200}
         style={{
           width: "100%",
           height: "auto",
-          maxWidth: "600px",
+          maxWidth: "100%",
           margin: "0 auto",
           display: "block",
         }}

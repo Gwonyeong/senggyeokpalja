@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
   const [showPasscodeInput, setShowPasscodeInput] = useState(false);
@@ -21,7 +22,7 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
   };
 
   const handlePasscodeSubmit = async () => {
-    if (passcode.trim().toLowerCase() === "토리") {
+    if (passcode.trim().toLowerCase() === "happytory") {
       setIsProcessing(true);
 
       try {
@@ -31,7 +32,7 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ passcode: "토리" }),
+          body: JSON.stringify({ passcode: "happytory" }),
         });
 
         if (response.ok) {
@@ -82,7 +83,7 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
             maxWidth: "500px",
             width: "100%",
             position: "relative",
-            border: "2px solid #d4af37",
+            border: "2px solid #FCA311",
             boxShadow: "0 10px 40px rgba(0, 0, 0, 0.5)"
           }}
           onClick={(e) => e.stopPropagation()}
@@ -113,43 +114,35 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
           {/* 모달 헤더 */}
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
             <h2 style={{
-              color: "#d4af37",
-              fontSize: "28px",
-              marginBottom: "15px",
+              color: "#FCA311",
+              fontSize: "22px",
+              marginBottom: "20px",
               fontFamily: "'Noto Serif KR', serif"
             }}>
-              🌕 추석 맞이 특별 이벤트 🌕
+              아, 그대의 지갑은 잠시 넣어두시게.
             </h2>
             <p style={{
-              color: "#ccc",
-              fontSize: "16px",
+              color: "#fff",
+              fontSize: "15px",
+              lineHeight: "1.8",
+              marginBottom: "15px"
+            }}>
+              풍성한 한가위 아닌가.<br/>
+              오늘만큼은, <span style={{ color: "#FCA311" }}>토리가 그대에게 주는 작은 선물</span>이라네.<br/>
+              그대의 이야기는 이미 시작되었네.
+            </p>
+            <p style={{
+              color: "#999",
+              fontSize: "13px",
               lineHeight: "1.6"
             }}>
-              풍요로운 한가위를 맞아<br/>
-              특별한 혜택을 준비했습니다
+              카카오 채널에서 다음 장으로 넘어가는 <span style={{ color: "#FCA311" }}>'통행증'</span>을 받아가시게.
             </p>
           </div>
 
           {/* 이벤트 내용 */}
           {!showPasscodeInput ? (
             <>
-              <div style={{
-                backgroundColor: "#0a0a0a",
-                borderRadius: "8px",
-                padding: "25px",
-                marginBottom: "35px"
-              }}>
-                <p style={{
-                  color: "#fff",
-                  fontSize: "15px",
-                  lineHeight: "1.8",
-                  textAlign: "center"
-                }}>
-                  <span style={{ color: "#d4af37", fontWeight: "600" }}>카카오톡 채널 추가</span> 또는
-                  <span style={{ color: "#d4af37", fontWeight: "600" }}> 통행증 입력</span>으로<br/>
-                  특별 할인 혜택을 받아보세요!
-                </p>
-              </div>
 
               {/* 버튼 컨테이너 */}
               <div style={{
@@ -166,8 +159,8 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                     backgroundColor: "#FEE500",
                     color: "#000000",
                     border: "none",
-                    borderRadius: "8px",
-                    fontSize: "15px",
+                    borderRadius: "20px",
+                    fontSize: "10px",
                     fontWeight: "600",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
@@ -179,7 +172,14 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                   onMouseOver={(e) => e.target.style.backgroundColor = "#FFD700"}
                   onMouseOut={(e) => e.target.style.backgroundColor = "#FEE500"}
                 >
-                  💬 카카오톡 채널 추가하기
+                  <Image
+                    src="/assets/images/kakao_symbol.png"
+                    alt="카카오톡"
+                    width={16}
+                    height={16}
+                    style={{ objectFit: "contain" }}
+                  />
+                  카카오톡 채널 추가하기
                 </button>
 
                 {/* 통행증 입력하기 버튼 */}
@@ -191,8 +191,8 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                     backgroundColor: "transparent",
                     color: "#d4af37",
                     border: "2px solid #d4af37",
-                    borderRadius: "8px",
-                    fontSize: "15px",
+                    borderRadius: "20px",
+                    fontSize: "10px",
                     fontWeight: "600",
                     cursor: "pointer",
                     transition: "all 0.3s ease"
@@ -206,7 +206,7 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
                     e.target.style.color = "#d4af37";
                   }}
                 >
-                  🎫 통행증 입력하기
+                  통행증 입력하기
                 </button>
               </div>
             </>

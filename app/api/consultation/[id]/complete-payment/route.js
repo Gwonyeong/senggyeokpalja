@@ -21,7 +21,7 @@ export async function POST(request, { params }) {
     }
 
     // 통행증 확인
-    if (passcode.trim().toLowerCase() !== "토리") {
+    if (passcode.trim().toLowerCase() !== "happytory") {
       return NextResponse.json(
         { error: "Invalid passcode" },
         { status: 400 }
@@ -78,7 +78,7 @@ export async function POST(request, { params }) {
           paymentInfo: {
             type: "event",
             eventName: "추석이벤트",
-            passcode: "토리",
+            passcode: "happytory",
             appliedAt: new Date().toISOString(),
           }
         },
