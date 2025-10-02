@@ -152,7 +152,7 @@ const SpeechBubble = ({
           fontSize: sizeStyles.fontSize,
           fontWeight: '600',
           lineHeight: '1.4',
-          zIndex: 10000,
+          zIndex: 60,
           boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
           wordWrap: 'break-word',
           whiteSpace: 'pre-wrap',

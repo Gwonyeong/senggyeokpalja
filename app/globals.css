@@ -146,7 +146,7 @@ body.constrained-layout main {
   background-color: var(--background-color);
   min-height: calc(100vh - 80px);
   width: 100%;
-  padding-top: 80px;
+  padding-top: 40px;
 }
 
 /* 제한된 레이아웃일 때 모바일 메뉴도 제한 */

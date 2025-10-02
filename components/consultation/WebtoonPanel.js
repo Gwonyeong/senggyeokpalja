@@ -100,7 +100,7 @@ const WebtoonPanel = ({
             left: 0,
             width: "100%",
             height: "100%",
-            zIndex: 9999, // 매우 높은 z-index로 최상단 표시
+            zIndex: 50, // 네비게이션바보다 낮게 설정
             pointerEvents: "none", // 클릭 이벤트는 통과시킴
           }}
         >
