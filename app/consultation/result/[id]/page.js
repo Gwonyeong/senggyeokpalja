@@ -14,6 +14,7 @@ import Section4Personality from "./components/Section4Personality";
 import Section5Fortune from "./components/Section5Fortune";
 import Section6Advice from "./components/Section6Advice";
 import Section7Conclusion from "./components/Section7Conclusion";
+import DiscountTimer from "../../../../components/DiscountTimer";
 
 export default function ConsultationResultPage({ params }) {
   // Next.js 15에서 params는 Promise이므로 use()로 unwrap
@@ -349,19 +350,29 @@ export default function ConsultationResultPage({ params }) {
                             }}
                           ></div>
                         </div>
-                        <span
+                        <div
                           style={{
-                            fontSize: "12px",
-                            color: "#ef4444",
-                            fontWeight: "600",
-                            padding: "4px 12px",
-                            background: "rgba(239, 68, 68, 0.1)",
-                            borderRadius: "12px",
-                            border: "1px solid rgba(239, 68, 68, 0.2)",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "8px",
                           }}
                         >
-                          40% 할인 중
-                        </span>
+                          <span
+                            style={{
+                              fontSize: "12px",
+                              color: "#ef4444",
+                              fontWeight: "600",
+                              padding: "4px 12px",
+                              background: "rgba(239, 68, 68, 0.1)",
+                              borderRadius: "12px",
+                              border: "1px solid rgba(239, 68, 68, 0.2)",
+                            }}
+                          >
+                            40% 할인 중
+                          </span>
+                          <DiscountTimer />
+                        </div>
                       </div>
 
                       <button
