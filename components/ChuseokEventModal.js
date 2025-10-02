@@ -136,7 +136,7 @@ const ChuseokEventModal = ({ isOpen, onClose, consultationId }) => {
               fontSize: "13px",
               lineHeight: "1.6"
             }}>
-              카카오 채널에서 다음 장으로 넘어가는 <span style={{ color: "#FCA311" }}>'통행증'</span>을 받아가시게.
+              카카오 채널에서 다음 장으로 넘어가는 <span style={{ color: "#FCA311" }}>&lsquo;통행증&rsquo;</span>을 받아가시게.
             </p>
           </div>
 

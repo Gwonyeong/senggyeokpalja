@@ -267,13 +267,13 @@ export default function ConsultationResultPage({ params }) {
                           fontFamily: "'Noto Serif KR', serif",
                         }}
                       >
-                        "그대의 운명이 담긴 두루마리,
+                        &ldquo;그대의 운명이 담긴 두루마리,
                         <br />
                         다음 장을 펼치려면 약간의{" "}
                         <span style={{ color: "#FCA311", fontWeight: "bold" }}>
                           복채
                         </span>
-                        가 필요하다네."
+                        가 필요하다네.&rdquo;
                       </p>
 
                       <p
