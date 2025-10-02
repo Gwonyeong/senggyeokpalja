@@ -74,7 +74,8 @@
 }
 
 /* 가로 스크롤 방지를 위한 전역 설정 */
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100vw;
 }
@@ -85,7 +86,20 @@ body {
 }
 
 /* 모든 텍스트 요소에 단어 단위 줄바꿈 적용 */
-p, h1, h2, h3, h4, h5, h6, span, div, a, button, input, textarea, label {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+div,
+a,
+button,
+input,
+textarea,
+label {
   word-break: keep-all;
   overflow-wrap: normal;
 }
@@ -3230,6 +3244,7 @@ input[type="text"]::placeholder {
   font-family: var(--heading-font, "Noto Serif KR", serif);
   font-weight: 600;
   text-shadow: 0 0 20px rgba(252, 163, 17, 0.3);
+  text-align: center !important;
 }
 
 .card-description {

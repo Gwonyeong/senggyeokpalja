@@ -141,14 +141,16 @@ export default function AnalyzePage() {
 
       // 음력인 경우 양력으로 변환
       if (formData.calendar === "lunar") {
-        const lunIl = formData.isLeapMonth ? '1' : '0';
+        const lunIl = formData.isLeapMonth ? "1" : "0";
         const convertResponse = await fetch(
           `/api/calendar/convert?lunYear=${formData.year}&lunMonth=${formData.month}&lunDay=${formData.day}&lunIl=${lunIl}`
         );
 
         if (!convertResponse.ok) {
           const errorData = await convertResponse.json();
-          throw new Error(errorData.error || "음력 변환 중 오류가 발생했습니다.");
+          throw new Error(
+            errorData.error || "음력 변환 중 오류가 발생했습니다."
+          );
         }
 
         const convertResult = await convertResponse.json();
@@ -160,7 +162,9 @@ export default function AnalyzePage() {
           parseInt(convertResult.solarDay)
         );
 
-        console.log(`음력 ${formData.year}.${formData.month}.${formData.day} → 양력 ${convertResult.solarYear}.${convertResult.solarMonth}.${convertResult.solarDay}`);
+        console.log(
+          `음력 ${formData.year}.${formData.month}.${formData.day} → 양력 ${convertResult.solarYear}.${convertResult.solarMonth}.${convertResult.solarDay}`
+        );
       } else {
         // 양력인 경우 그대로 사용
         birthDate = new Date(
@@ -285,17 +289,25 @@ export default function AnalyzePage() {
       const { shareId } = await response.json();
       const siteUrl =
         process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
-      const shareUrl = `${siteUrl}/share/${shareId}`;
+      const shareUrl = siteUrl;
 
       if (navigator.share) {
+        const userName = formData.name || "나";
         navigator.share({
-          title: `나는 ${result.typeData.alias}! - 성격팔자`,
-          text: `내 팔자 유형은 "${result.typeData.alias}"입니다. ${result.typeData.description}`,
+          title: `${userName}님의 팔자유형은 ${result.personalityType}(${result.typeData.alias}) 입니다 - 성격팔자`,
+          text: `${userName}님의 팔자유형은 ${result.personalityType}(${result.typeData.alias}) 입니다.\n\n나의 코드 해석\n${result.typeData.description}`,
           url: shareUrl,
         });
       } else {
         // Web Share API를 지원하지 않는 브라우저에서는 클립보드 복사
-        const shareText = `나는 ${result.typeData.alias}! 내 팔자 유형: ${result.personalityType}\n${result.typeData.description}\n\n성격팔자에서 확인해보세요: ${shareUrl}`;
+        const userName = formData.name || "나";
+        const shareText = `${userName}님의 팔자유형은 ${result.personalityType}(${result.typeData.alias}) 입니다.
+
+나의 코드 해석
+${result.typeData.description}
+
+성격팔자 링크
+${shareUrl}`;
         navigator.clipboard.writeText(shareText).then(() => {
           alert("공유 링크가 클립보드에 복사되었습니다!");
         });
@@ -328,7 +340,7 @@ export default function AnalyzePage() {
       },
       {
         threshold: 0.5, // 50% 이상 보일 때 트리거
-        rootMargin: '0px 0px -100px 0px' // 하단 100px 여유
+        rootMargin: "0px 0px -100px 0px", // 하단 100px 여유
       }
     );
 
@@ -348,558 +360,575 @@ export default function AnalyzePage() {
     <AuthProtectedPage>
       <PageWrapper>
         <div className="analyze-page">
-        <main>
-        <section id="analyzer">
-          <div className="container">
-            <div className="analyzer-layout">
-              <div className="card analyzer-card">
-                <div className="card-header">
-                  <h2 className="card-title sage-title">
-                    <span className="sage-subtitle">
-                      그대의 이야기를 듣고자 하네.
-                    </span>
-                  </h2>
-                  <p className="sage-description">
-                    차 한 잔의 여유로 그대의 운명을 살펴보자.
-                  </p>
-                </div>
-
-                <form
-                  onSubmit={handleSubmit}
-                  className="analyzer-form"
-                  id="saju-form"
-                >
-                  <div className="form-section">
-                    <div className="input-group">
-                      <label htmlFor="name">이름 (선택)</label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
-                        placeholder="토리가 부를 이름을 알려주게"
-                        autoComplete="name"
-                      />
+          <main>
+            <section id="analyzer">
+              <div className="container">
+                <div className="analyzer-layout">
+                  <div className="card analyzer-card">
+                    <div className="card-header">
+                      <h2 className="card-title sage-title">
+                        <span className="sage-subtitle">
+                          그대의 이야기를 듣고자 하네.
+                        </span>
+                      </h2>
+                      <p className="sage-description">
+                        차 한 잔의 여유로 그대의 운명을 살펴보자.
+                      </p>
                     </div>
-                  </div>
 
-                  <div className="form-section">
-                    <div className="input-group">
-                      <label htmlFor="birth-year">생년월일</label>
-                      <div className="date-picker-container">
-                        <select
-                          id="birth-year"
-                          value={formData.year}
-                          onChange={(e) =>
-                            setFormData({ ...formData, year: e.target.value })
-                          }
-                          required
-                          autoComplete="bday-year"
-                        >
-                          <option value="">년</option>
-                          {Array.from({ length: 124 }, (_, i) => 2024 - i).map(
-                            (year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            )
-                          )}
-                        </select>
-                        <select
-                          id="birth-month"
-                          value={formData.month}
-                          onChange={(e) =>
-                            setFormData({ ...formData, month: e.target.value })
-                          }
-                          required
-                          autoComplete="bday-month"
-                        >
-                          <option value="">월</option>
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                            (month) => (
-                              <option key={month} value={month}>
-                                {month}
-                              </option>
-                            )
-                          )}
-                        </select>
-                        <select
-                          id="birth-day"
-                          value={formData.day}
-                          onChange={(e) =>
-                            setFormData({ ...formData, day: e.target.value })
-                          }
-                          required
-                          autoComplete="bday-day"
-                        >
-                          <option value="">일</option>
-                          {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                            (day) => (
-                              <option key={day} value={day}>
-                                {day}
-                              </option>
-                            )
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-section">
-                    <div className="input-group">
-                      <label htmlFor="birthtime">태어난 시간</label>
-                      <select
-                        id="birthtime"
-                        name="birthtime"
-                        value={formData.hour}
-                        onChange={(e) =>
-                          setFormData({ ...formData, hour: e.target.value })
-                        }
-                      >
-                        <option value="unknown">⏰ 시간을 몰라요</option>
-                        <option value="0">🐭 23:30 ~ 01:29 (자시)</option>
-                        <option value="1">🐮 01:30 ~ 03:29 (축시)</option>
-                        <option value="2">🐯 03:30 ~ 05:29 (인시)</option>
-                        <option value="3">🐰 05:30 ~ 07:29 (묘시)</option>
-                        <option value="4">🐲 07:30 ~ 09:29 (진시)</option>
-                        <option value="5">🐍 09:30 ~ 11:29 (사시)</option>
-                        <option value="6">🐴 11:30 ~ 13:29 (오시)</option>
-                        <option value="7">🐑 13:30 ~ 15:29 (미시)</option>
-                        <option value="8">🐵 15:30 ~ 17:29 (신시)</option>
-                        <option value="9">🐔 17:30 ~ 19:29 (유시)</option>
-                        <option value="10">🐶 19:30 ~ 21:29 (술시)</option>
-                        <option value="11">🐷 21:30 ~ 23:29 (해시)</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="form-section">
-                    <div className="form-row">
-                      <div className="input-group">
-                        <label>성별</label>
-                        <div className="radio-group">
+                    <form
+                      onSubmit={handleSubmit}
+                      className="analyzer-form"
+                      id="saju-form"
+                    >
+                      <div className="form-section">
+                        <div className="input-group">
+                          <label htmlFor="name">이름 (선택)</label>
                           <input
-                            type="radio"
-                            id="male"
-                            name="gender"
-                            value="male"
-                            checked={formData.gender === "male"}
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
                             onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                gender: e.target.value,
-                              })
+                              setFormData({ ...formData, name: e.target.value })
                             }
-                            autoComplete="sex"
+                            placeholder="토리가 부를 이름을 알려주게"
+                            autoComplete="name"
                           />
-                          <label htmlFor="male">남자</label>
-                          <input
-                            type="radio"
-                            id="female"
-                            name="gender"
-                            value="female"
-                            checked={formData.gender === "female"}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                gender: e.target.value,
-                              })
-                            }
-                            autoComplete="sex"
-                          />
-                          <label htmlFor="female">여자</label>
                         </div>
                       </div>
-                      <div className="input-group">
-                        <label>양력/음력</label>
-                        <div className="radio-group">
-                          <input
-                            type="radio"
-                            id="solar"
-                            name="calendar"
-                            value="solar"
-                            checked={formData.calendar === "solar"}
+
+                      <div className="form-section">
+                        <div className="input-group">
+                          <label htmlFor="birth-year">생년월일</label>
+                          <div className="date-picker-container">
+                            <select
+                              id="birth-year"
+                              value={formData.year}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  year: e.target.value,
+                                })
+                              }
+                              required
+                              autoComplete="bday-year"
+                            >
+                              <option value="">년</option>
+                              {Array.from(
+                                { length: 124 },
+                                (_, i) => 2024 - i
+                              ).map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              id="birth-month"
+                              value={formData.month}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  month: e.target.value,
+                                })
+                              }
+                              required
+                              autoComplete="bday-month"
+                            >
+                              <option value="">월</option>
+                              {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                                (month) => (
+                                  <option key={month} value={month}>
+                                    {month}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                            <select
+                              id="birth-day"
+                              value={formData.day}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  day: e.target.value,
+                                })
+                              }
+                              required
+                              autoComplete="bday-day"
+                            >
+                              <option value="">일</option>
+                              {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                                (day) => (
+                                  <option key={day} value={day}>
+                                    {day}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="form-section">
+                        <div className="input-group">
+                          <label htmlFor="birthtime">태어난 시간</label>
+                          <select
+                            id="birthtime"
+                            name="birthtime"
+                            value={formData.hour}
                             onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                calendar: e.target.value,
-                              })
+                              setFormData({ ...formData, hour: e.target.value })
                             }
-                          />
-                          <label htmlFor="solar">양력</label>
-                          <input
-                            type="radio"
-                            id="lunar"
-                            name="calendar"
-                            value="lunar"
-                            checked={formData.calendar === "lunar"}
-                            onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                calendar: e.target.value,
-                              })
-                            }
-                          />
-                          <label htmlFor="lunar">음력</label>
-                          {formData.calendar === "lunar" && (
-                            <>
+                          >
+                            <option value="unknown">⏰ 시간을 몰라요</option>
+                            <option value="0">🐭 23:30 ~ 01:29 (자시)</option>
+                            <option value="1">🐮 01:30 ~ 03:29 (축시)</option>
+                            <option value="2">🐯 03:30 ~ 05:29 (인시)</option>
+                            <option value="3">🐰 05:30 ~ 07:29 (묘시)</option>
+                            <option value="4">🐲 07:30 ~ 09:29 (진시)</option>
+                            <option value="5">🐍 09:30 ~ 11:29 (사시)</option>
+                            <option value="6">🐴 11:30 ~ 13:29 (오시)</option>
+                            <option value="7">🐑 13:30 ~ 15:29 (미시)</option>
+                            <option value="8">🐵 15:30 ~ 17:29 (신시)</option>
+                            <option value="9">🐔 17:30 ~ 19:29 (유시)</option>
+                            <option value="10">🐶 19:30 ~ 21:29 (술시)</option>
+                            <option value="11">🐷 21:30 ~ 23:29 (해시)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="form-section">
+                        <div className="form-row">
+                          <div className="input-group">
+                            <label>성별</label>
+                            <div className="radio-group">
                               <input
-                                type="checkbox"
-                                id="isLeapMonth"
-                                checked={formData.isLeapMonth}
+                                type="radio"
+                                id="male"
+                                name="gender"
+                                value="male"
+                                checked={formData.gender === "male"}
                                 onChange={(e) =>
                                   setFormData({
                                     ...formData,
-                                    isLeapMonth: e.target.checked,
+                                    gender: e.target.value,
                                   })
                                 }
-                                style={{ marginLeft: "10px" }}
+                                autoComplete="sex"
                               />
-                              <label htmlFor="isLeapMonth">윤달</label>
-                            </>
-                          )}
+                              <label htmlFor="male">남자</label>
+                              <input
+                                type="radio"
+                                id="female"
+                                name="gender"
+                                value="female"
+                                checked={formData.gender === "female"}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    gender: e.target.value,
+                                  })
+                                }
+                                autoComplete="sex"
+                              />
+                              <label htmlFor="female">여자</label>
+                            </div>
+                          </div>
+                          <div className="input-group">
+                            <label>양력/음력</label>
+                            <div className="radio-group">
+                              <input
+                                type="radio"
+                                id="solar"
+                                name="calendar"
+                                value="solar"
+                                checked={formData.calendar === "solar"}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    calendar: e.target.value,
+                                  })
+                                }
+                              />
+                              <label htmlFor="solar">양력</label>
+                              <input
+                                type="radio"
+                                id="lunar"
+                                name="calendar"
+                                value="lunar"
+                                checked={formData.calendar === "lunar"}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    calendar: e.target.value,
+                                  })
+                                }
+                              />
+                              <label htmlFor="lunar">음력</label>
+                              {formData.calendar === "lunar" && (
+                                <>
+                                  <input
+                                    type="checkbox"
+                                    id="isLeapMonth"
+                                    checked={formData.isLeapMonth}
+                                    onChange={(e) =>
+                                      setFormData({
+                                        ...formData,
+                                        isLeapMonth: e.target.checked,
+                                      })
+                                    }
+                                    style={{ marginLeft: "10px" }}
+                                  />
+                                  <label htmlFor="isLeapMonth">윤달</label>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="form-footer">
+                        <div className="sage-advice">
+                          <div>&ldquo;그대의 이야기,</div>
+                          <div>토리가 차 한 잔과 함께 들어보겠네.&rdquo;</div>
+                        </div>
+                        <button
+                          type="submit"
+                          className="cta-button ink-brush-effect"
+                          disabled={loading}
+                        >
+                          {loading ? "🔮 해석 중..." : "나의 길, 묻기"}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  {result && (
+                    <div
+                      id="result-section"
+                      className="card result-card"
+                      style={{ display: "block", opacity: 1 }}
+                    >
+                      <Image
+                        id="result-image"
+                        className="main-result-image"
+                        src={result.typeData.imageUrl}
+                        alt="팔자유형 이미지"
+                        width={300}
+                        height={300}
+                      />
+                      <p className="result-type-code">
+                        {result.personalityType}
+                      </p>
+                      <h2
+                        id="result-alias"
+                        className="card-title text-center"
+                        style={{ textAlign: "center" }}
+                      >
+                        {result.typeData.alias}
+                      </h2>
+                      <p id="result-description">
+                        {result.typeData.description}
+                      </p>
+
+                      <p
+                        className="teaser-text"
+                        style={{ marginTop: "25px", marginBottom: "10px" }}
+                      >
+                        MBTI+사주 기반 상세 리포트, 팔자유형 심층 분석은{" "}
+                        <strong>[기능 준비중]</strong>입니다!
+                      </p>
+
+                      <div className="info-card">
+                        <h3>[토리가 건네는 응원]</h3>
+                        <p id="result-advice">{result.typeData.advice}</p>
+                      </div>
+
+                      <div className="info-card">
+                        <h3>[나의 코드 해석]</h3>
+                        <p
+                          id="result-legend"
+                          dangerouslySetInnerHTML={{
+                            __html: getCodeLegend(result.personalityType),
+                          }}
+                        />
+                      </div>
+                      <div className="compatibility-section">
+                        <h3 className="compatibility-title">
+                          [나의 인연 스포일러]
+                        </h3>
+                        <div className="compatibility-grid">
+                          <div className="compatibility-item">
+                            <p className="compatibility-item-title">
+                              최고의 궁합
+                            </p>
+                            <Image
+                              id="soulmate-image"
+                              className="compatibility-image"
+                              src={
+                                getCompatibilityData(result.personalityType)
+                                  .soulmateImage
+                              }
+                              alt={
+                                getCompatibilityData(result.personalityType)
+                                  .soulmateName
+                              }
+                              width={120}
+                              height={120}
+                            />
+                            <p
+                              id="soulmate-alias"
+                              className="compatibility-name"
+                            >
+                              {
+                                getCompatibilityData(result.personalityType)
+                                  .soulmateName
+                              }
+                            </p>
+                            <p
+                              id="soulmate-code"
+                              className="compatibility-type"
+                            >
+                              {
+                                getCompatibilityData(result.personalityType)
+                                  .soulmateCode
+                              }
+                            </p>
+                          </div>
+                          <div className="compatibility-item">
+                            <p className="compatibility-item-title">
+                              성장의 파트너
+                            </p>
+                            <Image
+                              id="growth-image"
+                              className="compatibility-image"
+                              src={
+                                getCompatibilityData(result.personalityType)
+                                  .growthImage
+                              }
+                              alt={
+                                getCompatibilityData(result.personalityType)
+                                  .growthName
+                              }
+                              width={120}
+                              height={120}
+                            />
+                            <p id="growth-alias" className="compatibility-name">
+                              {
+                                getCompatibilityData(result.personalityType)
+                                  .growthName
+                              }
+                            </p>
+                            <p id="growth-code" className="compatibility-type">
+                              {
+                                getCompatibilityData(result.personalityType)
+                                  .growthCode
+                              }
+                            </p>
+                          </div>
+                        </div>
+                        <p className="teaser-text">
+                          상세한 궁합 풀이는 <strong>[기능 준비중]</strong>
+                          입니다!
+                        </p>
+                      </div>
+                      <div className="share-card">
+                        <h3>내 팔자 유형 자랑하기</h3>
+                        <p>친구들에게 나의 특별한 팔자 유형을 공유해보세요!</p>
+                        <button
+                          id="openShareModalBtn"
+                          className="share-toggle-btn"
+                          onClick={handleShare}
+                        >
+                          공유하기
+                        </button>
+                      </div>
+
+                      {/* 저장 상태 알림 */}
+
+                      <div className="synergy-card">
+                        <h3>🔮 MBTI × 팔자 시너지 분석</h3>
+                        <p>
+                          당신의 MBTI와 팔자유형이 만나면
+                          <br />
+                          어떤 특별한 시너지가 생길까요?
+                        </p>
+                        <a href="/synergy" className="btn btn-accent">
+                          시너지 분석하러 가기
+                        </a>
+                      </div>
+
+                      <div className="cta-card">
+                        <h3>업데이트 소식이 궁금하다면?</h3>
+                        <p>
+                          가장 먼저 &lsquo;성격팔자&rsquo;의 소식을 받고
+                          <br />
+                          다양한 혜택을 놓치지 마세요!
+                        </p>
+                        <div
+                          className="social-buttons"
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            gap: "20px",
+                            marginTop: "20px",
+                          }}
+                        >
+                          <a
+                            id="kakao-channel-button"
+                            href="http://pf.kakao.com/_BxnBxmn/friend"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: "inline-block",
+                              transition: "transform 0.3s ease",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.target.style.transform = "scale(1.1)")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.target.style.transform = "scale(1)")
+                            }
+                          >
+                            <Image
+                              src="/assets/images/kakao_symbol.png"
+                              alt="카카오톡 채널 추가"
+                              width={40}
+                              height={40}
+                            />
+                          </a>
+                          <a
+                            id="instagram-button"
+                            href="https://www.instagram.com/palja_tory/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: "inline-block",
+                              transition: "transform 0.3s ease",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.target.style.transform = "scale(1.1)")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.target.style.transform = "scale(1)")
+                            }
+                          >
+                            <Image
+                              src="/assets/images/instagram_symbol.png"
+                              alt="인스타그램 보러가기"
+                              width={40}
+                              height={40}
+                            />
+                          </a>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="form-footer">
-                    <div className="sage-advice">
-                      <div>&ldquo;그대의 이야기,</div>
-                      <div>토리가 차 한 잔과 함께 들어보겠네.&rdquo;</div>
-                    </div>
-                    <button
-                      type="submit"
-                      className="cta-button ink-brush-effect"
-                      disabled={loading}
-                    >
-                      {loading ? "🔮 해석 중..." : "나의 길, 묻기"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-
-              {result && (
-                <div
-                  id="result-section"
-                  className="card result-card"
-                  style={{ display: "block", opacity: 1 }}
-                >
-                  <Image
-                    id="result-image"
-                    className="main-result-image"
-                    src={result.typeData.imageUrl}
-                    alt="팔자유형 이미지"
-                    width={300}
-                    height={300}
-                  />
-                  <p className="result-type-code">{result.personalityType}</p>
-                  <h2 id="result-alias" className="card-title">
-                    {result.typeData.alias}
-                  </h2>
-                  <p id="result-description">{result.typeData.description}</p>
-
-                  <p
-                    className="teaser-text"
-                    style={{ marginTop: "25px", marginBottom: "10px" }}
-                  >
-                    MBTI+사주 기반 상세 리포트, 팔자유형 심층 분석은{" "}
-                    <strong>[기능 준비중]</strong>입니다!
-                  </p>
-
-                  <div className="info-card">
-                    <h3>[토리가 건네는 응원]</h3>
-                    <p id="result-advice">{result.typeData.advice}</p>
-                  </div>
-
-                  <div className="info-card">
-                    <h3>[나의 코드 해석]</h3>
-                    <p
-                      id="result-legend"
-                      dangerouslySetInnerHTML={{
-                        __html: getCodeLegend(result.personalityType),
-                      }}
-                    />
-                  </div>
-                  <div className="compatibility-section">
-                    <h3 className="compatibility-title">
-                      [나의 인연 스포일러]
-                    </h3>
-                    <div className="compatibility-grid">
-                      <div className="compatibility-item">
-                        <p className="compatibility-item-title">최고의 궁합</p>
-                        <Image
-                          id="soulmate-image"
-                          className="compatibility-image"
-                          src={
-                            getCompatibilityData(result.personalityType)
-                              .soulmateImage
-                          }
-                          alt={
-                            getCompatibilityData(result.personalityType)
-                              .soulmateName
-                          }
-                          width={120}
-                          height={120}
-                        />
-                        <p id="soulmate-alias" className="compatibility-name">
-                          {
-                            getCompatibilityData(result.personalityType)
-                              .soulmateName
-                          }
-                        </p>
-                        <p id="soulmate-code" className="compatibility-type">
-                          {
-                            getCompatibilityData(result.personalityType)
-                              .soulmateCode
-                          }
-                        </p>
-                      </div>
-                      <div className="compatibility-item">
-                        <p className="compatibility-item-title">
-                          성장의 파트너
-                        </p>
-                        <Image
-                          id="growth-image"
-                          className="compatibility-image"
-                          src={
-                            getCompatibilityData(result.personalityType)
-                              .growthImage
-                          }
-                          alt={
-                            getCompatibilityData(result.personalityType)
-                              .growthName
-                          }
-                          width={120}
-                          height={120}
-                        />
-                        <p id="growth-alias" className="compatibility-name">
-                          {
-                            getCompatibilityData(result.personalityType)
-                              .growthName
-                          }
-                        </p>
-                        <p id="growth-code" className="compatibility-type">
-                          {
-                            getCompatibilityData(result.personalityType)
-                              .growthCode
-                          }
-                        </p>
-                      </div>
-                    </div>
-                    <p className="teaser-text">
-                      상세한 궁합 풀이는 <strong>[기능 준비중]</strong>입니다!
-                    </p>
-                  </div>
-                  <div className="interview-cta" ref={invitationRef}>
-                    <h3>토리가 건네는 특별한 초대장</h3>
-                    <p>
-                      당신의 이야기는 &lsquo;성격팔자&rsquo;를 완성하는 마지막 조각입니다.
-                      <br />
-                      지금 1:1 면담에 참여하고, 정식 출시의 &lsquo;VVIP&rsquo;가 되어주세요.
-                    </p>
-                    <a
-                      href="https://smore.im/form/2RQBeyh8f3"
-                      target="_blank"
-                      className="cta-button"
-                      rel="noopener noreferrer"
-                    >
-                      1:1 면담 시작하기 💌
-                    </a>
-                  </div>
-
-                  <div className="share-card">
-                    <h3>내 팔자 유형 자랑하기</h3>
-                    <p>친구들에게 나의 특별한 팔자 유형을 공유해보세요!</p>
-                    <button
-                      id="openShareModalBtn"
-                      className="share-toggle-btn"
-                      onClick={handleShare}
-                    >
-                      공유하기
-                    </button>
-                  </div>
-
-                  {/* 저장 상태 알림 */}
-
-                  <div className="synergy-card">
-                    <h3>🔮 MBTI × 팔자 시너지 분석</h3>
-                    <p>
-                      당신의 MBTI와 팔자유형이 만나면
-                      <br />
-                      어떤 특별한 시너지가 생길까요?
-                    </p>
-                    <a href="/synergy" className="btn btn-accent">
-                      시너지 분석하러 가기
-                    </a>
-                  </div>
-
-                  <div className="cta-card">
-                    <h3>업데이트 소식이 궁금하다면?</h3>
-                    <p>
-                      가장 먼저 &lsquo;성격팔자&rsquo;의 소식을 받고
-                      <br />
-                      다양한 혜택을 놓치지 마세요!
-                    </p>
-                    <div
-                      className="social-buttons"
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        gap: "20px",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <a
-                        id="kakao-channel-button"
-                        href="http://pf.kakao.com/_BxnBxmn/friend"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "inline-block",
-                          transition: "transform 0.3s ease",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.target.style.transform = "scale(1.1)")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.target.style.transform = "scale(1)")
-                        }
-                      >
-                        <Image
-                          src="/assets/images/kakao_symbol.png"
-                          alt="카카오톡 채널 추가"
-                          width={40}
-                          height={40}
-                        />
-                      </a>
-                      <a
-                        id="instagram-button"
-                        href="https://www.instagram.com/palja_tory/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: "inline-block",
-                          transition: "transform 0.3s ease",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.target.style.transform = "scale(1.1)")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.target.style.transform = "scale(1)")
-                        }
-                      >
-                        <Image
-                          src="/assets/images/instagram_symbol.png"
-                          alt="인스타그램 보러가기"
-                          width={40}
-                          height={40}
-                        />
-                      </a>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        </section>
-      </main>
+              </div>
+            </section>
+          </main>
 
-      {/* Consultation 유도 모달 */}
-      {showConsultationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-          <div
-            className="max-w-md w-full mx-4 relative"
-            style={{
-              background: 'linear-gradient(135deg, rgba(252, 163, 17, 0.12) 0%, rgba(184, 134, 11, 0.08) 100%)',
-              borderRadius: '16px',
-              border: '2px solid rgba(252, 163, 17, 0.4)',
-              padding: '32px 24px',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(252, 163, 17, 0.2)'
-            }}
-          >
-            <button
-              onClick={() => setShowConsultationModal(false)}
-              className="absolute top-4 right-4 text-[#FCA311] hover:text-white text-2xl transition-colors"
-              style={{
-                width: '32px',
-                height: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '50%',
-                background: 'rgba(252, 163, 17, 0.1)',
-                border: '1px solid rgba(252, 163, 17, 0.3)'
-              }}
-            >
-              ×
-            </button>
-            <div className="text-center">
+          {/* Consultation 유도 모달 */}
+          {showConsultationModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
               <div
-                className="mb-6"
+                className="max-w-md w-full mx-4 relative"
                 style={{
-                  background: 'linear-gradient(135deg, #FCA311, #d4af37)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text'
+                  background:
+                    "linear-gradient(135deg, rgba(252, 163, 17, 0.12) 0%, rgba(184, 134, 11, 0.08) 100%)",
+                  borderRadius: "16px",
+                  border: "2px solid rgba(252, 163, 17, 0.4)",
+                  padding: "32px 24px",
+                  backdropFilter: "blur(8px)",
+                  boxShadow:
+                    "0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(252, 163, 17, 0.2)",
                 }}
               >
-                <h3 className="text-2xl font-bold">
-                  토리의 특별한 제안 🍵
-                </h3>
-              </div>
-              <p className="text-white mb-6 leading-relaxed text-base">
-                기본 팔자유형 분석이 마음에 드셨나요?
-                <br /><br />
-                더 상세한 <strong className="text-[#FCA311]">토리와의 1:1 상담</strong>을 통해<br />
-                당신만의 인생 로드맵을 받아보세요!
-              </p>
-              <div className="space-y-4">
-                <Link
-                  href="/consultation"
-                  className="block w-full text-black py-4 px-6 font-bold transition-all duration-300 hover:transform hover:scale-105"
-                  onClick={() => setShowConsultationModal(false)}
-                  style={{
-                    background: 'linear-gradient(135deg, #FCA311, #d4af37)',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 16px rgba(252, 163, 17, 0.3)'
-                  }}
-                >
-                  토리와 상담하기 💬
-                </Link>
                 <button
                   onClick={() => setShowConsultationModal(false)}
-                  className="block w-full py-4 px-6 transition-all duration-300 hover:transform hover:scale-105"
+                  className="absolute top-4 right-4 text-[#FCA311] hover:text-white text-2xl transition-colors"
                   style={{
-                    background: 'rgba(252, 163, 17, 0.1)',
-                    border: '2px solid rgba(252, 163, 17, 0.5)',
-                    color: '#FCA311',
-                    borderRadius: '12px',
-                    backdropFilter: 'blur(4px)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(252, 163, 17, 0.2)';
-                    e.target.style.borderColor = '#FCA311';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(252, 163, 17, 0.1)';
-                    e.target.style.borderColor = 'rgba(252, 163, 17, 0.5)';
+                    width: "32px",
+                    height: "32px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                    background: "rgba(252, 163, 17, 0.1)",
+                    border: "1px solid rgba(252, 163, 17, 0.3)",
                   }}
                 >
-                  다음에 할게요
+                  ×
                 </button>
+                <div className="text-center">
+                  <div
+                    className="mb-6"
+                    style={{
+                      background: "linear-gradient(135deg, #FCA311, #d4af37)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    <h3 className="text-2xl font-bold">
+                      토리의 특별한 제안 🍵
+                    </h3>
+                  </div>
+                  <p className="text-white mb-6 leading-relaxed text-base">
+                    기본 팔자유형 분석이 마음에 드셨나요?
+                    <br />
+                    <br />더 상세한{" "}
+                    <strong className="text-[#FCA311]">
+                      토리와의 1:1 상담
+                    </strong>
+                    을 통해
+                    <br />
+                    당신만의 인생 로드맵을 받아보세요!
+                  </p>
+                  <div className="space-y-4">
+                    <Link
+                      href="/consultation"
+                      className="block w-full text-black py-4 px-6 font-bold transition-all duration-300 hover:transform hover:scale-105"
+                      onClick={() => setShowConsultationModal(false)}
+                      style={{
+                        background: "linear-gradient(135deg, #FCA311, #d4af37)",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 16px rgba(252, 163, 17, 0.3)",
+                      }}
+                    >
+                      토리와 상담하기 💬
+                    </Link>
+                    <button
+                      onClick={() => setShowConsultationModal(false)}
+                      className="block w-full py-4 px-6 transition-all duration-300 hover:transform hover:scale-105"
+                      style={{
+                        background: "rgba(252, 163, 17, 0.1)",
+                        border: "2px solid rgba(252, 163, 17, 0.5)",
+                        color: "#FCA311",
+                        borderRadius: "12px",
+                        backdropFilter: "blur(4px)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = "rgba(252, 163, 17, 0.2)";
+                        e.target.style.borderColor = "#FCA311";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = "rgba(252, 163, 17, 0.1)";
+                        e.target.style.borderColor = "rgba(252, 163, 17, 0.5)";
+                      }}
+                    >
+                      다음에 할게요
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
-      </div>
-    </PageWrapper>
+      </PageWrapper>
     </AuthProtectedPage>
   );
 }

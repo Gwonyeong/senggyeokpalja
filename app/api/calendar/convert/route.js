@@ -3,14 +3,16 @@ import { NextResponse } from "next/server";
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const lunYear = searchParams.get('lunYear');
-    const lunMonth = searchParams.get('lunMonth');
-    const lunDay = searchParams.get('lunDay');
-    const lunIl = searchParams.get('lunIl') || '0'; // 윤달 구분 (0: 평달, 1: 윤달)
+    const lunYear = searchParams.get("lunYear");
+    const lunMonth = searchParams.get("lunMonth");
+    const lunDay = searchParams.get("lunDay");
+    const lunIl = searchParams.get("lunIl") || "0"; // 윤달 구분 (0: 평달, 1: 윤달)
 
     if (!lunYear || !lunMonth || !lunDay) {
       return NextResponse.json(
-        { error: "필수 파라미터가 누락되었습니다. (lunYear, lunMonth, lunDay)" },
+        {
+          error: "필수 파라미터가 누락되었습니다. (lunYear, lunMonth, lunDay)",
+        },
         { status: 400 }
       );
     }
@@ -26,14 +28,21 @@ export async function GET(request) {
     }
 
     // 한국천문연구원 음력→양력 변환 API
-    const apiUrl = `https://apis.data.go.kr/B090041/openapi/service/LrsrCldInfoService/getSolCalInfo?lunYear=${lunYear}&lunMonth=${lunMonth.padStart(2, '0')}&lunDay=${lunDay.padStart(2, '0')}&lunIl=${lunIl}&ServiceKey=${serviceKey}&_type=json`;
+    const apiUrl = `http://apis.data.go.kr/B090041/openapi/service/LrsrCldInfoService/getSolCalInfo?lunYear=${lunYear}&lunMonth=${lunMonth.padStart(
+      2,
+      "0"
+    )}&lunDay=${lunDay.padStart(
+      2,
+      "0"
+    )}&lunIl=${lunIl}&ServiceKey=${serviceKey}&_type=json`;
 
-    console.log('Calling API:', apiUrl);
+    console.log("Calling API:", apiUrl);
 
     const response = await fetch(apiUrl);
+    console.log("Response:", response);
     const data = await response.json();
 
-    console.log('API Response:', data);
+    console.log("API Response:", data);
 
     if (data.response.header.resultCode !== "00") {
       return NextResponse.json(
@@ -61,16 +70,15 @@ export async function GET(request) {
         year: lunYear,
         month: lunMonth,
         day: lunDay,
-        isLeap: lunIl === '1'
-      }
+        isLeap: lunIl === "1",
+      },
     });
-
   } catch (error) {
     console.error("Calendar conversion error:", error);
     return NextResponse.json(
       {
         error: "날짜 변환 중 서버에서 오류가 발생했습니다.",
-        details: error.message
+        details: error.message,
       },
       { status: 500 }
     );
