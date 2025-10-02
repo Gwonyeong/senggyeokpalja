@@ -60,7 +60,6 @@ export async function POST() {
       lastSignInAt: new Date(),
     };
 
-    console.log('Creating profile with data:', profileData);
 
     // 1. 먼저 현재 사용자 ID로 프로필 찾기
     let profile = await prisma.profile.findUnique({
@@ -79,7 +78,6 @@ export async function POST() {
           lastSignInAt: profileData.lastSignInAt,
         }
       });
-      console.log('Profile updated by ID:', profile);
     } else {
       // 2. 사용자 ID로 찾을 수 없으면 이메일로 기존 프로필 찾기
       const existingProfileByEmail = await prisma.profile.findUnique({
@@ -88,10 +86,8 @@ export async function POST() {
 
       if (existingProfileByEmail) {
         // 이메일로 기존 프로필을 찾은 경우 - 기존 프로필의 ID가 다르면 마이그레이션 처리
-        console.log('Found existing profile by email:', existingProfileByEmail);
 
         if (existingProfileByEmail.id !== user.id) {
-          console.log('Profile ID mismatch - migrating profile');
 
           // 트랜잭션을 사용해서 안전하게 프로필 마이그레이션
           profile = await prisma.$transaction(async (tx) => {
@@ -110,7 +106,6 @@ export async function POST() {
             });
           });
 
-          console.log('Profile migrated with new ID:', profile);
         } else {
           // ID가 같으면 단순 업데이트
           profile = await prisma.profile.update({
@@ -123,7 +118,6 @@ export async function POST() {
               lastSignInAt: profileData.lastSignInAt,
             }
           });
-          console.log('Profile updated by email:', profile);
         }
       } else {
         // 3. 완전히 새로운 사용자 - 새 프로필 생성
@@ -131,11 +125,9 @@ export async function POST() {
           profile = await prisma.profile.create({
             data: profileData
           });
-          console.log('New profile created:', profile);
         } catch (createError) {
           if (createError.code === 'P2002') {
             // 동시성 이슈로 인한 중복 생성 시도 - 다시 조회
-            console.log('Concurrent creation detected, fetching existing profile');
             profile = await prisma.profile.findUnique({
               where: { email: profileData.email }
             });

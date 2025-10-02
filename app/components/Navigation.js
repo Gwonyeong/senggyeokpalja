@@ -475,12 +475,17 @@ export default function Navigation() {
                 이제 의뢰하기 버튼을 클릭해보세요.
               </p>
               <div style={{ display: "flex", justifyContent: "center" }}>
-                <button
+                <Link
+                  href="/consultation"
                   className="service-card-btn"
-                  onClick={handlePremiumClick}
+                  onClick={(e) => handleProtectedNavigation(e, "/consultation")}
+                  style={{
+                    textDecoration: "none",
+                    display: "inline-block",
+                  }}
                 >
                   의뢰하기
-                </button>
+                </Link>
               </div>
             </div>
 

@@ -1,14 +1,49 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { onAuthStateChange } from "../lib/supabase-auth";
 import MainToonSlider from "@/components/MainToonSlider";
 import CustomerStoriesSlider from "@/components/CustomerStoriesSlider";
+import LoginModal from "./components/LoginModal";
 
 export default function Home() {
+  const [showToast, setShowToast] = useState(false);
+  const [user, setUser] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const scrollToServices = () => {
     const servicesSection = document.querySelector(".services-section");
     if (servicesSection) {
       servicesSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    // Supabase 인증 상태 감시
+    const {
+      data: { subscription },
+    } = onAuthStateChange((authUser) => {
+      setUser(authUser);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSynergyClick = (e) => {
+    e.preventDefault();
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
+
+  const handleAnalyzeClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLoginModal(true);
+    } else {
+      window.location.href = "/analyze";
     }
   };
 
@@ -29,9 +64,12 @@ export default function Home() {
                 이곳은 당신의 성격과 운명을 블렌딩하여, <br />
                 세상에 단 하나뿐인 &lsquo;나&rsquo;라는 차를 맛보는 공간입니다
               </p>
-              <Link href="/analyze" className="cta-button ink-brush-effect ">
+              <button
+                onClick={handleAnalyzeClick}
+                className="cta-button ink-brush-effect"
+              >
                 찻 잔, 맛보기
-              </Link>
+              </button>
             </div>
           </div>
         </section>
@@ -78,12 +116,7 @@ export default function Home() {
                   </p>
                 </div>
               </Link>
-              <a
-                href="https://smore.im/form/2RQBeyh8f3"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="service-image-item"
-              >
+              <Link href="/consultation" className="service-image-item">
                 <div className="service-image-badge premium">프리미엄</div>
                 <div className="service-image-wrapper">
                   <img
@@ -97,12 +130,10 @@ export default function Home() {
                     토리에게 상세 해석을 의뢰해보세요.
                   </p>
                 </div>
-              </a>
-              <a
-                href="http://pf.kakao.com/_BxnBxmn/friend"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="service-image-item"
+              </Link>
+              <div
+                onClick={handleSynergyClick}
+                className="service-image-item cursor-pointer"
               >
                 <div className="service-image-badge premium">프리미엄</div>
                 <div className="service-image-wrapper">
@@ -117,13 +148,13 @@ export default function Home() {
                     연인, 친구, 동료와의 인연 스포일러를 확인하세요.
                   </p>
                 </div>
-              </a>
+              </div>
             </div>
-            <div className="flex justify-center mt-[20px]">
+            {/* <div className="flex justify-center mt-[20px]">
               <Link href="/services" className="text-[#EAEAEA] text-[14px]">
                 더 많은 서비스 보기
               </Link>
-            </div>
+            </div> */}
           </div>
         </section>
         {/* Customer Stories Section */}
@@ -149,7 +180,7 @@ export default function Home() {
                 찾았습니다.
               </p>
               <p className="story-info-title">이제, 당신의 차례입니다.</p>
-              <Link href="/analyze" className="story-cta-button">
+              <Link href="/consultation" className="story-cta-button">
                 의뢰하기
               </Link>
               <p className="story-info-subtitle">
@@ -187,6 +218,19 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300">
+          <p className="text-sm font-medium">준비중입니다</p>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
 
       {/* Footer */}
       <footer className="site-footer">
