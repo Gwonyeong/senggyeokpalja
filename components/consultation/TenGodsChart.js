@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import { getTenGodsFortune, getTenGodsBasicInfo } from "../../lib/ten-gods-utils";
+import {
+  getTenGodsFortune,
+  getTenGodsBasicInfo,
+} from "../../lib/ten-gods-utils";
 
 export default function TenGodsChart({ consultation }) {
   const canvasRef = useRef(null);
@@ -9,35 +12,44 @@ export default function TenGodsChart({ consultation }) {
   const [loading, setLoading] = useState(false);
 
   // 십성 데이터 추출 (JSON에서 추출)
-  const tenGodsData = useMemo(() => consultation?.tenGods || {}, [consultation]);
+  const tenGodsData = useMemo(
+    () => consultation?.tenGods || {},
+    [consultation]
+  );
 
   // 십성 개수 계산 (tenGods JSON에서 추출)
-  const tenGods = useMemo(() => ({
-    비견: tenGodsData?.비견 || 0,
-    겁재: tenGodsData?.겁재 || 0,
-    식신: tenGodsData?.식신 || 0,
-    상관: tenGodsData?.상관 || 0,
-    편재: tenGodsData?.편재 || 0,
-    정재: tenGodsData?.정재 || 0,
-    편관: tenGodsData?.편관 || 0,
-    정관: tenGodsData?.정관 || 0,
-    편인: tenGodsData?.편인 || 0,
-    정인: tenGodsData?.정인 || 0,
-  }), [tenGodsData]);
+  const tenGods = useMemo(
+    () => ({
+      비견: tenGodsData?.비견 || 0,
+      겁재: tenGodsData?.겁재 || 0,
+      식신: tenGodsData?.식신 || 0,
+      상관: tenGodsData?.상관 || 0,
+      편재: tenGodsData?.편재 || 0,
+      정재: tenGodsData?.정재 || 0,
+      편관: tenGodsData?.편관 || 0,
+      정관: tenGodsData?.정관 || 0,
+      편인: tenGodsData?.편인 || 0,
+      정인: tenGodsData?.정인 || 0,
+    }),
+    [tenGodsData]
+  );
 
   // 십성 색상 정의
-  const colors = useMemo(() => ({
-    비견: "#ff6b6b", // 빨간색
-    겁재: "#ff8787", // 연빨간색
-    식신: "#4ecdc4", // 청록색
-    상관: "#45b7d1", // 하늘색
-    편재: "#f7dc6f", // 노란색
-    정재: "#f4d03f", // 진노란색
-    편관: "#bb8fce", // 보라색
-    정관: "#a569bd", // 진보라색
-    편인: "#85c1e2", // 연파란색
-    정인: "#5dade2", // 파란색
-  }), []);
+  const colors = useMemo(
+    () => ({
+      비견: "#ff6b6b", // 빨간색
+      겁재: "#ff8787", // 연빨간색
+      식신: "#4ecdc4", // 청록색
+      상관: "#45b7d1", // 하늘색
+      편재: "#f7dc6f", // 노란색
+      정재: "#f4d03f", // 진노란색
+      편관: "#bb8fce", // 보라색
+      정관: "#a569bd", // 진보라색
+      편인: "#85c1e2", // 연파란색
+      정인: "#5dade2", // 파란색
+    }),
+    []
+  );
 
   // 십성 설명
   const godDescriptions = {
@@ -79,9 +91,9 @@ export default function TenGodsChart({ consultation }) {
 
     // 차트 제목
     ctx.fillStyle = "#d4af37";
-    ctx.font = "bold 48px Noto Serif KR";
+    ctx.font = "bold 64px Noto Serif KR";
     ctx.textAlign = "center";
-    ctx.fillText("십성 분포도", centerX, 80);
+    ctx.fillText("십성 분포도", centerX, 100);
 
     // 원형 차트 그리기
     let currentAngle = -Math.PI / 2; // 12시 방향에서 시작
@@ -94,11 +106,24 @@ export default function TenGodsChart({ consultation }) {
       // 파이 조각 그리기
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
-      ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+      ctx.arc(
+        centerX,
+        centerY,
+        radius,
+        currentAngle,
+        currentAngle + sliceAngle
+      );
       ctx.closePath();
 
       // 그라데이션 효과
-      const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+      const gradient = ctx.createRadialGradient(
+        centerX,
+        centerY,
+        0,
+        centerX,
+        centerY,
+        radius
+      );
       gradient.addColorStop(0, colors[god] + "ff");
       gradient.addColorStop(1, colors[god] + "cc");
       ctx.fillStyle = gradient;
@@ -115,14 +140,19 @@ export default function TenGodsChart({ consultation }) {
       const labelY = centerY + Math.sin(labelAngle) * (radius * 0.7);
 
       // 레이블 그리기
-      if (value / total > 0.05) { // 5% 이상일 때만 레이블 표시
+      if (value / total > 0.05) {
+        // 5% 이상일 때만 레이블 표시
         ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 32px Pretendard";
+        ctx.font = "bold 42px Pretendard";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(god, labelX, labelY - 20);
-        ctx.font = "28px Pretendard";
-        ctx.fillText(`${Math.round(value / total * 100)}%`, labelX, labelY + 20);
+        ctx.fillText(god, labelX, labelY - 28);
+        ctx.font = "36px Pretendard";
+        ctx.fillText(
+          `${Math.round((value / total) * 100)}%`,
+          labelX,
+          labelY + 28
+        );
       }
 
       currentAngle += sliceAngle;
@@ -136,29 +166,24 @@ export default function TenGodsChart({ consultation }) {
     ctx.strokeStyle = "#d4af37";
     ctx.lineWidth = 4;
     ctx.stroke();
-
-    // 중앙 텍스트
-    ctx.fillStyle = "#d4af37";
-    ctx.font = "bold 36px Noto Serif KR";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("십성", centerX, centerY);
   }, [consultation, tenGods, colors]);
 
   // 가장 강한 십성 찾기
-  const dominantGod = Object.entries(tenGods).reduce((max, [god, value]) =>
-    value > (max.value || 0) ? { god, value } : max, {});
+  const dominantGod = Object.entries(tenGods).reduce(
+    (max, [god, value]) => (value > (max.value || 0) ? { god, value } : max),
+    {}
+  );
 
   // 가장 강한 십성의 총운 데이터 로드
   useEffect(() => {
     if (dominantGod.god && dominantGod.value > 0) {
       setLoading(true);
       getTenGodsFortune(dominantGod.god)
-        .then(data => {
+        .then((data) => {
           setGodDescription(data);
         })
-        .catch(error => {
-          console.error('Failed to load ten gods fortune:', error);
+        .catch((error) => {
+          console.error("Failed to load ten gods fortune:", error);
         })
         .finally(() => {
           setLoading(false);
@@ -256,11 +281,21 @@ export default function TenGodsChart({ consultation }) {
                     marginBottom: "4px",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{ color: colors[god], fontSize: "12px" }}>●</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <span style={{ color: colors[god], fontSize: "12px" }}>
+                      ●
+                    </span>
                     <span
                       style={{
-                        color: isDominant ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
+                        color: isDominant
+                          ? "#d4af37"
+                          : "rgba(255, 255, 255, 0.7)",
                         fontWeight: isDominant ? "600" : "normal",
                       }}
                     >
@@ -270,7 +305,9 @@ export default function TenGodsChart({ consultation }) {
                   <span
                     style={{
                       fontSize: "11px",
-                      color: isDominant ? "#d4af37" : "rgba(255, 255, 255, 0.5)",
+                      color: isDominant
+                        ? "#d4af37"
+                        : "rgba(255, 255, 255, 0.5)",
                       fontWeight: isDominant ? "600" : "normal",
                     }}
                   >
@@ -318,9 +355,7 @@ export default function TenGodsChart({ consultation }) {
                 fontWeight: "bold",
                 color: "#d4af37",
               }}
-            >
-
-            </span>
+            ></span>
             <h4
               style={{
                 color: "#d4af37",
@@ -335,12 +370,14 @@ export default function TenGodsChart({ consultation }) {
           </div>
 
           <div
-            style={{
-              padding: "12px 16px",
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
-              borderRadius: "8px",
-              border: "1px solid rgba(212, 175, 55, 0.2)",
-            }}
+            style={
+              {
+                // padding: "12px 16px",
+                // backgroundColor: "rgba(0, 0, 0, 0.2)",
+                // borderRadius: "8px",
+                // border: "1px solid rgba(212, 175, 55, 0.2)",
+              }
+            }
           >
             <div
               style={{
@@ -359,7 +396,9 @@ export default function TenGodsChart({ consultation }) {
                   lineHeight: "1.5",
                 }}
               >
-                <span style={{ color: "#d4af37", fontWeight: "600" }}>의미:</span>{" "}
+                <span style={{ color: "#d4af37", fontWeight: "600" }}>
+                  의미:
+                </span>{" "}
                 {godDescriptions[dominantGod.god]}
               </p>
               <p
@@ -370,7 +409,9 @@ export default function TenGodsChart({ consultation }) {
                   lineHeight: "1.5",
                 }}
               >
-                <span style={{ color: "#d4af37", fontWeight: "600" }}>특성:</span>{" "}
+                <span style={{ color: "#d4af37", fontWeight: "600" }}>
+                  특성:
+                </span>{" "}
                 {getTenGodsBasicInfo(dominantGod.god)?.characteristic}
               </p>
               <p
@@ -381,7 +422,9 @@ export default function TenGodsChart({ consultation }) {
                   lineHeight: "1.5",
                 }}
               >
-                <span style={{ color: "#d4af37", fontWeight: "600" }}>성향:</span>{" "}
+                <span style={{ color: "#d4af37", fontWeight: "600" }}>
+                  성향:
+                </span>{" "}
                 {getTenGodsBasicInfo(dominantGod.god)?.personality}
               </p>
             </div>
@@ -399,26 +442,37 @@ export default function TenGodsChart({ consultation }) {
               </div>
             ) : godDescription ? (
               <>
-                <h5
-                  style={{
-                    color: "#d4af37",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    marginBottom: "16px",
-                    fontFamily: "Noto Serif KR",
-                  }}
-                >
-                  총운 해석
-                </h5>
                 <div
                   style={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: "14px",
-                    lineHeight: "1.7",
-                    whiteSpace: "pre-line",
+                    marginBottom: "16px",
+                    padding: "12px 16px",
+                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(212, 175, 55, 0.2)",
                   }}
                 >
-                  {godDescription.categories?.overall || "총운 설명을 불러올 수 없습니다."}
+                  <h5
+                    style={{
+                      color: "#d4af37",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      marginBottom: "16px",
+                      fontFamily: "Noto Serif KR",
+                    }}
+                  >
+                    총운 해석
+                  </h5>
+                  <div
+                    style={{
+                      color: "rgba(255, 255, 255, 0.8)",
+                      fontSize: "14px",
+                      lineHeight: "1.7",
+                      whiteSpace: "pre-line",
+                    }}
+                  >
+                    {godDescription.categories?.overall ||
+                      "총운 설명을 불러올 수 없습니다."}
+                  </div>
                 </div>
               </>
             ) : (

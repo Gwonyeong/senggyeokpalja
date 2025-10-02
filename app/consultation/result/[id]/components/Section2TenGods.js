@@ -60,7 +60,7 @@ export default function Section2TenGods({ consultation }) {
       </div>
 
       {/* 첫 번째 웹툰 패널 - 도입부 */}
-      <div style={{ marginBottom: "20px" }}>
+      <div style={{ marginBottom: "120px" }}>
         {panelConfigs.map((config, index) => (
           <WebtoonPanel
             key={`section2-intro-panel-${index}`}
