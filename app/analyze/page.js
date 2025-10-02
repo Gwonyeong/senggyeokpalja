@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
 import Head from "next/head";
 import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
+import Link from "next/link";
 
 export default function AnalyzePage() {
   const [formData, setFormData] = useState({
@@ -23,6 +24,9 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [savedToDb, setSavedToDb] = useState(false);
+  const [showConsultationModal, setShowConsultationModal] = useState(false);
+  const [modalShown, setModalShown] = useState(false);
+  const invitationRef = useRef(null);
 
   // 사용자 인증 상태 확인
   useEffect(() => {
@@ -203,6 +207,9 @@ export default function AnalyzePage() {
 
       setResult(resultData);
       setSavedToDb(false);
+      // 새로운 결과가 나올 때마다 모달 상태 초기화
+      setModalShown(false);
+      setShowConsultationModal(false);
 
       // 로컬 스토리지에 결과 저장
       const savedResults = JSON.parse(
@@ -305,6 +312,37 @@ export default function AnalyzePage() {
       document.title = `나는 ${result.typeData.alias}! - 성격팔자`;
     }
   }, [result]);
+
+  // 스크롤 감지 기능
+  useEffect(() => {
+    if (!result || !invitationRef.current || modalShown) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !modalShown) {
+            setShowConsultationModal(true);
+            setModalShown(true);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // 50% 이상 보일 때 트리거
+        rootMargin: '0px 0px -100px 0px' // 하단 100px 여유
+      }
+    );
+
+    const currentRef = invitationRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [result, modalShown]);
 
   return (
     <AuthProtectedPage>
@@ -550,11 +588,13 @@ export default function AnalyzePage() {
                   className="card result-card"
                   style={{ display: "block", opacity: 1 }}
                 >
-                  <img
+                  <Image
                     id="result-image"
                     className="main-result-image"
                     src={result.typeData.imageUrl}
                     alt="팔자유형 이미지"
+                    width={300}
+                    height={300}
                   />
                   <p className="result-type-code">{result.personalityType}</p>
                   <h2 id="result-alias" className="card-title">
@@ -591,7 +631,7 @@ export default function AnalyzePage() {
                     <div className="compatibility-grid">
                       <div className="compatibility-item">
                         <p className="compatibility-item-title">최고의 궁합</p>
-                        <img
+                        <Image
                           id="soulmate-image"
                           className="compatibility-image"
                           src={
@@ -602,6 +642,8 @@ export default function AnalyzePage() {
                             getCompatibilityData(result.personalityType)
                               .soulmateName
                           }
+                          width={120}
+                          height={120}
                         />
                         <p id="soulmate-alias" className="compatibility-name">
                           {
@@ -620,7 +662,7 @@ export default function AnalyzePage() {
                         <p className="compatibility-item-title">
                           성장의 파트너
                         </p>
-                        <img
+                        <Image
                           id="growth-image"
                           className="compatibility-image"
                           src={
@@ -631,6 +673,8 @@ export default function AnalyzePage() {
                             getCompatibilityData(result.personalityType)
                               .growthName
                           }
+                          width={120}
+                          height={120}
                         />
                         <p id="growth-alias" className="compatibility-name">
                           {
@@ -650,7 +694,7 @@ export default function AnalyzePage() {
                       상세한 궁합 풀이는 <strong>[기능 준비중]</strong>입니다!
                     </p>
                   </div>
-                  <div className="interview-cta">
+                  <div className="interview-cta" ref={invitationRef}>
                     <h3>토리가 건네는 특별한 초대장</h3>
                     <p>
                       당신의 이야기는 &lsquo;성격팔자&rsquo;를 완성하는 마지막 조각입니다.
@@ -764,6 +808,96 @@ export default function AnalyzePage() {
           </div>
         </section>
       </main>
+
+      {/* Consultation 유도 모달 */}
+      {showConsultationModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div
+            className="max-w-md w-full mx-4 relative"
+            style={{
+              background: 'linear-gradient(135deg, rgba(252, 163, 17, 0.12) 0%, rgba(184, 134, 11, 0.08) 100%)',
+              borderRadius: '16px',
+              border: '2px solid rgba(252, 163, 17, 0.4)',
+              padding: '32px 24px',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(252, 163, 17, 0.2)'
+            }}
+          >
+            <button
+              onClick={() => setShowConsultationModal(false)}
+              className="absolute top-4 right-4 text-[#FCA311] hover:text-white text-2xl transition-colors"
+              style={{
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                background: 'rgba(252, 163, 17, 0.1)',
+                border: '1px solid rgba(252, 163, 17, 0.3)'
+              }}
+            >
+              ×
+            </button>
+            <div className="text-center">
+              <div
+                className="mb-6"
+                style={{
+                  background: 'linear-gradient(135deg, #FCA311, #d4af37)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                <h3 className="text-2xl font-bold">
+                  토리의 특별한 제안 🍵
+                </h3>
+              </div>
+              <p className="text-white mb-6 leading-relaxed text-base">
+                기본 팔자유형 분석이 마음에 드셨나요?
+                <br /><br />
+                더 상세한 <strong className="text-[#FCA311]">토리와의 1:1 상담</strong>을 통해<br />
+                당신만의 인생 로드맵을 받아보세요!
+              </p>
+              <div className="space-y-4">
+                <Link
+                  href="/consultation"
+                  className="block w-full text-black py-4 px-6 font-bold transition-all duration-300 hover:transform hover:scale-105"
+                  onClick={() => setShowConsultationModal(false)}
+                  style={{
+                    background: 'linear-gradient(135deg, #FCA311, #d4af37)',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 16px rgba(252, 163, 17, 0.3)'
+                  }}
+                >
+                  토리와 상담하기 💬
+                </Link>
+                <button
+                  onClick={() => setShowConsultationModal(false)}
+                  className="block w-full py-4 px-6 transition-all duration-300 hover:transform hover:scale-105"
+                  style={{
+                    background: 'rgba(252, 163, 17, 0.1)',
+                    border: '2px solid rgba(252, 163, 17, 0.5)',
+                    color: '#FCA311',
+                    borderRadius: '12px',
+                    backdropFilter: 'blur(4px)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(252, 163, 17, 0.2)';
+                    e.target.style.borderColor = '#FCA311';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(252, 163, 17, 0.1)';
+                    e.target.style.borderColor = 'rgba(252, 163, 17, 0.5)';
+                  }}
+                >
+                  다음에 할게요
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </PageWrapper>
     </AuthProtectedPage>
