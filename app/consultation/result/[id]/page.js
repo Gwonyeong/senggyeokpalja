@@ -361,7 +361,7 @@ export default function ConsultationResultPage({ params }) {
                                   fontFamily: "'Noto Serif KR', serif",
                                 }}
                               >
-                                복채: 49,000원
+                                복채: 29,000원
                               </p>
                               <p
                                 style={{
@@ -371,7 +371,7 @@ export default function ConsultationResultPage({ params }) {
                                   fontFamily: "'Noto Serif KR', serif",
                                 }}
                               >
-                                29,000원
+                                9,900원
                               </p>
                             </div>
                             <div
@@ -391,19 +391,6 @@ export default function ConsultationResultPage({ params }) {
                               gap: "8px",
                             }}
                           >
-                            <span
-                              style={{
-                                fontSize: "12px",
-                                color: "#ef4444",
-                                fontWeight: "600",
-                                padding: "4px 12px",
-                                background: "rgba(239, 68, 68, 0.1)",
-                                borderRadius: "12px",
-                                border: "1px solid rgba(239, 68, 68, 0.2)",
-                              }}
-                            >
-                              40% 할인 중
-                            </span>
                             <DiscountTimer />
                           </div>
                         </div>

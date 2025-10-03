@@ -61,14 +61,13 @@ export default function Home() {
                 차를 준비하겠네.&rdquo;
               </p>
               <p className="hero-description">
-                이곳은 당신의 성격과 운명을 블렌딩하여, <br />
-                세상에 단 하나뿐인 &lsquo;나&rsquo;라는 차를 맛보는 공간입니다
+                이곳은 당신의 타고난 운명 팔자유형을 엿보는 공간입니다.
               </p>
               <button
                 onClick={handleAnalyzeClick}
                 className="cta-button ink-brush-effect"
               >
-                찻 잔, 맛보기
+                팔자유형 보러가기
               </button>
             </div>
           </div>
