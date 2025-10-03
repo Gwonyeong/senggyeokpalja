@@ -151,10 +151,20 @@ export default function MyPage() {
       const response = await fetch("/api/consultation/history");
       if (response.ok) {
         const data = await response.json();
-        setConsultationResults(data);
+        // API 응답이 { data: [], pagination: {} } 형태인 경우와
+        // 배열 형태인 경우 모두 처리
+        if (Array.isArray(data)) {
+          setConsultationResults(data);
+        } else if (data && data.data && Array.isArray(data.data)) {
+          setConsultationResults(data.data);
+        } else {
+          console.error("Unexpected consultation history format:", data);
+          setConsultationResults([]);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch consultation history:", error);
+      setConsultationResults([]);
     }
   };
 
@@ -425,7 +435,7 @@ export default function MyPage() {
                 </h3>
               </div>
               <div id="consultation-history">
-                {consultationResults.length === 0 ? (
+                {!consultationResults || consultationResults.length === 0 ? (
                   <p
                     className="no-data"
                     style={{
@@ -453,7 +463,7 @@ export default function MyPage() {
                         backgroundColor: "rgba(0, 0, 0, 0.2)",
                       }}
                     >
-                      {consultationResults
+                      {(consultationResults || [])
                         .slice(consultationPage * 5, (consultationPage + 1) * 5)
                         .map((result) => (
                           <div
@@ -567,7 +577,7 @@ export default function MyPage() {
                     </div>
 
                     {/* 페이지네이션 */}
-                    {consultationResults.length > 5 && (
+                    {consultationResults && consultationResults.length > 5 && (
                       <div
                         style={{
                           display: "flex",
@@ -614,38 +624,38 @@ export default function MyPage() {
                           }}
                         >
                           {consultationPage + 1} /{" "}
-                          {Math.ceil(consultationResults.length / 5)}
+                          {Math.ceil((consultationResults?.length || 0) / 5)}
                         </span>
                         <button
                           onClick={() =>
                             setConsultationPage(
                               Math.min(
-                                Math.ceil(consultationResults.length / 5) - 1,
+                                Math.ceil((consultationResults?.length || 0) / 5) - 1,
                                 consultationPage + 1
                               )
                             )
                           }
                           disabled={
                             consultationPage >=
-                            Math.ceil(consultationResults.length / 5) - 1
+                            Math.ceil((consultationResults?.length || 0) / 5) - 1
                           }
                           style={{
                             padding: "5px 10px",
                             background:
                               consultationPage >=
-                              Math.ceil(consultationResults.length / 5) - 1
+                              Math.ceil((consultationResults?.length || 0) / 5) - 1
                                 ? "var(--border-color)"
                                 : "var(--accent-color)",
                             color:
                               consultationPage >=
-                              Math.ceil(consultationResults.length / 5) - 1
+                              Math.ceil((consultationResults?.length || 0) / 5) - 1
                                 ? "var(--text-muted-color)"
                                 : "var(--ink-black)",
                             border: "none",
                             borderRadius: "4px",
                             cursor:
                               consultationPage >=
-                              Math.ceil(consultationResults.length / 5) - 1
+                              Math.ceil((consultationResults?.length || 0) / 5) - 1
                                 ? "not-allowed"
                                 : "pointer",
                             fontSize: "12px",
