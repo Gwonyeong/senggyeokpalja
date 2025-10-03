@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
+import { saveUserFormData, loadUserFormData } from "../../lib/localStorage-utils";
 import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
@@ -31,7 +32,7 @@ function AnalyzeContent() {
   const [isQueryMode, setIsQueryMode] = useState(false);
   const invitationRef = useRef(null);
 
-  // 사용자 인증 상태 확인
+  // 사용자 인증 상태 확인 및 localStorage에서 데이터 로드
   useEffect(() => {
     const checkUser = async () => {
       const supabase = createClient();
@@ -39,6 +40,24 @@ function AnalyzeContent() {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
+
+      // 로그인한 사용자인 경우 localStorage에서 데이터 로드
+      if (user) {
+        const savedData = loadUserFormData();
+        if (savedData) {
+          setFormData(prev => ({
+            ...prev,
+            name: savedData.name || prev.name,
+            year: savedData.year || prev.year,
+            month: savedData.month || prev.month,
+            day: savedData.day || prev.day,
+            hour: savedData.hour || prev.hour,
+            gender: savedData.gender || prev.gender,
+            calendar: savedData.calendar || prev.calendar,
+            isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
+          }));
+        }
+      }
     };
     checkUser();
 
@@ -48,6 +67,24 @@ function AnalyzeContent() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
+
+      // 로그인 시 localStorage에서 데이터 로드
+      if (session?.user) {
+        const savedData = loadUserFormData();
+        if (savedData) {
+          setFormData(prev => ({
+            ...prev,
+            name: savedData.name || prev.name,
+            year: savedData.year || prev.year,
+            month: savedData.month || prev.month,
+            day: savedData.day || prev.day,
+            hour: savedData.hour || prev.hour,
+            gender: savedData.gender || prev.gender,
+            calendar: savedData.calendar || prev.calendar,
+            isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
+          }));
+        }
+      }
     });
 
     return () => subscription?.unsubscribe();
@@ -266,6 +303,11 @@ function AnalyzeContent() {
       // 새로운 결과가 나올 때마다 모달 상태 초기화
       setModalShown(false);
       setShowConsultationModal(false);
+
+      // 로그인한 사용자인 경우 localStorage에 폼 데이터 저장
+      if (user) {
+        saveUserFormData(formData);
+      }
 
       // 로컬 스토리지에 결과 저장
       const savedResults = JSON.parse(

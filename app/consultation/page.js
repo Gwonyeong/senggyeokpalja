@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 // import { calculateSajuWithManseryeok } from "../../lib/saju-utils-manseryeok"; // 서버에서 계산하므로 불필요
 import { createClient } from "../../lib/supabase";
+import { saveUserFormData, loadUserFormData } from "../../lib/localStorage-utils";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
 
@@ -27,12 +28,31 @@ export default function ConsultationPage() {
 
   const [loading, setLoading] = useState(false);
 
-  // 로그인 상태 확인
+  // 로그인 상태 확인 및 localStorage에서 데이터 로드
   useEffect(() => {
     const checkUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+
+        // 로그인한 사용자인 경우 localStorage에서 데이터 로드
+        if (user) {
+          const savedData = loadUserFormData();
+          if (savedData) {
+            setFormData(prev => ({
+              ...prev,
+              name: savedData.name || prev.name,
+              year: savedData.year || prev.year,
+              month: savedData.month || prev.month,
+              day: savedData.day || prev.day,
+              hour: savedData.hour || prev.hour,
+              gender: savedData.gender || prev.gender,
+              mbti: savedData.mbti || prev.mbti,
+              calendar: savedData.calendar || prev.calendar,
+              isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
+            }));
+          }
+        }
       } catch (error) {
         console.error('Auth check error:', error);
       } finally {
@@ -47,6 +67,25 @@ export default function ConsultationPage() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+
+      // 로그인 시 localStorage에서 데이터 로드
+      if (session?.user) {
+        const savedData = loadUserFormData();
+        if (savedData) {
+          setFormData(prev => ({
+            ...prev,
+            name: savedData.name || prev.name,
+            year: savedData.year || prev.year,
+            month: savedData.month || prev.month,
+            day: savedData.day || prev.day,
+            hour: savedData.hour || prev.hour,
+            gender: savedData.gender || prev.gender,
+            mbti: savedData.mbti || prev.mbti,
+            calendar: savedData.calendar || prev.calendar,
+            isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
+          }));
+        }
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -94,6 +133,9 @@ export default function ConsultationPage() {
       const result = await response.json();
 
       if (response.ok) {
+        // localStorage에 폼 데이터 저장
+        saveUserFormData(formData);
+
         // 상담 결과 페이지로 이동
         router.push(`/consultation/result/${result.consultationId}?section=1`);
       } else {
