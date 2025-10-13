@@ -411,7 +411,7 @@ export default function ConsultationResultPage({ params }) {
                   <TossPaymentWidget
                     consultationId={consultation.id}
                     amount={9900}
-                    orderName="플라자 상담 서비스"
+                    orderName="성격팔자 상세리포트"
                     onPaymentSuccess={() => {
                       // 결제 성공 시 데이터 다시 로드
                       window.location.reload();

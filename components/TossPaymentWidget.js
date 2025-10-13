@@ -5,16 +5,16 @@ import { useEffect, useState } from "react";
 const TossPaymentWidget = ({
   consultationId,
   amount = 9900,
-  orderName = "플라자 상담 서비스",
-  onPaymentSuccess
+  orderName = "성격팔자 상세리포트",
+  onPaymentSuccess,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [tossPayments, setTossPayments] = useState(null);
 
   useEffect(() => {
     // SDK v2 스크립트 로드
-    const script = document.createElement('script');
-    script.src = 'https://js.tosspayments.com/v2/standard';
+    const script = document.createElement("script");
+    script.src = "https://js.tosspayments.com/v2/standard";
     script.async = true;
     script.onload = () => {
       if (window.TossPayments) {
@@ -41,15 +41,17 @@ const TossPaymentWidget = ({
 
     try {
       const orderId = `order_${consultationId}_${Date.now()}`;
-      const customerKey = `customer_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+      const customerKey = `customer_${Date.now()}_${Math.random()
+        .toString(36)
+        .substring(2, 11)}`;
 
       // SDK v2 결제창 호출 - customerKey 필수
       const payment = tossPayments.payment({
-        customerKey: customerKey
+        customerKey: customerKey,
       });
 
       await payment.requestPayment({
-        method: "CARD",  // 영문 대문자로 변경
+        method: "CARD", // 영문 대문자로 변경
         amount: {
           currency: "KRW",
           value: amount,
@@ -59,7 +61,7 @@ const TossPaymentWidget = ({
         successUrl: `${window.location.origin}/api/payment/success`,
         failUrl: `${window.location.origin}/api/payment/fail`,
         customerEmail: "customer@example.com",
-        customerName: "고객"
+        customerName: "고객",
       });
     } catch (error) {
       console.error("결제 요청 실패:", error);
@@ -76,20 +78,21 @@ const TossPaymentWidget = ({
       style={{
         width: "100%",
         padding: "18px",
-        background: (isLoading || !tossPayments)
-          ? "#666"
-          : "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
-        color: (isLoading || !tossPayments) ? "#999" : "#000",
+        background:
+          isLoading || !tossPayments
+            ? "#666"
+            : "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
+        color: isLoading || !tossPayments ? "#999" : "#000",
         border: "2px solid #FCA311",
         borderRadius: "15px",
         fontSize: "18px",
         fontWeight: "700",
-        cursor: (isLoading || !tossPayments) ? "not-allowed" : "pointer",
+        cursor: isLoading || !tossPayments ? "not-allowed" : "pointer",
         transition: "all 0.3s ease",
         boxShadow: "0 4px 12px rgba(252, 163, 17, 0.3)",
         fontFamily: "'Noto Serif KR', serif",
         letterSpacing: "1px",
-        marginTop: "20px"
+        marginTop: "20px",
       }}
       onMouseOver={(e) => {
         if (!isLoading && tossPayments) {
@@ -104,7 +107,11 @@ const TossPaymentWidget = ({
         }
       }}
     >
-      {isLoading ? "결제 요청중..." : !tossPayments ? "결제 준비중..." : "토리와 상담받기"}
+      {isLoading
+        ? "결제 요청중..."
+        : !tossPayments
+        ? "결제 준비중..."
+        : "토리와 상담받기"}
     </button>
   );
 };

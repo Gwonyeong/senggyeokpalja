@@ -277,6 +277,7 @@ export default function Home() {
               <div>사업자등록번호: 589-34-01598</div>
               <div>통신판매업: 2025-의정부송산-0941</div>
               <div>주소: 경기도 의정부시 서광로 166</div>
+              <div>전화번호: 010-9973-3274</div>
             </div>
           </div>
         </div>
