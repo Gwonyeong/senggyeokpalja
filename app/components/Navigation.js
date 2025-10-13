@@ -399,7 +399,7 @@ export default function Navigation() {
                     className="slide-menu-item"
                     onClick={(e) => handleProtectedNavigation(e, "/analyze")}
                   >
-                    찻집
+                    팔자유형 보러가기
                   </Link>
                 </li>
                 <li>
@@ -409,15 +409,6 @@ export default function Navigation() {
                     onClick={(e) => handleProtectedNavigation(e, "/synergy")}
                   >
                     나와의 궁합 보기
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/consultation"
-                    className="slide-menu-item"
-                    onClick={(e) => handleProtectedNavigation(e, "/consultation")}
-                  >
-                    토리와 상담하기
                   </Link>
                 </li>
 

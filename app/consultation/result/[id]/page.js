@@ -4,8 +4,8 @@ import { useState, useEffect, use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../../../lib/supabase";
 import PageWrapper from "@/components/PageWrapper";
-// import TossPaymentWidget from "@/components/TossPaymentWidget";
-import ChuseokEventModal from "@/components/ChuseokEventModal";
+import TossPaymentWidget from "@/components/TossPaymentWidget";
+// import ChuseokEventModal from "@/components/ChuseokEventModal";
 
 import Section1BasicInfo from "./components/Section1BasicInfo";
 import Section2TenGods from "./components/Section2TenGods";
@@ -29,7 +29,7 @@ export default function ConsultationResultPage({ params }) {
   const [consultation, setConsultation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentSection, setCurrentSection] = useState(1);
-  const [showEventModal, setShowEventModal] = useState(false);
+  // const [showEventModal, setShowEventModal] = useState(false);
 
   // URL 파라미터에서 섹션 번호 가져오기
   useEffect(() => {
@@ -394,62 +394,30 @@ export default function ConsultationResultPage({ params }) {
                             <DiscountTimer />
                           </div>
                         </div>
-
-                        <button
-                          onClick={() => setShowEventModal(true)}
-                          style={{
-                            width: "100%",
-                            padding: "18px",
-                            background:
-                              "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
-                            color: "#000",
-                            border: "2px solid #FCA311",
-                            borderRadius: "15px",
-                            fontSize: "18px",
-                            fontWeight: "700",
-                            cursor: "pointer",
-                            transition: "all 0.3s ease",
-                            boxShadow: "0 4px 12px rgba(252, 163, 17, 0.3)",
-                            fontFamily: "'Noto Serif KR', serif",
-                            letterSpacing: "1px",
-                          }}
-                          onMouseOver={(e) => {
-                            e.target.style.transform = "translateY(-2px)";
-                            e.target.style.boxShadow =
-                              "0 6px 20px rgba(252, 163, 17, 0.4)";
-                          }}
-                          onMouseOut={(e) => {
-                            e.target.style.transform = "translateY(0)";
-                            e.target.style.boxShadow =
-                              "0 4px 12px rgba(252, 163, 17, 0.3)";
-                          }}
-                        >
-                          토리와 상담받기
-                        </button>
                       </div>
                     </div>
                   </>
                 )}
 
                 {/* 추석 이벤트 모달 */}
-                <ChuseokEventModal
+                {/* <ChuseokEventModal
                   isOpen={showEventModal}
                   onClose={() => setShowEventModal(false)}
                   consultationId={consultation.id}
-                />
+                /> */}
 
-                {/* 기존 토스 페이먼츠 위젯 (임시 주석 처리) */}
-                {/* {currentSection === 1 && !consultation.isPaid && (
+                {/* 토스 페이먼츠 결제 위젯 */}
+                {currentSection === 1 && !consultation.isPaid && (
                   <TossPaymentWidget
                     consultationId={consultation.id}
-                    amount={10000}
+                    amount={9900}
                     orderName="플라자 상담 서비스"
                     onPaymentSuccess={() => {
                       // 결제 성공 시 데이터 다시 로드
                       window.location.reload();
                     }}
                   />
-                )} */}
+                )}
 
                 {/* 네비게이션 버튼 */}
                 <div

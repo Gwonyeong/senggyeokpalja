@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 const TossPaymentWidget = ({
   consultationId,
-  amount = 10000,
+  amount = 9900,
   orderName = "플라자 상담 서비스",
   onPaymentSuccess
 }) => {
@@ -70,34 +70,42 @@ const TossPaymentWidget = ({
   };
 
   return (
-    <div style={{ padding: "20px", border: "1px solid #ddd", borderRadius: "8px", marginBottom: "20px" }}>
-      <h3 style={{ marginBottom: "15px", color: "#d4af37" }}>결제 정보</h3>
-      <p style={{ marginBottom: "15px", color: "#ccc" }}>
-        전체 상담 내용을 확인하려면 결제가 필요합니다.
-      </p>
-      <p style={{ marginBottom: "20px", fontSize: "18px", fontWeight: "bold", color: "#d4af37" }}>
-        결제 금액: {amount.toLocaleString()}원
-      </p>
-
-      <button
-        onClick={handlePayment}
-        disabled={isLoading || !tossPayments}
-        style={{
-          width: "100%",
-          padding: "15px",
-          backgroundColor: (isLoading || !tossPayments) ? "#666" : "#d4af37",
-          color: (isLoading || !tossPayments) ? "#999" : "#000",
-          border: "none",
-          borderRadius: "6px",
-          fontSize: "16px",
-          fontWeight: "600",
-          cursor: (isLoading || !tossPayments) ? "not-allowed" : "pointer",
-          transition: "all 0.3s ease"
-        }}
-      >
-        {isLoading ? "결제 요청중..." : !tossPayments ? "결제 준비중..." : "결제하기"}
-      </button>
-    </div>
+    <button
+      onClick={handlePayment}
+      disabled={isLoading || !tossPayments}
+      style={{
+        width: "100%",
+        padding: "18px",
+        background: (isLoading || !tossPayments)
+          ? "#666"
+          : "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
+        color: (isLoading || !tossPayments) ? "#999" : "#000",
+        border: "2px solid #FCA311",
+        borderRadius: "15px",
+        fontSize: "18px",
+        fontWeight: "700",
+        cursor: (isLoading || !tossPayments) ? "not-allowed" : "pointer",
+        transition: "all 0.3s ease",
+        boxShadow: "0 4px 12px rgba(252, 163, 17, 0.3)",
+        fontFamily: "'Noto Serif KR', serif",
+        letterSpacing: "1px",
+        marginTop: "20px"
+      }}
+      onMouseOver={(e) => {
+        if (!isLoading && tossPayments) {
+          e.target.style.transform = "translateY(-2px)";
+          e.target.style.boxShadow = "0 6px 20px rgba(252, 163, 17, 0.4)";
+        }
+      }}
+      onMouseOut={(e) => {
+        if (!isLoading && tossPayments) {
+          e.target.style.transform = "translateY(0)";
+          e.target.style.boxShadow = "0 4px 12px rgba(252, 163, 17, 0.3)";
+        }
+      }}
+    >
+      {isLoading ? "결제 요청중..." : !tossPayments ? "결제 준비중..." : "토리와 상담받기"}
+    </button>
   );
 };
 
