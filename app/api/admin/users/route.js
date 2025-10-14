@@ -62,13 +62,6 @@ export async function GET(request) {
 
     // 각 사용자의 추가 정보 조회
     const enrichedUsers = await Promise.all(users.map(async (user) => {
-      // 마지막 분석 날짜
-      const lastAnalysis = await prisma.analysisResult.findFirst({
-        where: { userId: user.id },
-        orderBy: { createdAt: 'desc' },
-        select: { createdAt: true }
-      });
-
       // 유료 상담 여부
       const hasPaidConsultation = await prisma.consultationResult.count({
         where: {
@@ -79,7 +72,6 @@ export async function GET(request) {
 
       return {
         ...user,
-        lastAnalysis: lastAnalysis?.createdAt || null,
         hasPaidConsultation: hasPaidConsultation > 0
       };
     }));

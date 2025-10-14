@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [provider, setProvider] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [provider, setProvider] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -19,9 +19,9 @@ export default function UserManagement() {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: '20',
+        limit: "20",
         search: searchTerm,
-        provider: provider
+        provider: provider,
       });
 
       const response = await fetch(`/api/admin/users?${params}`);
@@ -32,7 +32,7 @@ export default function UserManagement() {
         setTotalPages(data.pagination.totalPages);
       }
     } catch (error) {
-      console.error('사용자 목록 로딩 실패:', error);
+      console.error("사용자 목록 로딩 실패:", error);
     } finally {
       setLoading(false);
     }
@@ -45,12 +45,12 @@ export default function UserManagement() {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(date).toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -76,7 +76,9 @@ export default function UserManagement() {
             <option value="naver">Naver</option>
             <option value="kakao">Kakao</option>
           </select>
-          <button type="submit" className="search-btn">검색</button>
+          <button type="submit" className="search-btn">
+            검색
+          </button>
         </form>
       </div>
 
@@ -94,26 +96,36 @@ export default function UserManagement() {
                   <th>이름</th>
                   <th>제공자</th>
                   <th>가입일</th>
-                  <th>마지막 분석</th>
-                  <th>분석 수</th>
-                  <th>상담 수</th>
-                  <th>유료 상담</th>
+                  <th>팔자유형 검사 수</th>
+                  <th>상세리포트 확인 수</th>
+                  <th>상세리포트 결제 여부</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
                   <tr key={user.id}>
                     <td>{user.email}</td>
-                    <td>{user.displayName || '-'}</td>
+                    <td>{user.displayName || "-"}</td>
                     <td>
-                      <span className={`provider-badge ${user.provider}`}>
-                        {user.provider || 'unknown'}
+                      <span
+                        className={`provider-badge ${
+                          user.provider === "google.com"
+                            ? "google"
+                            : user.provider
+                        }`}
+                      >
+                        {user.provider === "google.com"
+                          ? "google"
+                          : user.provider || "unknown"}
                       </span>
                     </td>
                     <td>{formatDate(user.createdAt)}</td>
-                    <td>{user.lastAnalysis ? formatDate(user.lastAnalysis) : '-'}</td>
-                    <td className="text-center">{user._count.analysisResults}</td>
-                    <td className="text-center">{user._count.consultationResults}</td>
+                    <td className="text-center">
+                      {user._count.analysisResults}
+                    </td>
+                    <td className="text-center">
+                      {user._count.consultationResults}
+                    </td>
                     <td className="text-center">
                       {user.hasPaidConsultation ? (
                         <span className="paid-badge">✓</span>
@@ -129,7 +141,7 @@ export default function UserManagement() {
 
           <div className="pagination">
             <button
-              onClick={() => setPage(p => Math.max(1, p - 1))}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
               className="page-btn"
             >
@@ -139,7 +151,7 @@ export default function UserManagement() {
               {page} / {totalPages}
             </span>
             <button
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
               className="page-btn"
             >

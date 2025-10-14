@@ -6,21 +6,58 @@ export default function ConsultationManagement() {
   const [consultations, setConsultations] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tableLoading, setTableLoading] = useState(false);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filter, setFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [sortOrder, setSortOrder] = useState('desc');
 
+  // 통계는 초기에 한 번만 로드
   useEffect(() => {
-    fetchConsultations();
-  }, [page, filter]);
+    fetchStats();
+  }, []);
 
-  const fetchConsultations = async () => {
-    setLoading(true);
+  // 테이블 데이터는 필터/정렬/페이지 변경 시 리로드
+  useEffect(() => {
+    fetchTableData();
+  }, [page, filter, sortBy, sortOrder]);
+
+  // 통계 데이터만 가져오는 함수
+  const fetchStats = async () => {
+    setStatsLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: '1',
+        limit: '1', // 통계만 필요하므로 최소한의 데이터만
+        filter: 'all'
+      });
+
+      const response = await fetch(`/api/admin/consultations?${params}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setStats(data.stats);
+      }
+    } catch (error) {
+      console.error('통계 로딩 실패:', error);
+    } finally {
+      setStatsLoading(false);
+      setLoading(false);
+    }
+  };
+
+  // 테이블 데이터만 가져오는 함수
+  const fetchTableData = async () => {
+    setTableLoading(true);
     try {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: '20',
-        filter: filter
+        filter: filter,
+        sortBy: sortBy,
+        order: sortOrder
       });
 
       const response = await fetch(`/api/admin/consultations?${params}`);
@@ -28,13 +65,16 @@ export default function ConsultationManagement() {
 
       if (data.success) {
         setConsultations(data.consultations);
-        setStats(data.stats);
         setTotalPages(data.pagination.totalPages);
+        // 필터가 변경되었을 때만 통계 업데이트
+        if (filter !== 'all' || !stats) {
+          setStats(data.stats);
+        }
       }
     } catch (error) {
-      console.error('상담 목록 로딩 실패:', error);
+      console.error('상세리포트 목록 로딩 실패:', error);
     } finally {
-      setLoading(false);
+      setTableLoading(false);
     }
   };
 
@@ -61,41 +101,21 @@ export default function ConsultationManagement() {
   };
 
   return (
-    <div className="consultation-management">
+    <div className="report-management">
       <div className="management-header">
-        <h2>상담 관리</h2>
-        <div className="filter-buttons">
-          <button
-            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => { setFilter('all'); setPage(1); }}
-          >
-            전체
-          </button>
-          <button
-            className={`filter-btn ${filter === 'paid' ? 'active' : ''}`}
-            onClick={() => { setFilter('paid'); setPage(1); }}
-          >
-            결제 완료
-          </button>
-          <button
-            className={`filter-btn ${filter === 'unpaid' ? 'active' : ''}`}
-            onClick={() => { setFilter('unpaid'); setPage(1); }}
-          >
-            미결제
-          </button>
-        </div>
+        <h2>상세리포트 관리</h2>
       </div>
 
-      {loading ? (
+      {statsLoading ? (
         <div className="loading-container">
-          <p>상담 목록을 불러오는 중...</p>
+          <p>상세리포트 통계를 불러오는 중...</p>
         </div>
       ) : (
         <>
           {stats && (
             <div className="stats-summary">
               <div className="stat-item">
-                <span className="stat-label">전체 상담</span>
+                <span className="stat-label">전체 상세리포트</span>
                 <span className="stat-value">{formatNumber(stats.total)}건</span>
               </div>
               <div className="stat-item">
@@ -137,22 +157,68 @@ export default function ConsultationManagement() {
             </div>
           )}
 
+          <div className="table-controls">
+            <div className="filter-buttons">
+              <button
+                className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+                onClick={() => { setFilter('all'); setPage(1); }}
+              >
+                전체
+              </button>
+              <button
+                className={`filter-btn ${filter === 'paid' ? 'active' : ''}`}
+                onClick={() => { setFilter('paid'); setPage(1); }}
+              >
+                결제 완료
+              </button>
+              <button
+                className={`filter-btn ${filter === 'unpaid' ? 'active' : ''}`}
+                onClick={() => { setFilter('unpaid'); setPage(1); }}
+              >
+                미결제
+              </button>
+            </div>
+
+            <div className="sort-controls">
+              <select
+                value={`${sortBy}-${sortOrder}`}
+                onChange={(e) => {
+                  const [field, order] = e.target.value.split('-');
+                  setSortBy(field);
+                  setSortOrder(order);
+                  setPage(1);
+                }}
+                className="sort-select"
+              >
+                <option value="createdAt-desc">신청일 최신순</option>
+                <option value="createdAt-asc">신청일 오래된순</option>
+                <option value="paidAt-desc">결제일 최신순</option>
+                <option value="paidAt-asc">결제일 오래된순</option>
+                <option value="birthDate-desc">생년월일 최신순</option>
+                <option value="birthDate-asc">생년월일 오래된순</option>
+              </select>
+            </div>
+          </div>
+
           <div className="table-container">
-            <table className="consultations-table">
-              <thead>
-                <tr>
-                  <th>사용자</th>
-                  <th>생년월일</th>
-                  <th>사주</th>
-                  <th>주 오행</th>
-                  <th>결제 상태</th>
-                  <th>결제 금액</th>
-                  <th>결제일</th>
-                  <th>신청일</th>
-                </tr>
-              </thead>
-              <tbody>
-                {consultations.map((consultation) => (
+            {tableLoading ? (
+              <div className="table-loading">
+                <p>데이터를 불러오는 중...</p>
+              </div>
+            ) : (
+              <table className="reports-table">
+                <thead>
+                  <tr>
+                    <th>사용자</th>
+                    <th>입력한 생년월일</th>
+                    <th>결제 상태</th>
+                    <th>결제 금액</th>
+                    <th>결제일</th>
+                    <th>신청일</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {consultations.map((consultation) => (
                   <tr key={consultation.id}>
                     <td>{consultation.user.email}</td>
                     <td>
@@ -160,14 +226,6 @@ export default function ConsultationManagement() {
                         ? new Date(consultation.birthDate).toLocaleDateString('ko-KR')
                         : '-'}
                       {consultation.lunarCalendar && ' (음)'}
-                    </td>
-                    <td className="saju-text">
-                      {consultation.yearStem}{consultation.yearBranch} {consultation.monthStem}{consultation.monthBranch}
-                    </td>
-                    <td>
-                      <span className={`element-badge ${consultation.dominantElement}`}>
-                        {consultation.dominantElement || '-'}
-                      </span>
                     </td>
                     <td>
                       {consultation.isPaid ? (
@@ -180,9 +238,10 @@ export default function ConsultationManagement() {
                     <td>{formatDate(consultation.paidAt)}</td>
                     <td>{formatDate(consultation.createdAt)}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           <div className="pagination">
@@ -208,17 +267,12 @@ export default function ConsultationManagement() {
       )}
 
       <style jsx>{`
-        .consultation-management {
+        .report-management {
           padding: 20px 0;
         }
 
         .management-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
           margin-bottom: 30px;
-          flex-wrap: wrap;
-          gap: 20px;
         }
 
         .management-header h2 {
@@ -227,9 +281,44 @@ export default function ConsultationManagement() {
           font-size: 24px;
         }
 
+        .table-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+          gap: 20px;
+        }
+
         .filter-buttons {
           display: flex;
           gap: 10px;
+        }
+
+        .sort-controls {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .sort-select {
+          padding: 8px 12px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          border-radius: 6px;
+          color: #fff;
+          font-size: 14px;
+          cursor: pointer;
+        }
+
+        .sort-select:focus {
+          outline: none;
+          border-color: rgba(212, 175, 55, 0.6);
+        }
+
+        .sort-select option {
+          background: #1a1a1a;
+          color: #fff;
         }
 
         .filter-btn {
@@ -366,16 +455,16 @@ export default function ConsultationManagement() {
           margin-bottom: 30px;
         }
 
-        .consultations-table {
+        .reports-table {
           width: 100%;
           border-collapse: collapse;
         }
 
-        .consultations-table thead {
+        .reports-table thead {
           background: rgba(212, 175, 55, 0.1);
         }
 
-        .consultations-table th {
+        .reports-table th {
           padding: 12px;
           text-align: left;
           font-weight: 500;
@@ -383,34 +472,16 @@ export default function ConsultationManagement() {
           border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        .consultations-table td {
+        .reports-table td {
           padding: 12px;
           color: #fff;
           border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .consultations-table tbody tr:hover {
+        .reports-table tbody tr:hover {
           background: rgba(212, 175, 55, 0.05);
         }
 
-        .saju-text {
-          font-family: 'Noto Serif KR', serif;
-          font-size: 13px;
-        }
-
-        .element-badge {
-          display: inline-block;
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 12px;
-          font-weight: 500;
-        }
-
-        .element-badge.목 { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
-        .element-badge.화 { background: rgba(244, 67, 54, 0.2); color: #f44336; }
-        .element-badge.토 { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
-        .element-badge.금 { background: rgba(158, 158, 158, 0.2); color: #9e9e9e; }
-        .element-badge.수 { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
 
         .status-badge {
           display: inline-block;
@@ -466,6 +537,12 @@ export default function ConsultationManagement() {
           color: #999;
         }
 
+        .table-loading {
+          padding: 60px;
+          text-align: center;
+          color: #999;
+        }
+
         @media (max-width: 1200px) {
           .stats-summary {
             grid-template-columns: repeat(2, 1fr);
@@ -473,14 +550,23 @@ export default function ConsultationManagement() {
         }
 
         @media (max-width: 768px) {
-          .management-header {
+          .table-controls {
             flex-direction: column;
             align-items: stretch;
+            gap: 15px;
           }
 
           .filter-buttons {
             width: 100%;
             justify-content: space-between;
+          }
+
+          .sort-controls {
+            width: 100%;
+          }
+
+          .sort-select {
+            width: 100%;
           }
 
           .stats-summary {
@@ -500,8 +586,8 @@ export default function ConsultationManagement() {
             overflow-x: auto;
           }
 
-          .consultations-table {
-            min-width: 900px;
+          .reports-table {
+            min-width: 700px;
           }
         }
       `}</style>

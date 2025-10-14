@@ -117,6 +117,7 @@ export default function AdminPage() {
       <style jsx>{`
         .admin-section {
           min-height: calc(100vh - 100px);
+          padding-top: 80px;
         }
 
         .admin-container {
@@ -212,6 +213,10 @@ export default function AdminPage() {
         }
 
         @media (max-width: 768px) {
+          .admin-section {
+            padding-top: 70px;
+          }
+
           .admin-container {
             padding: 0 16px;
           }

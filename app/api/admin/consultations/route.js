@@ -32,14 +32,40 @@ export async function GET(request) {
       where.isPaid = false;
     }
 
+    // 정렬 조건 구성
+    let orderBy = {};
+
+    if (sortBy === 'paidAt') {
+      // 결제일 정렬: null 값은 항상 마지막에 배치
+      if (order === 'desc') {
+        // 최신순: 결제일이 있는 것들을 최신순으로, null은 마지막
+        orderBy = [
+          { paidAt: { sort: 'desc', nulls: 'last' } },
+          { createdAt: 'desc' }
+        ];
+      } else {
+        // 오래된순: 결제일이 있는 것들을 오래된순으로, null은 마지막
+        orderBy = [
+          { paidAt: { sort: 'asc', nulls: 'last' } },
+          { createdAt: 'asc' }
+        ];
+      }
+    } else if (sortBy === 'birthDate') {
+      // 생년월일 정렬: null 값은 마지막에 배치
+      orderBy = [
+        { birthDate: order === 'desc' ? 'desc' : 'asc' },
+        { createdAt: order === 'desc' ? 'desc' : 'asc' }
+      ];
+    } else {
+      orderBy = { [sortBy]: order === 'desc' ? 'desc' : 'asc' };
+    }
+
     // 상담 목록 조회
     const consultations = await prisma.consultationResult.findMany({
       where,
       skip,
       take: limit,
-      orderBy: {
-        [sortBy]: order
-      },
+      orderBy,
       include: {
         user: {
           select: {
