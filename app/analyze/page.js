@@ -4,7 +4,10 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
 import { createClient } from "../../lib/supabase";
-import { saveUserFormData, loadUserFormData } from "../../lib/localStorage-utils";
+import {
+  saveUserFormData,
+  loadUserFormData,
+} from "../../lib/localStorage-utils";
 import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
@@ -45,7 +48,7 @@ function AnalyzeContent() {
       if (user) {
         const savedData = loadUserFormData();
         if (savedData) {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             name: savedData.name || prev.name,
             year: savedData.year || prev.year,
@@ -72,7 +75,7 @@ function AnalyzeContent() {
       if (session?.user) {
         const savedData = loadUserFormData();
         if (savedData) {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
             name: savedData.name || prev.name,
             year: savedData.year || prev.year,
@@ -92,14 +95,26 @@ function AnalyzeContent() {
 
   // Query parameter에서 팔자 유형 확인 및 자동 결과 표시
   useEffect(() => {
-    const type = searchParams.get('type');
+    const type = searchParams.get("type");
     if (type && type.length === 4) {
       // 유효한 팔자 유형인지 확인
       const validTypes = [
-        'WSIJ', 'WSIY', 'WSHJ', 'WSHY',
-        'WGIJ', 'WGIY', 'WGHJ', 'WGHY',
-        'NSIJ', 'NSIY', 'NSHJ', 'NSHY',
-        'NGIJ', 'NGIY', 'NGHJ', 'NGHY'
+        "WSIJ",
+        "WSIY",
+        "WSHJ",
+        "WSHY",
+        "WGIJ",
+        "WGIY",
+        "WGHJ",
+        "WGHY",
+        "NSIJ",
+        "NSIY",
+        "NSHJ",
+        "NSHY",
+        "NGIJ",
+        "NGIY",
+        "NGHJ",
+        "NGHY",
       ];
 
       if (validTypes.includes(type.toUpperCase())) {
@@ -125,11 +140,11 @@ function AnalyzeContent() {
         const mockResult = {
           personalityType: typeCode,
           typeData: typeData,
-          database: database
+          database: database,
         };
 
         setResult(mockResult);
-        setFormData(prev => ({ ...prev, name: "미리보기" }));
+        setFormData((prev) => ({ ...prev, name: "미리보기" }));
       }
     } catch (error) {
       console.error("Query 타입 로드 실패:", error);
@@ -137,7 +152,6 @@ function AnalyzeContent() {
       setLoading(false);
     }
   };
-
 
   // 궁합 데이터
   const compatibilityData = {
@@ -250,10 +264,6 @@ function AnalyzeContent() {
           parseInt(convertResult.solarMonth) - 1,
           parseInt(convertResult.solarDay)
         );
-
-        console.log(
-          `음력 ${formData.year}.${formData.month}.${formData.day} → 양력 ${convertResult.solarYear}.${convertResult.solarMonth}.${convertResult.solarDay}`
-        );
       } else {
         // 양력인 경우 그대로 사용
         birthDate = new Date(
@@ -343,10 +353,6 @@ function AnalyzeContent() {
 
           const saveResult = await saveResponse.json();
           if (saveResult.success && saveResult.resultId) {
-            console.log(
-              "Analysis result saved to database:",
-              saveResult.resultId
-            );
             setSavedToDb(true);
           }
         } catch (saveError) {
@@ -460,243 +466,255 @@ ${shareUrl}`;
                 <div className="analyzer-layout">
                   {!isQueryMode && (
                     <div className="card analyzer-card">
-                    <div className="card-header">
-                      <h2 className="card-title sage-title">
-                        <span className="sage-subtitle">
-                          그대의 이야기를 듣고자 하네.
-                        </span>
-                      </h2>
-                      <p className="sage-description">
-                        차 한 잔의 여유로 그대의 운명을 살펴보자.
-                      </p>
-                    </div>
-
-                    <form
-                      onSubmit={handleSubmit}
-                      className="analyzer-form"
-                      id="saju-form"
-                    >
-                      <div className="form-section">
-                        <div className="input-group">
-                          <label htmlFor="name">이름 (선택)</label>
-                          <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={(e) =>
-                              setFormData({ ...formData, name: e.target.value })
-                            }
-                            placeholder="토리가 부를 이름을 알려주게"
-                            autoComplete="name"
-                          />
-                        </div>
+                      <div className="card-header">
+                        <h2 className="card-title sage-title">
+                          <span className="sage-subtitle">
+                            그대의 이야기를 듣고자 하네.
+                          </span>
+                        </h2>
+                        <p className="sage-description">
+                          차 한 잔의 여유로 그대의 운명을 살펴보자.
+                        </p>
                       </div>
 
-                      <div className="form-section">
-                        <div className="input-group">
-                          <label htmlFor="birth-year">생년월일</label>
-                          <div className="date-picker-container">
-                            <select
-                              id="birth-year"
-                              value={formData.year}
+                      <form
+                        onSubmit={handleSubmit}
+                        className="analyzer-form"
+                        id="saju-form"
+                      >
+                        <div className="form-section">
+                          <div className="input-group">
+                            <label htmlFor="name">이름 (선택)</label>
+                            <input
+                              type="text"
+                              id="name"
+                              name="name"
+                              value={formData.name}
                               onChange={(e) =>
                                 setFormData({
                                   ...formData,
-                                  year: e.target.value,
+                                  name: e.target.value,
                                 })
                               }
-                              required
-                              autoComplete="bday-year"
-                            >
-                              <option value="">년</option>
-                              {Array.from(
-                                { length: 124 },
-                                (_, i) => 2024 - i
-                              ).map((year) => (
-                                <option key={year} value={year}>
-                                  {year}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              id="birth-month"
-                              value={formData.month}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  month: e.target.value,
-                                })
-                              }
-                              required
-                              autoComplete="bday-month"
-                            >
-                              <option value="">월</option>
-                              {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                                (month) => (
+                              placeholder="토리가 부를 이름을 알려주게"
+                              autoComplete="name"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="form-section">
+                          <div className="input-group">
+                            <label htmlFor="birth-year">생년월일</label>
+                            <div className="date-picker-container">
+                              <select
+                                id="birth-year"
+                                value={formData.year}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    year: e.target.value,
+                                  })
+                                }
+                                required
+                                autoComplete="bday-year"
+                              >
+                                <option value="">년</option>
+                                {Array.from(
+                                  { length: 124 },
+                                  (_, i) => 2024 - i
+                                ).map((year) => (
+                                  <option key={year} value={year}>
+                                    {year}
+                                  </option>
+                                ))}
+                              </select>
+                              <select
+                                id="birth-month"
+                                value={formData.month}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    month: e.target.value,
+                                  })
+                                }
+                                required
+                                autoComplete="bday-month"
+                              >
+                                <option value="">월</option>
+                                {Array.from(
+                                  { length: 12 },
+                                  (_, i) => i + 1
+                                ).map((month) => (
                                   <option key={month} value={month}>
                                     {month}
                                   </option>
-                                )
-                              )}
-                            </select>
-                            <select
-                              id="birth-day"
-                              value={formData.day}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  day: e.target.value,
-                                })
-                              }
-                              required
-                              autoComplete="bday-day"
-                            >
-                              <option value="">일</option>
-                              {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                                (day) => (
+                                ))}
+                              </select>
+                              <select
+                                id="birth-day"
+                                value={formData.day}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    day: e.target.value,
+                                  })
+                                }
+                                required
+                                autoComplete="bday-day"
+                              >
+                                <option value="">일</option>
+                                {Array.from(
+                                  { length: 31 },
+                                  (_, i) => i + 1
+                                ).map((day) => (
                                   <option key={day} value={day}>
                                     {day}
                                   </option>
-                                )
-                              )}
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="form-section">
+                          <div className="input-group">
+                            <label htmlFor="birthtime">태어난 시간</label>
+                            <select
+                              id="birthtime"
+                              name="birthtime"
+                              value={formData.hour}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  hour: e.target.value,
+                                })
+                              }
+                            >
+                              <option value="unknown">⏰ 시간을 몰라요</option>
+                              <option value="0">🐭 23:30 ~ 01:29 (자시)</option>
+                              <option value="1">🐮 01:30 ~ 03:29 (축시)</option>
+                              <option value="2">🐯 03:30 ~ 05:29 (인시)</option>
+                              <option value="3">🐰 05:30 ~ 07:29 (묘시)</option>
+                              <option value="4">🐲 07:30 ~ 09:29 (진시)</option>
+                              <option value="5">🐍 09:30 ~ 11:29 (사시)</option>
+                              <option value="6">🐴 11:30 ~ 13:29 (오시)</option>
+                              <option value="7">🐑 13:30 ~ 15:29 (미시)</option>
+                              <option value="8">🐵 15:30 ~ 17:29 (신시)</option>
+                              <option value="9">🐔 17:30 ~ 19:29 (유시)</option>
+                              <option value="10">
+                                🐶 19:30 ~ 21:29 (술시)
+                              </option>
+                              <option value="11">
+                                🐷 21:30 ~ 23:29 (해시)
+                              </option>
                             </select>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="form-section">
-                        <div className="input-group">
-                          <label htmlFor="birthtime">태어난 시간</label>
-                          <select
-                            id="birthtime"
-                            name="birthtime"
-                            value={formData.hour}
-                            onChange={(e) =>
-                              setFormData({ ...formData, hour: e.target.value })
-                            }
+                        <div className="form-section">
+                          <div className="form-row">
+                            <div className="input-group">
+                              <label>성별</label>
+                              <div className="radio-group">
+                                <input
+                                  type="radio"
+                                  id="male"
+                                  name="gender"
+                                  value="male"
+                                  checked={formData.gender === "male"}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      gender: e.target.value,
+                                    })
+                                  }
+                                  autoComplete="sex"
+                                />
+                                <label htmlFor="male">남자</label>
+                                <input
+                                  type="radio"
+                                  id="female"
+                                  name="gender"
+                                  value="female"
+                                  checked={formData.gender === "female"}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      gender: e.target.value,
+                                    })
+                                  }
+                                  autoComplete="sex"
+                                />
+                                <label htmlFor="female">여자</label>
+                              </div>
+                            </div>
+                            <div className="input-group">
+                              <label>양력/음력</label>
+                              <div className="radio-group">
+                                <input
+                                  type="radio"
+                                  id="solar"
+                                  name="calendar"
+                                  value="solar"
+                                  checked={formData.calendar === "solar"}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      calendar: e.target.value,
+                                    })
+                                  }
+                                />
+                                <label htmlFor="solar">양력</label>
+                                <input
+                                  type="radio"
+                                  id="lunar"
+                                  name="calendar"
+                                  value="lunar"
+                                  checked={formData.calendar === "lunar"}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      calendar: e.target.value,
+                                    })
+                                  }
+                                />
+                                <label htmlFor="lunar">음력</label>
+                                {formData.calendar === "lunar" && (
+                                  <>
+                                    <input
+                                      type="checkbox"
+                                      id="isLeapMonth"
+                                      checked={formData.isLeapMonth}
+                                      onChange={(e) =>
+                                        setFormData({
+                                          ...formData,
+                                          isLeapMonth: e.target.checked,
+                                        })
+                                      }
+                                      style={{ marginLeft: "10px" }}
+                                    />
+                                    <label htmlFor="isLeapMonth">윤달</label>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="form-footer">
+                          <div className="sage-advice">
+                            <div>&ldquo;그대의 이야기,</div>
+                            <div>토리가 차 한 잔과 함께 들어보겠네.&rdquo;</div>
+                          </div>
+                          <button
+                            type="submit"
+                            className="cta-button ink-brush-effect"
+                            disabled={loading}
                           >
-                            <option value="unknown">⏰ 시간을 몰라요</option>
-                            <option value="0">🐭 23:30 ~ 01:29 (자시)</option>
-                            <option value="1">🐮 01:30 ~ 03:29 (축시)</option>
-                            <option value="2">🐯 03:30 ~ 05:29 (인시)</option>
-                            <option value="3">🐰 05:30 ~ 07:29 (묘시)</option>
-                            <option value="4">🐲 07:30 ~ 09:29 (진시)</option>
-                            <option value="5">🐍 09:30 ~ 11:29 (사시)</option>
-                            <option value="6">🐴 11:30 ~ 13:29 (오시)</option>
-                            <option value="7">🐑 13:30 ~ 15:29 (미시)</option>
-                            <option value="8">🐵 15:30 ~ 17:29 (신시)</option>
-                            <option value="9">🐔 17:30 ~ 19:29 (유시)</option>
-                            <option value="10">🐶 19:30 ~ 21:29 (술시)</option>
-                            <option value="11">🐷 21:30 ~ 23:29 (해시)</option>
-                          </select>
+                            {loading ? "🔮 해석 중..." : "나의 길, 묻기"}
+                          </button>
                         </div>
-                      </div>
-
-                      <div className="form-section">
-                        <div className="form-row">
-                          <div className="input-group">
-                            <label>성별</label>
-                            <div className="radio-group">
-                              <input
-                                type="radio"
-                                id="male"
-                                name="gender"
-                                value="male"
-                                checked={formData.gender === "male"}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    gender: e.target.value,
-                                  })
-                                }
-                                autoComplete="sex"
-                              />
-                              <label htmlFor="male">남자</label>
-                              <input
-                                type="radio"
-                                id="female"
-                                name="gender"
-                                value="female"
-                                checked={formData.gender === "female"}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    gender: e.target.value,
-                                  })
-                                }
-                                autoComplete="sex"
-                              />
-                              <label htmlFor="female">여자</label>
-                            </div>
-                          </div>
-                          <div className="input-group">
-                            <label>양력/음력</label>
-                            <div className="radio-group">
-                              <input
-                                type="radio"
-                                id="solar"
-                                name="calendar"
-                                value="solar"
-                                checked={formData.calendar === "solar"}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    calendar: e.target.value,
-                                  })
-                                }
-                              />
-                              <label htmlFor="solar">양력</label>
-                              <input
-                                type="radio"
-                                id="lunar"
-                                name="calendar"
-                                value="lunar"
-                                checked={formData.calendar === "lunar"}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    calendar: e.target.value,
-                                  })
-                                }
-                              />
-                              <label htmlFor="lunar">음력</label>
-                              {formData.calendar === "lunar" && (
-                                <>
-                                  <input
-                                    type="checkbox"
-                                    id="isLeapMonth"
-                                    checked={formData.isLeapMonth}
-                                    onChange={(e) =>
-                                      setFormData({
-                                        ...formData,
-                                        isLeapMonth: e.target.checked,
-                                      })
-                                    }
-                                    style={{ marginLeft: "10px" }}
-                                  />
-                                  <label htmlFor="isLeapMonth">윤달</label>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="form-footer">
-                        <div className="sage-advice">
-                          <div>&ldquo;그대의 이야기,</div>
-                          <div>토리가 차 한 잔과 함께 들어보겠네.&rdquo;</div>
-                        </div>
-                        <button
-                          type="submit"
-                          className="cta-button ink-brush-effect"
-                          disabled={loading}
-                        >
-                          {loading ? "🔮 해석 중..." : "나의 길, 묻기"}
-                        </button>
-                      </div>
-                    </form>
+                      </form>
                     </div>
                   )}
 
@@ -934,7 +952,7 @@ ${shareUrl}`;
               style={{
                 background: "rgba(0, 0, 0, 0.8)",
                 backdropFilter: "blur(2px)",
-                zIndex: 999999
+                zIndex: 999999,
               }}
               onClick={(e) => {
                 if (e.target === e.currentTarget) {
@@ -954,7 +972,7 @@ ${shareUrl}`;
                   boxShadow:
                     "0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(252, 163, 17, 0.2)",
                   maxHeight: "90vh",
-                  overflowY: "auto"
+                  overflowY: "auto",
                 }}
               >
                 <button
@@ -971,7 +989,7 @@ ${shareUrl}`;
                     border: "1px solid rgba(252, 163, 17, 0.3)",
                     minHeight: "44px",
                     minWidth: "44px",
-                    touchAction: "manipulation"
+                    touchAction: "manipulation",
                   }}
                 >
                   ×
@@ -987,15 +1005,19 @@ ${shareUrl}`;
                     }}
                   >
                     <h3 className="text-2xl font-bold">
-                      잠깐,<br />
+                      잠깐,
+                      <br />
                       숨겨진 찻잎의 맛이 궁금하지 않으신가?
                     </h3>
                   </div>
                   <p className="text-white mb-6 leading-relaxed text-base">
-                    그대가 방금 맛본 것은,<br />
-                    가장 기본적인 &lsquo;오늘의 차&rsquo;일 뿐이라네.<br />
+                    그대가 방금 맛본 것은,
                     <br />
-                    내 서재에는, 아주 귀한 손님에게만<br />
+                    가장 기본적인 &lsquo;오늘의 차&rsquo;일 뿐이라네.
+                    <br />
+                    <br />
+                    내 서재에는, 아주 귀한 손님에게만
+                    <br />
                     내어주는 &lsquo;비밀 찻잎&rsquo;이 있지.
                   </p>
                   <div className="space-y-4">
@@ -1009,7 +1031,7 @@ ${shareUrl}`;
                         boxShadow: "0 4px 16px rgba(252, 163, 17, 0.3)",
                         padding: "20px 24px",
                         minHeight: "44px",
-                        touchAction: "manipulation"
+                        touchAction: "manipulation",
                       }}
                     >
                       토리의 시그니처, 맛보기
@@ -1025,7 +1047,7 @@ ${shareUrl}`;
                         backdropFilter: "blur(4px)",
                         padding: "20px 24px",
                         minHeight: "44px",
-                        touchAction: "manipulation"
+                        touchAction: "manipulation",
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.background = "rgba(252, 163, 17, 0.2)";

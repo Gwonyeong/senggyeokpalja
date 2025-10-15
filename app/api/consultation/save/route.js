@@ -48,22 +48,21 @@ export async function POST(request) {
       }
 
       // 2. 생년월일로 Date 객체 생성 (시간대 문제 해결을 위해 UTC로 생성)
-      const birthDate = new Date(Date.UTC(
-        birthInfo.year,
-        birthInfo.month - 1,
-        birthInfo.day
-      ));
+      const birthDate = new Date(
+        Date.UTC(birthInfo.year, birthInfo.month - 1, birthInfo.day)
+      );
 
-      console.log("birthDate", birthDate);
       // 시간 인덱스 (unknown인 경우 오시(6) 기본값)
-      let timeIndex = birthInfo.hour !== "unknown" ? parseInt(birthInfo.hour) : 6;
+      let timeIndex =
+        birthInfo.hour !== "unknown" ? parseInt(birthInfo.hour) : 6;
 
       // 3. 만세력으로 사주팔자 계산 (트랜잭션 외부에서 계산)
       const isLunar = birthInfo.calendar === "lunar";
       const sajuData = calculateSajuForServer(birthDate, timeIndex, isLunar);
 
       // 사주팔자 데이터 추출
-      const { palja, ohaeng, ilgan, sibsin, cheonganSibsin, primarySibsin } = sajuData;
+      const { palja, ohaeng, ilgan, sibsin, cheonganSibsin, primarySibsin } =
+        sajuData;
 
       // 4. 시간 정보 저장 (UTC 변환 문제 방지를 위해 문자열로 저장)
       let birthTime = null;
@@ -92,25 +91,6 @@ export async function POST(request) {
           .toString()
           .padStart(2, "0")}:${minute.toString().padStart(2, "0")}:00.000Z`;
         birthTime = new Date(timeString);
-      }
-
-      // 5. 중복 상담 확인 (같은 생년월일시의 상담이 이미 있는지)
-      const existingConsultation = await tx.consultationResult.findFirst({
-        where: {
-          userId: profile.id,
-          birthDate: birthDate,
-          birthTime: birthTime,
-          lunarCalendar: birthInfo.calendar === "lunar",
-        },
-      });
-
-      if (existingConsultation) {
-        console.warn("동일한 생년월일시의 상담이 이미 존재합니다:", existingConsultation.id);
-        return {
-          isExisting: true,
-          consultationId: existingConsultation.id,
-          message: "동일한 생년월일시의 상담이 이미 존재합니다."
-        };
       }
 
       // 6. 데이터베이스에 상담 결과 저장
@@ -145,8 +125,8 @@ export async function POST(request) {
           ),
 
           // 십신 및 분석 데이터
-          tenGods: sibsin,  // 지지 기반 십신
-          heavenlyStemGods: cheonganSibsin,  // 천간 기반 십신
+          tenGods: sibsin, // 지지 기반 십신
+          heavenlyStemGods: cheonganSibsin, // 천간 기반 십신
           personalityType: null, // 필요시 MBTI x 팔자 유형 계산 후 저장
           fortuneData: {
             primarySibsin: primarySibsin,
@@ -174,7 +154,7 @@ export async function POST(request) {
         isExisting: false,
         consultationId: consultationResult.id,
         consultationResult: consultationResult,
-        profile: profile
+        profile: profile,
       };
     }, DEFAULT_TRANSACTION_OPTIONS);
 
@@ -193,10 +173,10 @@ export async function POST(request) {
     let errorMessage = "상담 신청 저장 중 오류가 발생했습니다.";
     let statusCode = 500;
 
-    if (error.code === 'P2002') {
+    if (error.code === "P2002") {
       errorMessage = "중복된 상담 정보입니다.";
       statusCode = 409;
-    } else if (error.code === 'P2025') {
+    } else if (error.code === "P2025") {
       errorMessage = "사용자 정보를 찾을 수 없습니다.";
       statusCode = 404;
     } else if (error.message?.includes("사주팔자 계산")) {
@@ -207,10 +187,7 @@ export async function POST(request) {
       statusCode = 408;
     }
 
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: statusCode }
-    );
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   }
 }
 
@@ -285,7 +262,7 @@ export async function GET(request) {
     if (error.message?.includes("사용자 프로필을 찾을 수 없습니다")) {
       errorMessage = "사용자 프로필을 찾을 수 없습니다.";
       statusCode = 404;
-    } else if (error.code === 'P2025') {
+    } else if (error.code === "P2025") {
       errorMessage = "요청한 데이터를 찾을 수 없습니다.";
       statusCode = 404;
     } else if (error.message?.includes("timeout")) {
@@ -293,9 +270,6 @@ export async function GET(request) {
       statusCode = 408;
     }
 
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: statusCode }
-    );
+    return NextResponse.json({ error: errorMessage }, { status: statusCode });
   }
 }

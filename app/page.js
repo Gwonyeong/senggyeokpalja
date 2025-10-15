@@ -38,12 +38,12 @@ export default function Home() {
     }, 3000);
   };
 
-  const handleAnalyzeClick = (e) => {
+  const handleConsultationClick = (e) => {
     e.preventDefault();
     if (!user) {
       setShowLoginModal(true);
     } else {
-      window.location.href = "/analyze";
+      window.location.href = "/consultation";
     }
   };
 
@@ -64,11 +64,33 @@ export default function Home() {
                 이곳은 당신의 타고난 운명 팔자유형을 엿보는 공간입니다.
               </p>
               <button
-                onClick={handleAnalyzeClick}
+                onClick={handleConsultationClick}
                 className="cta-button ink-brush-effect"
               >
-                팔자유형 보러가기
+                2026 신년 운세 보러가기
               </button>
+              <div className="hero-scroll-section">
+                <div className="scroll-text" onClick={scrollToServices}>
+                  더 많은 서비스 보러가기
+                </div>
+                <div className="scroll-arrow" onClick={scrollToServices}>
+                  <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7 10L12 15L17 10"
+                      stroke="#ffffff"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </section>

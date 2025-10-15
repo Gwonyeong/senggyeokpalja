@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request) {
@@ -33,8 +33,6 @@ export async function POST(request) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    console.log('Supabase authenticated user:', user?.email);
-
     // 로그인하지 않은 사용자는 저장하지 않음
     if (!user || !user.email) {
       return NextResponse.json({
@@ -46,18 +44,16 @@ export async function POST(request) {
     // 2. Supabase user email로 Prisma Profile 테이블 조회
     const profile = await prisma.profile.findUnique({
       where: {
-        email: user.email
-      }
+        email: user.email,
+      },
     });
-
-    console.log('Found profile:', profile?.id, profile?.email);
 
     // Profile이 없으면 저장하지 않음
     if (!profile) {
       return NextResponse.json({
         success: false,
         error: "Profile not found",
-        message: "User profile not found in database"
+        message: "User profile not found in database",
       });
     }
 
