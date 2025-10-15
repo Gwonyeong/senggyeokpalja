@@ -73,12 +73,12 @@ const TossPaymentWidget = ({
         // ------  결제 UI 렌더링 ------
         widget.renderPaymentMethods({
           selector: "#payment-method",
-          variantKey: "DEFAULT",
+          variantKey: "ONE",
         }),
         // ------  이용약관 UI 렌더링 ------
         widget.renderAgreement({
           selector: "#agreement",
-          variantKey: "AGREEMENT",
+          variantKey: "ONE",
         }),
       ]);
 
