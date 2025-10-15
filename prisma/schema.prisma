@@ -148,6 +148,8 @@ model ConsultationResult {
   paidAt            DateTime? @map("paid_at")                        // 결제 일시
   paymentMethod     String?   @map("payment_method") @db.VarChar(50) // 결제 수단
   paymentAmount     Int?      @map("payment_amount")                 // 결제 금액
+  paymentKey        String?   @map("payment_key") @db.VarChar(200)   // 토스페이먼츠 결제 키
+  orderId           String?   @map("order_id") @db.VarChar(200)      // 주문 ID
 
   // 상담 정보
   consultationType  String?   @map("consultation_type") @db.VarChar(50) // 상담 유형
