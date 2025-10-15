@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo } from "react";
-import { getFiveElementDescription, getFiveElementBasicInfo } from "../../lib/five-elements-utils";
+import {
+  getFiveElementDescription,
+  getFiveElementBasicInfo,
+} from "../../lib/five-elements-utils";
 
 export default function FiveElementsChart({ consultation }) {
   const canvasRef = useRef(null);
@@ -9,33 +12,39 @@ export default function FiveElementsChart({ consultation }) {
   const [loading, setLoading] = useState(false);
 
   // 오행 데이터 추출 (목 → 화 → 수 → 금 → 토 순서)
-  const elements = useMemo(() => ({
-    목: consultation?.woodCount || 0,
-    화: consultation?.fireCount || 0,
-    수: consultation?.waterCount || 0,
-    금: consultation?.metalCount || 0,
-    토: consultation?.earthCount || 0,
-  }), [consultation]);
+  const elements = useMemo(
+    () => ({
+      목: consultation?.woodCount || 0,
+      화: consultation?.fireCount || 0,
+      수: consultation?.waterCount || 0,
+      금: consultation?.metalCount || 0,
+      토: consultation?.earthCount || 0,
+    }),
+    [consultation]
+  );
 
   // 오행 색상 정의
-  const colors = useMemo(() => ({
-    목: "#22c55e", // 녹색
-    화: "#ef4444", // 빨강색
-    토: "#eab308", // 노란색
-    금: "#e5e7eb", // 은색
-    수: "#3b82f6", // 파란색
-  }), []);
+  const colors = useMemo(
+    () => ({
+      목: "#22c55e", // 녹색
+      화: "#ef4444", // 빨강색
+      토: "#eab308", // 노란색
+      금: "#e5e7eb", // 은색
+      수: "#3b82f6", // 파란색
+    }),
+    []
+  );
 
   // 가장 강한 오행의 설명 데이터 로드
   useEffect(() => {
     if (consultation?.dominantElement) {
       setLoading(true);
       getFiveElementDescription(consultation.dominantElement)
-        .then(data => {
+        .then((data) => {
           setElementDescription(data);
         })
-        .catch(error => {
-          console.error('Failed to load element description:', error);
+        .catch((error) => {
+          console.error("Failed to load element description:", error);
         })
         .finally(() => {
           setLoading(false);
@@ -111,16 +120,20 @@ export default function FiveElementsChart({ consultation }) {
 
       // 오행 이름 레이블 (한자)
       const elementHanja = {
-        '목': '木',
-        '화': '火',
-        '토': '土',
-        '금': '金',
-        '수': '水'
+        목: "木",
+        화: "火",
+        토: "土",
+        금: "金",
+        수: "水",
       };
       ctx.fillStyle = colors[element];
       ctx.font = "bold 16px Noto Serif KR";
       ctx.textAlign = "center";
-      ctx.fillText(elementHanja[element] || element, x + barActualWidth / 2, height - padding + 25);
+      ctx.fillText(
+        elementHanja[element] || element,
+        x + barActualWidth / 2,
+        height - padding + 25
+      );
 
       // 값 표시
       if (value > 0) {
@@ -206,7 +219,7 @@ export default function FiveElementsChart({ consultation }) {
             };
             const isDominant =
               consultation?.dominantElement === elementToHanja[element];
-            console.log(consultation?.dominantElement, element);
+
             return (
               <div
                 key={element}
@@ -314,9 +327,7 @@ export default function FiveElementsChart({ consultation }) {
                 fontWeight: "bold",
                 color: "#d4af37",
               }}
-            >
-
-            </span>
+            ></span>
             <h4
               style={{
                 color: "#d4af37",
@@ -326,7 +337,8 @@ export default function FiveElementsChart({ consultation }) {
                 fontFamily: "Noto Serif KR",
               }}
             >
-              당신의 대표 오행: {getFiveElementBasicInfo(consultation.dominantElement)?.name}
+              당신의 대표 오행:{" "}
+              {getFiveElementBasicInfo(consultation.dominantElement)?.name}
             </h4>
           </div>
 
@@ -348,7 +360,10 @@ export default function FiveElementsChart({ consultation }) {
               }}
             >
               <span style={{ color: "#d4af37", fontWeight: "600" }}>특성:</span>{" "}
-              {getFiveElementBasicInfo(consultation.dominantElement)?.characteristic}
+              {
+                getFiveElementBasicInfo(consultation.dominantElement)
+                  ?.characteristic
+              }
             </p>
             <p
               style={{
@@ -359,7 +374,10 @@ export default function FiveElementsChart({ consultation }) {
               }}
             >
               <span style={{ color: "#d4af37", fontWeight: "600" }}>성향:</span>{" "}
-              {getFiveElementBasicInfo(consultation.dominantElement)?.personality}
+              {
+                getFiveElementBasicInfo(consultation.dominantElement)
+                  ?.personality
+              }
             </p>
           </div>
 
@@ -395,7 +413,8 @@ export default function FiveElementsChart({ consultation }) {
                   whiteSpace: "pre-line",
                 }}
               >
-                {elementDescription.chapters?.스토리형_리포트 || "상세 설명을 불러올 수 없습니다."}
+                {elementDescription.chapters?.스토리형_리포트 ||
+                  "상세 설명을 불러올 수 없습니다."}
               </div>
             </>
           ) : (

@@ -39,7 +39,10 @@ export default function Navigation() {
             authUser.email?.split("@")[0] ||
             "Unknown",
           email: authUser.email,
-          photoURL: authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || "",
+          photoURL:
+            authUser.user_metadata?.avatar_url ||
+            authUser.user_metadata?.picture ||
+            "",
           joinDate: authUser.created_at,
         });
 
@@ -47,9 +50,7 @@ export default function Navigation() {
         try {
           const { upsertProfile } = await import("../../lib/supabase-auth");
           const profile = await upsertProfile();
-          console.log('Navigation: Profile auto-created/updated:', profile);
         } catch (error) {
-          console.error('Navigation: Failed to auto-create profile:', error);
           // 프로필 생성 실패는 로그만 남기고 사용자 경험을 방해하지 않음
         }
       } else {
@@ -64,25 +65,22 @@ export default function Navigation() {
   useEffect(() => {
     if (mobileMenuOpen) {
       // 메뉴가 열렸을 때 body 스크롤 방지
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
       // 메뉴가 닫혔을 때 body 스크롤 복원
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
 
     // 컴포넌트 언마운트 시 스크롤 복원
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [mobileMenuOpen]);
 
   const handleLogout = async () => {
     try {
-      console.log("로그아웃 시작...");
-
       // 로그아웃 실행
       const result = await signOut();
-      console.log("Supabase 로그아웃 결과:", result);
 
       // 상태 초기화
       setUser(null);
@@ -92,12 +90,10 @@ export default function Navigation() {
       // 모바일 메뉴 닫기
       setMobileMenuOpen(false);
 
-      console.log("로그아웃 완료");
       alert("로그아웃되었습니다.");
 
       // 홈페이지로 리다이렉션
       window.location.href = "/";
-
     } catch (error) {
       console.error("로그아웃 실패:", error);
       console.error("에러 상세:", error.message, error.stack);

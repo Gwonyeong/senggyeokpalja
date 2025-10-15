@@ -13,7 +13,9 @@ export function useAuth(requireAuth = false) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const { data: { subscription } } = onAuthStateChange(async (authUser) => {
+    const {
+      data: { subscription },
+    } = onAuthStateChange(async (authUser) => {
       setUser(authUser);
       setLoading(false);
 
@@ -22,9 +24,8 @@ export function useAuth(requireAuth = false) {
         try {
           const { upsertProfile } = await import("../../lib/supabase-auth");
           const profile = await upsertProfile();
-          console.log('useAuth: Profile auto-created/updated:', profile);
         } catch (error) {
-          console.error('useAuth: Failed to auto-create profile:', error);
+          console.error("useAuth: Failed to auto-create profile:", error);
           // 프로필 생성 실패는 로그만 남기고 계속 진행
         }
       }
@@ -74,14 +75,16 @@ export function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#0a0a0a",
-        color: "#FCA311",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+          backgroundColor: "#0a0a0a",
+          color: "#FCA311",
+        }}
+      >
         로딩 중...
       </div>
     );

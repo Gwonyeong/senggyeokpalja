@@ -36,13 +36,9 @@ export async function GET(request) {
       "0"
     )}&lunIl=${lunIl}&ServiceKey=${serviceKey}&_type=json`;
 
-    console.log("Calling API:", apiUrl);
-
     const response = await fetch(apiUrl);
-    console.log("Response:", response);
-    const data = await response.json();
 
-    console.log("API Response:", data);
+    const data = await response.json();
 
     if (data.response.header.resultCode !== "00") {
       return NextResponse.json(
