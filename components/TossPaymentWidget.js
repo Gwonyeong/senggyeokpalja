@@ -99,14 +99,44 @@ const TossPaymentWidget = ({
       `;
 
       paymentButton.onclick = async () => {
-        await widget.requestPayment({
-          orderId: orderId,
-          orderName: orderName,
-          successUrl: `${window.location.origin}/api/payment/success`,
-          failUrl: `${window.location.origin}/api/payment/fail`,
-          customerEmail: user?.email || "customer@example.com",
-          customerName: user?.name || "고객",
-        });
+        try {
+          // 1. 결제 정보를 미리 저장
+          const createResponse = await fetch("/api/payment/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+              paymentKey: `temp_${orderId}`, // 임시 키, 실제 결제 후 업데이트됨
+              amount: amount,
+              customerName: user?.name || "고객",
+              customerEmail: user?.email || "customer@example.com",
+              productName: orderName,
+              userId: user?.id || null,
+              consultationId: consultationId,
+            }),
+          });
+
+          if (!createResponse.ok) {
+            throw new Error("결제 정보 저장에 실패했습니다.");
+          }
+
+          const { paymentId } = await createResponse.json();
+
+          // 2. 토스페이먼츠 결제 요청
+          await widget.requestPayment({
+            orderId: orderId,
+            orderName: orderName,
+            successUrl: `${window.location.origin}/api/payment/success?paymentId=${paymentId}`,
+            failUrl: `${window.location.origin}/api/payment/fail?paymentId=${paymentId}`,
+            customerEmail: user?.email || "customer@example.com",
+            customerName: user?.name || "고객",
+          });
+        } catch (error) {
+          console.error("결제 요청 실패:", error);
+          alert("결제 요청 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
       };
 
       document.getElementById("agreement")?.appendChild(paymentButton);

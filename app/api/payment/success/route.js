@@ -6,17 +6,33 @@ import {
   CRITICAL_RETRY_OPTIONS,
   handleDatabaseError,
 } from "@/lib/db-retry";
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { sendPaymentSuccessNotification } from "@/lib/slack-notification";
 
 export async function GET(request) {
   const url = new URL(request.url);
   const paymentKey = url.searchParams.get("paymentKey");
   const orderId = url.searchParams.get("orderId");
   const amount = url.searchParams.get("amount");
+  const paymentId = url.searchParams.get("paymentId");
   try {
     if (!paymentKey || !orderId || !amount) {
       return NextResponse.redirect(
         new URL("/payment/fail?message=잘못된 요청입니다", request.url)
       );
+    }
+
+    // Get authenticated user (optional)
+    let userId = null;
+    try {
+      const supabase = createRouteHandlerClient({ cookies });
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      userId = user?.id;
+    } catch (error) {
+      console.error("Error getting user:", error);
     }
 
     // 결제 확인 및 DB 업데이트를 재시도 가능한 트랜잭션으로 처리
@@ -46,10 +62,95 @@ export async function GET(request) {
 
         if (!response.ok) {
           console.error("결제 승인 실패:", paymentData);
+
+          // 결제 실패 정보를 PaymentResult 테이블에 저장
+          await tx.paymentResult.create({
+            data: {
+              userId,
+              paymentKey,
+              orderId,
+              amount: parseInt(amount),
+              status: "FAILED",
+              failureCode: paymentData.code,
+              failureMessage: paymentData.message,
+              requestedAt: new Date(),
+              metadata: paymentData,
+            },
+          });
+
           throw new Error(paymentData.message || "결제 승인에 실패했습니다");
         }
 
-        // 2. orderId에서 consultationId 추출
+        // 2. 기존 PaymentResult 업데이트 또는 새로 생성
+        let savedPayment;
+
+        if (paymentId) {
+          // 미리 저장된 결제 정보 업데이트
+          savedPayment = await tx.paymentResult.update({
+            where: { id: paymentId },
+            data: {
+              paymentKey,
+              status: "SUCCESS",
+              approvedAt: paymentData.approvedAt
+                ? new Date(paymentData.approvedAt)
+                : new Date(),
+              method: paymentData.method,
+              cardNumber: paymentData.card?.number,
+              cardType: paymentData.card?.cardType,
+              cardCompany: paymentData.card?.company,
+              installmentMonth: paymentData.card?.installmentPlanMonths,
+              customerName: paymentData.customerName,
+              customerEmail: paymentData.customerEmail,
+              customerPhone: paymentData.customerMobilePhone,
+              metadata: paymentData,
+            },
+          });
+        } else {
+          // 기존 방식 (하위 호환성)
+          savedPayment = await tx.paymentResult.upsert({
+            where: { paymentKey },
+            update: {
+              status: "SUCCESS",
+              approvedAt: paymentData.approvedAt
+                ? new Date(paymentData.approvedAt)
+                : new Date(),
+              method: paymentData.method,
+              cardNumber: paymentData.card?.number,
+              cardType: paymentData.card?.cardType,
+              cardCompany: paymentData.card?.company,
+              installmentMonth: paymentData.card?.installmentPlanMonths,
+              customerName: paymentData.customerName,
+              customerEmail: paymentData.customerEmail,
+              customerPhone: paymentData.customerMobilePhone,
+              metadata: paymentData,
+            },
+            create: {
+              userId,
+              paymentKey,
+              orderId,
+              amount: parseInt(amount),
+              status: "SUCCESS",
+              method: paymentData.method,
+              cardNumber: paymentData.card?.number,
+              cardType: paymentData.card?.cardType,
+              cardCompany: paymentData.card?.company,
+              installmentMonth: paymentData.card?.installmentPlanMonths,
+              customerName: paymentData.customerName,
+              customerEmail: paymentData.customerEmail,
+              customerPhone: paymentData.customerMobilePhone,
+              productName: paymentData.orderName,
+              requestedAt: paymentData.requestedAt
+                ? new Date(paymentData.requestedAt)
+                : null,
+              approvedAt: paymentData.approvedAt
+                ? new Date(paymentData.approvedAt)
+                : new Date(),
+              metadata: paymentData,
+            },
+          });
+        }
+
+        // 3. orderId에서 consultationId 추출
         let consultationId = paymentData.metadata?.consultationId;
 
         if (!consultationId) {
@@ -74,7 +175,7 @@ export async function GET(request) {
           throw new Error("상담 정보를 찾을 수 없습니다");
         }
 
-        // 3. 결제 상태가 이미 완료된 상담인지 확인
+        // 4. 결제 상태가 이미 완료된 상담인지 확인
         const existingConsultation = await tx.consultationResult.findUnique({
           where: { id: consultationId },
           select: { id: true, isPaid: true },
@@ -86,10 +187,10 @@ export async function GET(request) {
 
         if (existingConsultation.isPaid) {
           console.warn("이미 결제가 완료된 상담입니다:", consultationId);
-          return { consultationId, alreadyPaid: true };
+          return { consultationId, alreadyPaid: true, savedPayment };
         }
 
-        // 4. 데이터베이스 결제 상태 업데이트
+        // 5. 데이터베이스 결제 상태 업데이트
         const updatedConsultation = await tx.consultationResult.update({
           where: { id: consultationId },
           data: {
@@ -106,6 +207,7 @@ export async function GET(request) {
           consultationId,
           updatedConsultation,
           paymentData,
+          savedPayment,
           alreadyPaid: false,
         };
       },
@@ -113,7 +215,24 @@ export async function GET(request) {
       CRITICAL_RETRY_OPTIONS
     );
 
-    const { consultationId } = result;
+    const { consultationId, savedPayment } = result;
+
+    // 슬랙 알림 전송 (비동기로 처리하여 사용자 응답 지연 방지)
+
+    sendPaymentSuccessNotification({
+      paymentKey: savedPayment.paymentKey,
+      orderId: savedPayment.orderId,
+      amount: savedPayment.amount,
+      method: savedPayment.method,
+      customerName: savedPayment.customerName,
+      customerEmail: savedPayment.customerEmail,
+      productName: savedPayment.productName,
+      approvedAt: savedPayment.approvedAt,
+      cardCompany: savedPayment.cardCompany,
+      cardNumber: savedPayment.cardNumber,
+    }).catch((error) => {
+      console.error("슬랙 알림 전송 실패:", error);
+    });
 
     // 결제 성공 페이지로 리다이렉트
     return NextResponse.redirect(

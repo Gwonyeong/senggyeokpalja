@@ -28,6 +28,7 @@ model Profile {
   synergyAnalysis    SynergyAnalysis[]
   savedResults       SavedResult[]
   consultationResults ConsultationResult[]
+  paymentResults     PaymentResult[]
 
   @@map("profiles")
 }
@@ -166,6 +167,55 @@ model ConsultationResult {
   @@index([isPaid])
   @@index([createdAt])
   @@map("consultation_results")
+}
+
+// Payment Results (결제 결과)
+model PaymentResult {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String?   @map("user_id") @db.Uuid
+
+  // 토스페이먼츠 결제 정보
+  paymentKey        String    @unique @map("payment_key") @db.VarChar(200)
+  orderId           String    @unique @map("order_id") @db.VarChar(200)
+  amount            Int       // 결제 금액
+  currency          String    @default("KRW") @db.VarChar(10)
+  method            String?   @map("method") @db.VarChar(50) // 결제 수단 (카드, 계좌이체 등)
+
+  // 결제 상태
+  status            String    @map("status") @db.VarChar(50) // SUCCESS, FAILED, PENDING, CANCELLED
+  failureCode       String?   @map("failure_code") @db.VarChar(100) // 실패 코드
+  failureMessage    String?   @map("failure_message") @db.Text // 실패 메시지
+
+  // 결제 상세 정보
+  customerName      String?   @map("customer_name") @db.VarChar(100)
+  customerEmail     String?   @map("customer_email") @db.VarChar(200)
+  customerPhone     String?   @map("customer_phone") @db.VarChar(50)
+
+  // 카드 정보 (카드 결제인 경우)
+  cardNumber        String?   @map("card_number") @db.VarChar(50) // 마스킹된 카드 번호
+  cardType          String?   @map("card_type") @db.VarChar(50) // 신용, 체크 등
+  cardCompany       String?   @map("card_company") @db.VarChar(50) // 카드사
+  installmentMonth  Int?      @map("installment_month") // 할부 개월
+
+  // 기타 정보
+  productName       String?   @map("product_name") @db.VarChar(200) // 상품명
+  metadata          Json?     // 추가 메타데이터
+  requestedAt       DateTime? @map("requested_at") // 결제 요청 시각
+  approvedAt        DateTime? @map("approved_at") // 결제 승인 시각
+
+  // 타임스탬프
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user              Profile?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([paymentKey])
+  @@index([orderId])
+  @@map("payment_results")
 }
 
 // Admin Settings
