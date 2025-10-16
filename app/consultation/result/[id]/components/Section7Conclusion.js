@@ -8,6 +8,17 @@ export default function Section7Conclusion({ consultation }) {
   const [adviceData, setAdviceData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // 문장 단위로 줄바꿈 처리하는 함수
+  const formatAdviceText = (text) => {
+    if (!text) return text;
+
+    // 문장 종결 부호 뒤에 줄바꿈 추가 (단, 숫자 뒤의 마침표는 제외)
+    return text
+      .replace(/([.!?])\s+(?![0-9)])/g, '$1\n\n')  // 문장 끝 뒤에 두 줄바꿈
+      .replace(/\n\n+/g, '\n\n')  // 연속된 줄바꿈은 두 개로 제한
+      .trim();
+  };
+
   // 십성 데이터 추출 (가장 강한 십성 찾기)
   const tenGodsData = consultation?.tenGods || {};
   const dominantGod = Object.entries(tenGodsData).reduce(
@@ -166,7 +177,7 @@ export default function Section7Conclusion({ consultation }) {
                   whiteSpace: "pre-line",
                 }}
               >
-                {adviceData.categories?.advice ||
+                {formatAdviceText(adviceData.categories?.advice) ||
                   "조언 내용을 불러올 수 없습니다."}
               </div>
             </div>
