@@ -31,8 +31,10 @@ When testing a specific page or component:
 - **Framework**: Next.js 15.5.3 with App Router
 - **Database**: PostgreSQL via Supabase with Prisma ORM
 - **Auth**: Supabase Auth (Google, Naver, Kakao social providers)
+- **Payments**: Toss Payments SDK for Korean payment processing
 - **Styling**: Tailwind CSS v4 with custom CSS variables
 - **Korean Calendar**: manseryeok library for lunar calendar calculations
+- **Notifications**: Sonner for toast messages, Slack integration
 
 ### Application Flow
 1. **Authentication**: Users authenticate via Supabase Auth with social providers
@@ -42,9 +44,15 @@ When testing a specific page or component:
 
 ### Key Modules
 - `lib/saju-utils.js`: Korean traditional fortune-telling calculations (천간, 지지, 오행)
+- `lib/saju-utils-manseryeok.js`: Lunar calendar integration using manseryeok library
+- `lib/ten-gods-utils.js`: Traditional Korean fortune-telling ten gods (십신) calculations
+- `lib/five-elements-utils.js`: Five elements (오행) analysis utilities
+- `lib/consultation-content-generator.js`: Generates detailed consultation content
 - `lib/supabase.js`: Supabase client initialization and auth helpers
+- `lib/prisma.js`: Prisma client configuration (generated to `lib/generated/prisma/`)
 - `lib/share-data.js`: In-memory store for temporary share data
 - `lib/user-utils.js`: User profile and authentication utilities
+- `lib/slack-notification.js`: Slack integration for notifications
 
 ### Database Operations
 **IMPORTANT**: All database operations MUST use Prisma ORM exclusively.
@@ -61,13 +69,20 @@ Main tables:
 - `analysis_results`: User's personality analysis history
 - `synergy_analysis`: Compatibility analysis between users
 - `saved_results`: User's bookmarked analyses
+- `consultation_results`: Detailed saju consultation data with payment info
+- `payment_results`: Toss Payments integration results
+- `admin_settings`: Application configuration settings
 
 ### API Routes Pattern
 API routes in `app/api/` handle:
-- User profile operations
-- Analysis result storage
-- Share data management
-- Admin operations
+- User profile operations (`/api/auth/profile`, `/api/auth/delete-account`)
+- Analysis result storage (`/api/analysis/save`, `/api/analysis/history`)
+- Consultation management (`/api/consultation/save`, `/api/consultation/history`)
+- Payment processing (`/api/payment/create`, `/api/payment/success`, `/api/payment/fail`)
+- Share data management (`/api/share`)
+- Calendar utilities (`/api/calendar/convert`)
+- Health checks (`/api/health`, `/api/health/db`)
+- Admin operations (`/api/admin/users`, `/api/admin/stats`, `/api/admin/consultations`, `/api/admin/analyses`)
 
 ### Styling Theme
 - Dark theme with Korean aesthetic (ink-black #0a0a0a, gold #d4af37)
@@ -93,4 +108,15 @@ SUPABASE_SERVICE_KEY=
 FIREBASE_PROJECT_ID=
 FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
+```
+
+For payments (Toss Payments):
+```
+NEXT_PUBLIC_TOSS_CLIENT_KEY=
+TOSS_SECRET_KEY=
+```
+
+For notifications:
+```
+SLACK_WEBHOOK_URL=
 ```

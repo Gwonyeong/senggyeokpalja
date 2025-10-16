@@ -65,6 +65,75 @@ export default function TenGodsChart({ consultation }) {
     정인: "정통적인 학문, 교육·지혜",
   };
 
+  // 십성 텍스트에 색상 적용하는 함수
+  const colorizeGodsText = (text) => {
+    if (!text) return text;
+
+    // 패턴 찾기 (순서 표시와 십성)
+    const patterns = [
+      // 순서 표시 패턴 (첫째, 둘째, 셋째 등)
+      { pattern: /(첫째|둘째|셋째|넷째|다섯째),\s*[^.!?]*\./g, color: "#d4af37", isSubtitle: true },
+      // 십성 패턴
+      { pattern: /비견/g, color: colors.비견, isGod: true },
+      { pattern: /겁재/g, color: colors.겁재, isGod: true },
+      { pattern: /식신/g, color: colors.식신, isGod: true },
+      { pattern: /상관/g, color: colors.상관, isGod: true },
+      { pattern: /편재/g, color: colors.편재, isGod: true },
+      { pattern: /정재/g, color: colors.정재, isGod: true },
+      { pattern: /편관/g, color: colors.편관, isGod: true },
+      { pattern: /정관/g, color: colors.정관, isGod: true },
+      { pattern: /편인/g, color: colors.편인, isGod: true },
+      { pattern: /정인/g, color: colors.정인, isGod: true },
+    ];
+
+    let parts = [{ text, isSpecial: false }];
+
+    patterns.forEach(({ pattern, color, isSubtitle, isGod }) => {
+      parts = parts.flatMap(part => {
+        if (part.isSpecial) return [part];
+
+        const matches = [...part.text.matchAll(pattern)];
+        if (matches.length === 0) return [part];
+
+        const newParts = [];
+        let lastIndex = 0;
+
+        matches.forEach(match => {
+          // 매치 전 텍스트
+          if (match.index > lastIndex) {
+            newParts.push({
+              text: part.text.slice(lastIndex, match.index),
+              isSpecial: false
+            });
+          }
+
+          // 매치된 특수 텍스트 (순서 표시 또는 십성)
+          newParts.push({
+            text: match[0],
+            isSpecial: true,
+            isSubtitle: isSubtitle || false,
+            isGod: isGod || false,
+            color: color
+          });
+
+          lastIndex = match.index + match[0].length;
+        });
+
+        // 마지막 매치 후 텍스트
+        if (lastIndex < part.text.length) {
+          newParts.push({
+            text: part.text.slice(lastIndex),
+            isSpecial: false
+          });
+        }
+
+        return newParts;
+      });
+    });
+
+    return parts;
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -470,8 +539,28 @@ export default function TenGodsChart({ consultation }) {
                       whiteSpace: "pre-line",
                     }}
                   >
-                    {godDescription.categories?.overall ||
-                      "총운 설명을 불러올 수 없습니다."}
+                    {(() => {
+                      const text = godDescription.categories?.overall || "총운 설명을 불러올 수 없습니다.";
+                      const colorizedParts = colorizeGodsText(text);
+
+                      return colorizedParts.map((part, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            color: part.isSpecial ? part.color : "rgba(255, 255, 255, 0.8)",
+                            fontWeight: part.isSpecial ? "600" : "normal",
+                            fontSize: part.isSubtitle ? "16px" : "14px",
+                            ...(part.isSubtitle && {
+                              display: "inline-block",
+                              marginTop: "8px",
+                              marginBottom: "4px",
+                            }),
+                          }}
+                        >
+                          {part.text}
+                        </span>
+                      ));
+                    })()}
                   </div>
                 </div>
               </>

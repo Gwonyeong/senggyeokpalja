@@ -35,6 +35,75 @@ export default function FiveElementsChart({ consultation }) {
     []
   );
 
+  // 오행 텍스트에 색상 적용하는 함수
+  const colorizeElementText = (text) => {
+    if (!text) return text;
+
+    // 패턴 찾기 (오행과 소제목)
+    const patterns = [
+      // 대괄호 소제목 패턴
+      { pattern: /\[[^\]]+\]/g, color: "#d4af37", isSubtitle: true },
+      // 오행 패턴 (한자가 포함된 경우만)
+      { pattern: /목\(木\)/g, color: colors.목, isElement: true },
+      { pattern: /화\(火\)/g, color: colors.화, isElement: true },
+      { pattern: /토\(土\)/g, color: colors.토, isElement: true },
+      { pattern: /금\(金\)/g, color: colors.금, isElement: true },
+      { pattern: /수\(水\)/g, color: colors.수, isElement: true },
+      { pattern: /木/g, color: colors.목, isElement: true },
+      { pattern: /火/g, color: colors.화, isElement: true },
+      { pattern: /土/g, color: colors.토, isElement: true },
+      { pattern: /金/g, color: colors.금, isElement: true },
+      { pattern: /水/g, color: colors.수, isElement: true },
+    ];
+
+    let parts = [{ text, isSpecial: false }];
+
+    patterns.forEach(({ pattern, color, isSubtitle, isElement }) => {
+      parts = parts.flatMap(part => {
+        if (part.isSpecial) return [part];
+
+        const matches = [...part.text.matchAll(pattern)];
+        if (matches.length === 0) return [part];
+
+        const newParts = [];
+        let lastIndex = 0;
+
+        matches.forEach(match => {
+          // 매치 전 텍스트
+          if (match.index > lastIndex) {
+            newParts.push({
+              text: part.text.slice(lastIndex, match.index),
+              isSpecial: false
+            });
+          }
+
+          // 매치된 특수 텍스트 (소제목 또는 오행)
+          newParts.push({
+            text: match[0],
+            isSpecial: true,
+            isSubtitle: isSubtitle || false,
+            isElement: isElement || false,
+            color: color
+          });
+
+          lastIndex = match.index + match[0].length;
+        });
+
+        // 마지막 매치 후 텍스트
+        if (lastIndex < part.text.length) {
+          newParts.push({
+            text: part.text.slice(lastIndex),
+            isSpecial: false
+          });
+        }
+
+        return newParts;
+      });
+    });
+
+    return parts;
+  };
+
   // 가장 강한 오행의 설명 데이터 로드
   useEffect(() => {
     if (consultation?.dominantElement) {
@@ -397,9 +466,9 @@ export default function FiveElementsChart({ consultation }) {
               <h5
                 style={{
                   color: "#d4af37",
-                  fontSize: "16px",
-                  fontWeight: "600",
-                  marginBottom: "16px",
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  marginBottom: "20px",
                   fontFamily: "Noto Serif KR",
                 }}
               >
@@ -413,8 +482,28 @@ export default function FiveElementsChart({ consultation }) {
                   whiteSpace: "pre-line",
                 }}
               >
-                {elementDescription.chapters?.스토리형_리포트 ||
-                  "상세 설명을 불러올 수 없습니다."}
+                {(() => {
+                  const text = elementDescription.chapters?.스토리형_리포트 || "상세 설명을 불러올 수 없습니다.";
+                  const colorizedParts = colorizeElementText(text);
+
+                  return colorizedParts.map((part, index) => (
+                    <span
+                      key={index}
+                      style={{
+                        color: part.isSpecial ? part.color : "rgba(255, 255, 255, 0.8)",
+                        fontWeight: part.isSpecial ? "600" : "normal",
+                        fontSize: part.isSubtitle ? "16px" : "14px",
+                        ...(part.isSubtitle && {
+                          display: "inline-block",
+                          marginTop: "12px",
+                          marginBottom: "8px",
+                        }),
+                      }}
+                    >
+                      {part.text}
+                    </span>
+                  ));
+                })()}
               </div>
             </>
           ) : (
