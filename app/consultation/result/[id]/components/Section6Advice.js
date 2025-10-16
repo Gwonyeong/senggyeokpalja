@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 export default function Section6Advice({ consultation }) {
   const [fortuneAdviceData, setFortuneAdviceData] = useState(null);
 
+
   // 가장 강한 십신 계산
   const getDominantTenGod = (consultation) => {
     if (!consultation?.tenGods) return null;
@@ -246,7 +247,11 @@ export default function Section6Advice({ consultation }) {
                   lineHeight: "1.7",
                 }}
               >
-                {formatTextToJSX(fortuneAdviceData[fortune.title])}
+                {formatTextToJSX(fortuneAdviceData[fortune.title]).map(
+                  (item, index) => (
+                    <span key={index}>{item}</span>
+                  )
+                )}
               </div>
             </div>
           ))}
