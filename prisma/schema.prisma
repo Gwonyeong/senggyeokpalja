@@ -30,6 +30,7 @@ model Profile {
   calendar      String?  @default("solar") @db.VarChar(10) // 양력/음력 (solar, lunar)
   isLeapMonth   Boolean? @default(false) @map("is_leap_month") // 윤달 여부
   personalityType String? @map("personality_type") @db.VarChar(4) // 팔자유형 (NGHJ 등)
+  phone         String?  @db.VarChar(20) // 전화번호
 
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")

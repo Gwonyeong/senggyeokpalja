@@ -4060,6 +4060,8 @@ input[type="text"]::placeholder {
   gap: 16px;
   padding: 24px;
   justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .profile-header {
@@ -4103,15 +4105,13 @@ input[type="text"]::placeholder {
 
 .detail-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.detail-row:last-child {
-  border-bottom: none;
-}
 
 .detail-label {
   font-size: 14px;
@@ -4124,7 +4124,8 @@ input[type="text"]::placeholder {
   font-size: 14px;
   color: var(--text-color);
   font-weight: 400;
-  text-align: right;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* 편집 폼 */
@@ -4185,6 +4186,7 @@ input[type="text"]::placeholder {
 
   .detail-row {
     padding: 6px 0; /* 패딩만 줄임 */
+    gap: 12px; /* 모바일에서 간격 조정 */
   }
 
   .detail-label {

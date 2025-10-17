@@ -58,6 +58,7 @@ export async function GET() {
         calendar: true,
         isLeapMonth: true,
         personalityType: true,
+        phone: true,
         createdAt: true,
         updatedAt: true,
       }
@@ -106,7 +107,8 @@ export async function PUT(request) {
       mbti,
       calendar,
       isLeapMonth,
-      personalityType
+      personalityType,
+      phone
     } = body;
 
     // 생년월일과 생시를 Date 객체로 변환
@@ -201,6 +203,7 @@ export async function PUT(request) {
         calendar,
         isLeapMonth,
         personalityType: calculatedPersonalityType,
+        phone,
         updatedAt: new Date(),
       },
       select: {
@@ -216,6 +219,7 @@ export async function PUT(request) {
         calendar: true,
         isLeapMonth: true,
         personalityType: true,
+        phone: true,
         createdAt: true,
         updatedAt: true,
       }
