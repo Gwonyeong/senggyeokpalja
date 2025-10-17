@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navigation from "./components/Navigation";
 import { Toaster } from "sonner";
+import { GoogleAnalytics } from "../components/GoogleAnalytics";
 
 export const metadata = {
   metadataBase: new URL(
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
         <script src="https://developers.kakao.com/sdk/js/kakao.js" async />
       </head>
       <body>
+        <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
         <Navigation />
         <main>{children}</main>
         <Toaster

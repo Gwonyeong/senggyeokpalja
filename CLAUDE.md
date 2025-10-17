@@ -35,6 +35,7 @@ When testing a specific page or component:
 - **Styling**: Tailwind CSS v4 with custom CSS variables
 - **Korean Calendar**: manseryeok library for lunar calendar calculations
 - **Notifications**: Sonner for toast messages, Slack integration
+- **Analytics**: Google Analytics 4 for user behavior tracking and analytics
 
 ### Application Flow
 1. **Authentication**: Users authenticate via Supabase Auth with social providers
@@ -119,4 +120,9 @@ TOSS_SECRET_KEY=
 For notifications:
 ```
 SLACK_WEBHOOK_URL=
+```
+
+For analytics:
+```
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-DRMJZPDY1K
 ```
