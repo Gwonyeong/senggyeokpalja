@@ -942,7 +942,11 @@ section {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
   40% {
@@ -3633,5 +3637,562 @@ input[type="text"]::placeholder {
   /* 프로필 이미지 컨테이너 중앙 정렬 */
   .profile-photo {
     margin: 0 auto !important;
+  }
+}
+
+/* ============================================= */
+/* 오늘의 운세 페이지 스타일                      */
+/* ============================================= */
+.daily-fortune-page {
+  color: var(--text-color);
+  background-color: var(--background-color);
+  min-height: 100vh;
+}
+
+.daily-fortune-card {
+  margin-bottom: 0;
+}
+
+.page-header {
+  padding: var(--mobile-padding);
+  margin-bottom: 20px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--text-muted-color);
+  font-size: 16px;
+  cursor: pointer;
+  transition: color var(--animation-duration) var(--animation-easing);
+  padding: 8px 0;
+}
+
+.back-button:hover {
+  color: var(--accent-color);
+}
+
+.fortune-content {
+  padding: var(--mobile-padding);
+}
+
+.date-info {
+  background: var(--card-bg-color);
+  border-radius: var(--mobile-border-radius);
+  padding: var(--mobile-padding);
+  margin-bottom: 20px;
+  border: 1px solid rgba(252, 163, 17, 0.2);
+}
+
+.date-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.date-icon {
+  font-size: 20px;
+}
+
+.date-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.lunar-date {
+  display: block;
+  font-size: 14px;
+  color: var(--text-muted-color);
+  margin-bottom: 15px;
+}
+
+.refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color var(--animation-duration) var(--animation-easing);
+  padding: 8px 0;
+}
+
+.refresh-button:hover {
+  color: var(--muted-gold);
+}
+
+.fortune-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.fortune-sections .info-card {
+  background: var(--card-bg-color);
+  border-radius: var(--mobile-border-radius);
+  padding: var(--mobile-padding);
+  border: 1px solid rgba(252, 163, 17, 0.1);
+  transition: transform var(--animation-duration) var(--animation-easing);
+}
+
+.fortune-sections .info-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(252, 163, 17, 0.3);
+}
+
+.fortune-sections .info-card h3 {
+  color: var(--accent-color);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-family: var(--heading-font);
+}
+
+.fortune-sections .info-card p {
+  color: var(--text-color);
+  line-height: var(--mobile-line-height);
+  font-size: var(--mobile-font-size);
+}
+
+.luck-card {
+  background: var(--card-bg-color);
+  border-radius: var(--mobile-border-radius);
+  padding: var(--mobile-padding);
+  border: 1px solid rgba(252, 163, 17, 0.2);
+  margin-bottom: 20px;
+}
+
+.luck-card h3 {
+  color: var(--accent-color);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-family: var(--heading-font);
+  text-align: center;
+}
+
+.luck-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.luck-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: rgba(252, 163, 17, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(252, 163, 17, 0.1);
+}
+
+.luck-label {
+  font-size: 14px;
+  color: var(--text-muted-color);
+}
+
+.luck-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.login-prompt {
+  background: var(--card-bg-color);
+  border-radius: var(--mobile-border-radius);
+  padding: var(--mobile-padding);
+  border: 1px solid rgba(252, 163, 17, 0.3);
+  text-align: center;
+}
+
+.login-prompt p {
+  color: var(--text-color);
+  margin-bottom: 15px;
+  line-height: var(--mobile-line-height);
+}
+
+.login-prompt .cta-button {
+  background: var(--accent-color);
+  color: var(--ink-black);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--animation-duration) var(--animation-easing);
+  min-height: var(--mobile-touch-target);
+}
+
+.login-prompt .cta-button:hover {
+  background: var(--muted-gold);
+  transform: translateY(-1px);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px var(--mobile-padding);
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--card-bg-color);
+  border-top: 3px solid var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  color: var(--text-muted-color);
+  font-size: var(--mobile-font-size);
+}
+
+.error-message {
+  text-align: center;
+  padding: 60px var(--mobile-padding);
+}
+
+.error-message p {
+  color: var(--text-muted-color);
+  font-size: var(--mobile-font-size);
+  line-height: var(--mobile-line-height);
+}
+
+/* 태블릿 이상에서 럭키 그리드 3열로 변경 */
+@media (min-width: 480px) {
+  .luck-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .luck-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
+
+/* 폼 표시 모드 스타일 */
+.form-display-value {
+  padding: 8px 12px;
+  background: rgba(45, 45, 48, 0.3);
+  border: 2px solid rgba(252, 163, 17, 0.2);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 16px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  font-family: var(--body-font);
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.form-display-value:empty::before {
+  content: "-";
+  color: var(--text-muted-color);
+}
+
+/* 프로필 폼 전용 스타일 */
+.profile-form .form-section {
+  margin-bottom: 12px;
+}
+
+.profile-form .input-group {
+  margin-bottom: 8px;
+}
+
+.profile-form .input-group label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: var(--text-muted-color);
+  font-weight: normal;
+}
+
+.profile-form .form-row {
+  gap: 15px;
+}
+
+/* 프로필 편집 모드 토글 */
+.profile-edit-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(45, 45, 48, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(252, 163, 17, 0.3);
+}
+
+.profile-edit-toggle h3 {
+  color: var(--accent-color);
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: 1.1rem;
+}
+
+.edit-toggle-btn {
+  padding: 8px 16px;
+  background: var(--accent-color);
+  color: var(--ink-black);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.edit-toggle-btn:hover {
+  background: var(--starlight-orange);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(252, 163, 17, 0.3);
+}
+
+.edit-toggle-btn:disabled {
+  background: var(--text-muted-color);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 명함 스타일 프로필 레이아웃 */
+.business-card-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  min-height: 200px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(252, 163, 17, 0.08) 0%,
+    rgba(252, 163, 17, 0.02) 100%
+  );
+  border: 1px solid rgba(252, 163, 17, 0.15);
+  border-radius: 16px;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.business-card-layout::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--accent-color) 0%,
+    var(--muted-gold) 100%
+  );
+}
+
+/* 프로필 아바타 섹션 */
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--card-bg-color);
+
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 150px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(252, 163, 17, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+  transform: translateY(-2px);
+}
+
+.profile-badge {
+  background: var(--accent-color);
+  color: var(--ink-black);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(252, 163, 17, 0.3);
+}
+
+/* 프로필 정보 섹션 */
+.profile-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  justify-content: center;
+}
+
+.profile-header {
+  border-bottom: 1px solid rgba(252, 163, 17, 0.2);
+  padding-bottom: 12px;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin: 0 0 6px 0;
+  font-family: var(--heading-font);
+}
+
+.name-input {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-color);
+  font-family: var(--heading-font);
+  width: 100%;
+  outline: none;
+  border-bottom: 2px solid var(--accent-color);
+  padding: 4px 0;
+}
+
+.profile-title {
+  font-size: 14px;
+  color: var(--text-muted-color);
+  font-weight: 500;
+}
+
+/* 상세 정보 행 */
+.profile-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 14px;
+  color: var(--text-muted-color);
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 400;
+  text-align: right;
+}
+
+/* 편집 폼 */
+.profile-edit-form {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(252, 163, 17, 0.2);
+}
+
+.compact-form .form-section {
+  margin-bottom: 8px;
+}
+
+.compact-form .input-group {
+  margin-bottom: 6px;
+}
+
+.compact-form input,
+.compact-form select {
+  font-size: 14px;
+  padding: 8px 12px;
+  min-height: 36px;
+}
+
+/* 모바일 반응형 - 구조 유지하면서 크기만 조정 */
+@media (max-width: 768px) {
+  .business-card-layout {
+    flex-direction: row; /* PC 구조 유지 */
+    gap: 12px; /* 간격만 줄임 */
+
+    min-height: 150px; /* 높이만 줄임 */
+  }
+
+  .profile-avatar-section {
+    width: 150px; /* 너비만 줄임 */
+    align-items: center;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+  }
+
+  .profile-avatar {
+    width: 80px; /* 크기만 줄임 */
+    height: 100px;
+  }
+
+  .profile-info-section {
+    padding: 16px; /* 패딩만 줄임 */
+    gap: 12px; /* 간격만 줄임 */
+  }
+
+  .profile-name {
+    font-size: 18px; /* 폰트 크기만 줄임 */
+  }
+
+  .profile-title {
+    font-size: 12px; /* 폰트 크기만 줄임 */
+  }
+
+  .detail-row {
+    padding: 6px 0; /* 패딩만 줄임 */
+  }
+
+  .detail-label {
+    font-size: 12px; /* 폰트 크기만 줄임 */
+    min-width: 60px; /* 최소 너비만 줄임 */
+  }
+
+  .detail-value {
+    font-size: 12px; /* 폰트 크기만 줄임 */
   }
 }
