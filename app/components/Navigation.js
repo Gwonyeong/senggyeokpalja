@@ -407,6 +407,15 @@ export default function Navigation() {
                     나와의 궁합 보기
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/daily-fortune"
+                    className="slide-menu-item"
+                    onClick={closeMobileMenu}
+                  >
+                    오늘의 운세
+                  </Link>
+                </li>
 
                 {isAdmin && (
                   <li>

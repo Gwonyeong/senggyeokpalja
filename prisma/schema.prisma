@@ -20,6 +20,17 @@ model Profile {
   emailVerified Boolean  @default(false) @map("email_verified")
   firebaseUid   String?  @unique @map("firebase_uid") // 원본 Firebase UID 보관
   lastSignInAt  DateTime? @map("last_sign_in_at")
+
+  // 개인정보 필드 추가
+  name          String?  // 사용자 이름
+  birthDate     DateTime? @map("birth_date") @db.Date // 생년월일
+  birthTime     DateTime? @map("birth_time") @db.Time // 태어난 시간
+  gender        String?  @db.VarChar(10) // 성별 (male, female)
+  mbti          String?  @db.VarChar(4) // MBTI 성격유형
+  calendar      String?  @default("solar") @db.VarChar(10) // 양력/음력 (solar, lunar)
+  isLeapMonth   Boolean? @default(false) @map("is_leap_month") // 윤달 여부
+  personalityType String? @map("personality_type") @db.VarChar(4) // 팔자유형 (NGHJ 등)
+
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 

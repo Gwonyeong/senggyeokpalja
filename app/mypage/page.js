@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import {
   onAuthStateChange,
-  getCurrentUser,
   signOut,
   deleteAccount,
 } from "../../lib/supabase-auth";
@@ -12,12 +11,12 @@ import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 
 export default function MyPage() {
-  const [savedResults, setSavedResults] = useState([]);
   const [analysisResults, setAnalysisResults] = useState([]);
   const [consultationResults, setConsultationResults] = useState([]);
   const [consultationPage, setConsultationPage] = useState(0);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
   const router = useRouter();
 
   // 생시 매핑 함수
@@ -112,17 +111,14 @@ export default function MyPage() {
           joinDate: authUser.created_at,
         });
 
-        // 사용자별 저장된 결과 불러오기
-        const userResults = JSON.parse(
-          localStorage.getItem(`sajuResults_${authUser.id}`) || "[]"
-        );
-        setSavedResults(userResults);
-
         // 데이터베이스에서 분석 결과 불러오기
         fetchAnalysisHistory();
 
         // 상담 결과 불러오기
         fetchConsultationHistory();
+
+        // 프로필 정보 불러오기
+        fetchProfile();
 
         setLoading(false);
       } else {
@@ -168,20 +164,17 @@ export default function MyPage() {
     }
   };
 
-  const deleteResult = (index) => {
-    if (confirm("이 결과를 삭제하시겠습니까?")) {
-      const updatedResults = savedResults.filter((_, i) => i !== index);
-      setSavedResults(updatedResults);
-
-      // Supabase 사용자 ID로 저장
-      getCurrentUser().then((currentUser) => {
-        if (currentUser) {
-          localStorage.setItem(
-            `sajuResults_${currentUser.id}`,
-            JSON.stringify(updatedResults)
-          );
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch("/api/auth/profile");
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setProfile(data.profile);
         }
-      });
+      }
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
     }
   };
 
@@ -213,9 +206,9 @@ export default function MyPage() {
 
     try {
       // 로딩 표시
-      const originalText = document.querySelector(".btn-danger").textContent;
-      document.querySelector(".btn-danger").textContent = "삭제 중...";
-      document.querySelector(".btn-danger").disabled = true;
+      const deleteButton = document.querySelector(".btn-danger");
+      deleteButton.textContent = "삭제 중...";
+      deleteButton.disabled = true;
 
       await deleteAccount();
 
@@ -228,8 +221,9 @@ export default function MyPage() {
       console.error("계정 삭제 실패:", error);
 
       // 버튼 상태 복원
-      document.querySelector(".btn-danger").textContent = originalText;
-      document.querySelector(".btn-danger").disabled = false;
+      const deleteButton = document.querySelector(".btn-danger");
+      deleteButton.textContent = "🗑️ 계정 삭제";
+      deleteButton.disabled = false;
 
       if (error.message.includes("최근에 로그인")) {
         alert(error.message);
@@ -319,87 +313,115 @@ export default function MyPage() {
     <PageWrapper>
       <div className="analyze-page" style={{ paddingTop: "120px" }}>
         <div className="container">
-          {/* 사용자 정보 카드 */}
+          {/* 프로필 정보 카드 */}
           <div
             className="card user-info-card"
             style={{
               marginBottom: "30px",
               background: "var(--card-bg-color)",
-              padding: "25px",
+              padding: "0",
               borderRadius: "12px",
             }}
           >
-            <div
-              className="user-profile"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "20px",
-              }}
-            >
-              {user.photoURL ? (
-                <div
+            <div className="business-card-layout">
+              {/* 좌측: 팔자유형 이미지 */}
+              <div className="profile-avatar-section">
+                <Image
+                  src={`/assets/images/${
+                    profile?.personalityType || "NSIJ"
+                  }.png`}
+                  alt={profile?.personalityType || "personality type"}
+                  width={120}
+                  height={150}
                   style={{
-                    position: "relative",
-                    width: "80px",
-                    height: "80px",
-                    flexShrink: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "12px",
                   }}
-                >
-                  <Image
-                    src={user.photoURL}
-                    alt="프로필 사진"
-                    width={100}
-                    height={100}
-                    className="profile-photo"
-                    style={{
-                      borderRadius: "50%",
-                      border: "3px solid var(--accent-color)",
-                      objectFit: "cover",
-                    }}
-                  />
+                  onError={(e) => {
+                    // 이미지 로드 실패 시 기본 아바타 표시
+                    e.target.style.display = "none";
+                    e.target.parentNode.innerHTML = `
+                          <div style="
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 28px;
+                            color: var(--accent-color);
+                            background: rgba(252, 163, 17, 0.1);
+                            border-radius: 12px;
+                          ">
+                            ${
+                              profile?.name
+                                ? profile.name.charAt(0).toUpperCase()
+                                : "👤"
+                            }
+                          </div>
+                        `;
+                  }}
+                />
+              </div>
+
+              {/* 우측: 사용자 정보 */}
+              <div className="profile-info-section">
+                <div className="profile-header">
+                  <h3 className="profile-name">
+                    {profile?.name || "이름 없음"}
+                  </h3>
+                  <div className="profile-title">
+                    {profile?.mbti
+                      ? `${profile.mbti} 성격유형`
+                      : "성격유형 미설정"}
+                  </div>
                 </div>
-              ) : (
-                <div
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    borderRadius: "50%",
-                    border: "3px solid var(--accent-color)",
-                    background:
-                      "linear-gradient(135deg, var(--starlight-orange) 0%, var(--accent-color) 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "32px",
-                    color: "white",
-                    fontWeight: "bold",
-                    flexShrink: 0,
-                  }}
-                >
-                  {user.name ? user.name.charAt(0).toUpperCase() : "👤"}
+
+                <div className="profile-details">
+                  <div className="detail-row">
+                    <span className="detail-label">생년월일</span>
+                    <span className="detail-value">
+                      {profile?.birthDate
+                        ? new Date(profile.birthDate).toLocaleDateString(
+                            "ko-KR"
+                          )
+                        : "미설정"}
+                    </span>
+                  </div>
+
+                  <div className="detail-row">
+                    <span className="detail-label">생시</span>
+                    <span className="detail-value">
+                      {getBirthTimeDisplay(profile?.birthTime) || "미설정"}
+                    </span>
+                  </div>
+
+                  <div className="detail-row">
+                    <span className="detail-label">성별</span>
+                    <span className="detail-value">
+                      {profile?.gender === "male"
+                        ? "남자"
+                        : profile?.gender === "female"
+                        ? "여자"
+                        : "미설정"}
+                    </span>
+                  </div>
+
+                  <div className="detail-row">
+                    <span className="detail-label">양음력</span>
+                    <span className="detail-value">
+                      {profile?.calendar === "solar"
+                        ? "양력"
+                        : profile?.calendar === "lunar"
+                        ? "음력"
+                        : "미설정"}
+                      {profile?.calendar === "lunar" &&
+                        profile?.isLeapMonth &&
+                        " (윤달)"}
+                    </span>
+                  </div>
                 </div>
-              )}
-              <div className="user-info" style={{ flex: 1, minWidth: 0 }}>
-                <h3
-                  style={{ color: "var(--accent-color)", marginBottom: "4px" }}
-                >
-                  {user.name}
-                </h3>
-                <p
-                  style={{
-                    color: "var(--text-muted-color)",
-                    marginBottom: "5px",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {user.email}
-                </p>
-                <p
-                  style={{ color: "var(--text-muted-color)", fontSize: "14px" }}
-                >
-                  가입일: {new Date(user.joinDate).toLocaleDateString("ko-KR")}
-                </p>
               </div>
             </div>
           </div>
@@ -630,32 +652,44 @@ export default function MyPage() {
                           onClick={() =>
                             setConsultationPage(
                               Math.min(
-                                Math.ceil((consultationResults?.length || 0) / 5) - 1,
+                                Math.ceil(
+                                  (consultationResults?.length || 0) / 5
+                                ) - 1,
                                 consultationPage + 1
                               )
                             )
                           }
                           disabled={
                             consultationPage >=
-                            Math.ceil((consultationResults?.length || 0) / 5) - 1
+                            Math.ceil((consultationResults?.length || 0) / 5) -
+                              1
                           }
                           style={{
                             padding: "5px 10px",
                             background:
                               consultationPage >=
-                              Math.ceil((consultationResults?.length || 0) / 5) - 1
+                              Math.ceil(
+                                (consultationResults?.length || 0) / 5
+                              ) -
+                                1
                                 ? "var(--border-color)"
                                 : "var(--accent-color)",
                             color:
                               consultationPage >=
-                              Math.ceil((consultationResults?.length || 0) / 5) - 1
+                              Math.ceil(
+                                (consultationResults?.length || 0) / 5
+                              ) -
+                                1
                                 ? "var(--text-muted-color)"
                                 : "var(--ink-black)",
                             border: "none",
                             borderRadius: "4px",
                             cursor:
                               consultationPage >=
-                              Math.ceil((consultationResults?.length || 0) / 5) - 1
+                              Math.ceil(
+                                (consultationResults?.length || 0) / 5
+                              ) -
+                                1
                                 ? "not-allowed"
                                 : "pointer",
                             fontSize: "12px",
@@ -740,7 +774,9 @@ export default function MyPage() {
                           card.style.backgroundColor = "var(--card-bg-color)";
                         }}
                         onClick={() => {
-                          router.push(`/analyze?type=${result.personalityType}`);
+                          router.push(
+                            `/analyze?type=${result.personalityType}`
+                          );
                         }}
                       >
                         <div
