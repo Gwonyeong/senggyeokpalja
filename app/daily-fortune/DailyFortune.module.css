@@ -5,7 +5,7 @@
 
 .container {
   border-radius: 16px;
-  border: 2px solid #FCA311;
+  border: 2px solid #fca311;
   padding: 20px;
   background: rgba(10, 10, 10, 0.5);
   margin: 20px;
@@ -106,11 +106,33 @@
 
 /* 운세 카드 스타일 */
 .daily-fortune-card {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  background: url("/assets/images/오늘의운세/카드 내용.png");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 16px;
   padding: 30px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  min-height: 600px;
+}
+
+.daily-fortune-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
+  z-index: 1;
+}
+
+.daily-fortune-card > * {
+  position: relative;
+  z-index: 2;
 }
 
 .card-header {
