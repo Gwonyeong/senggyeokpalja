@@ -195,6 +195,496 @@ export default function DailyFortunePage() {
     };
   };
 
+  // 오늘의 일진 계산 함수
+  const calculateTodayIljin = () => {
+    const today = new Date();
+
+    // 60갑자 순환 계산 (간단한 방식)
+    const startDate = new Date(1900, 0, 1); // 기준일
+    const daysDiff = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+    const gapjaIndex = daysDiff % 60;
+
+    // 60갑자 배열
+    const cheongan = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'];
+    const jiji = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해'];
+
+    const ganIndex = gapjaIndex % 10;
+    const jiIndex = gapjaIndex % 12;
+
+    // 천간을 한자로 변환
+    const ganToHan = {
+      '갑': '甲', '을': '乙', '병': '丙', '정': '丁', '무': '戊',
+      '기': '己', '경': '庚', '신': '辛', '임': '壬', '계': '癸'
+    };
+
+    // 지지를 한자로 변환
+    const jiToHan = {
+      '자': '子', '축': '丑', '인': '寅', '묘': '卯', '진': '辰', '사': '巳',
+      '오': '午', '미': '未', '신': '申', '유': '酉', '술': '戌', '해': '亥'
+    };
+
+    // 천간 오행 매핑
+    const ganOhaeng = {
+      '갑': '木', '을': '木', '병': '火', '정': '火', '무': '土',
+      '기': '土', '경': '金', '신': '金', '임': '水', '계': '水'
+    };
+
+    // 천간 음양 매핑
+    const ganEumYang = {
+      '갑': '陽', '을': '陰', '병': '陽', '정': '陰', '무': '陽',
+      '기': '陰', '경': '陽', '신': '陰', '임': '陽', '계': '陰'
+    };
+
+    const ganKor = cheongan[ganIndex];
+    const jiKor = jiji[jiIndex];
+
+    return {
+      gan: {
+        kor: ganKor,
+        han: ganToHan[ganKor],
+        ohaeng: ganOhaeng[ganKor],
+        eumYang: ganEumYang[ganKor]
+      },
+      ji: {
+        kor: jiKor,
+        han: jiToHan[jiKor]
+      },
+      gapja: `${ganKor}${jiKor}`,
+      gapjaHan: `${ganToHan[ganKor]}${jiToHan[jiKor]}`
+    };
+  };
+
+  // 원국 격국 판단 함수
+  const analyzeWongukGeokguk = (sajuData) => {
+    if (!sajuData.sibsin || !sajuData.palja) {
+      return null;
+    }
+
+    const sibsin = sajuData.sibsin;
+    const ilgan = sajuData.palja.ilju.gan;
+
+    // 십신별 개수
+    const sibsinCounts = Object.entries(sibsin).filter(([_, count]) => count > 0);
+
+    // 가장 많은 십신 찾기 (일간 제외한 나머지 십신 중)
+    let dominantSibsin = null;
+    let maxCount = 0;
+
+    Object.entries(sibsin).forEach(([sibsinName, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        dominantSibsin = sibsinName;
+      }
+    });
+
+    // 격국 판단 로직
+    let geokguk = "잡격"; // 기본값
+    let geokgukScore = 0;
+
+    if (dominantSibsin && maxCount >= 2) {
+      switch (dominantSibsin) {
+        case "식신":
+          geokguk = "식신격";
+          geokgukScore = sibsin["식신"] * 5; // 식신 개수에 비례
+          break;
+        case "상관":
+          geokguk = "상관격";
+          geokgukScore = sibsin["상관"] * 5;
+          break;
+        case "정재":
+        case "편재":
+          geokguk = "재격";
+          geokgukScore = (sibsin["정재"] + sibsin["편재"]) * 5;
+          break;
+        case "정관":
+        case "편관":
+          geokguk = "관격";
+          geokgukScore = (sibsin["정관"] + sibsin["편관"]) * 5;
+          break;
+        case "정인":
+        case "편인":
+          geokguk = "인격";
+          geokgukScore = (sibsin["정인"] + sibsin["편인"]) * 5;
+          break;
+        case "비견":
+        case "겁재":
+          geokguk = "양인격";
+          geokgukScore = (sibsin["비견"] + sibsin["겁재"]) * 3;
+          break;
+      }
+    }
+
+    return {
+      geokguk,
+      dominantSibsin,
+      maxCount,
+      geokgukScore,
+      sibsinCounts
+    };
+  };
+
+  // 용신 분석 함수
+  const analyzeYongsin = (sajuData, heesinGisinResult) => {
+    if (!sajuData || !heesinGisinResult) {
+      return null;
+    }
+
+    const ilgan = sajuData.palja.ilju.gan;
+    const ohaeng = sajuData.ohaeng;
+    const isIlganStrong = heesinGisinResult.isIlganStrong;
+
+    let yongsin = [];
+    let gisin = [];
+
+    // 기본적인 용신 찾기 로직
+    if (isIlganStrong) {
+      // 일간이 강할 때: 일간을 약하게 하는 오행이 용신
+      Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(([element, analysis]) => {
+        if (analysis.type === "희신") {
+          yongsin.push({
+            element,
+            reason: "일간이 강하므로 약하게 하는 오행",
+            priority: 1
+          });
+        } else if (analysis.type === "기신") {
+          gisin.push({
+            element,
+            reason: "일간이 강할 때 더 강하게 하는 오행",
+            priority: 1
+          });
+        }
+      });
+    } else {
+      // 일간이 약할 때: 일간을 강하게 하는 오행이 용신
+      Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(([element, analysis]) => {
+        if (analysis.type === "희신") {
+          yongsin.push({
+            element,
+            reason: "일간이 약하므로 강하게 하는 오행",
+            priority: 1
+          });
+        } else if (analysis.type === "기신") {
+          gisin.push({
+            element,
+            reason: "일간이 약할 때 더 약하게 하는 오행",
+            priority: 1
+          });
+        }
+      });
+    }
+
+    return {
+      yongsin,
+      gisin,
+      isIlganStrong
+    };
+  };
+
+  // 원국 특성 분석 함수
+  const analyzeWongukCharacteristics = (sajuData, heesinGisinResult, todayIljin) => {
+    if (!sajuData || !heesinGisinResult || !todayIljin) {
+      return null;
+    }
+
+    // 격국 분석
+    const geokgukResult = analyzeWongukGeokguk(sajuData);
+
+    // 용신 분석
+    const yongsinResult = analyzeYongsin(sajuData, heesinGisinResult);
+
+    let totalScore = 0;
+    let analysisDetails = [];
+
+    // 1. 격국 유지 여부 분석
+    if (geokgukResult && geokgukResult.geokguk !== "잡격") {
+      const todayOhaeng = todayIljin.gan.ohaeng;
+      let geokgukScore = 0;
+      let geokgukReason = "";
+
+      // 오늘 일진이 격국에 미치는 영향 분석
+      switch (geokgukResult.geokguk) {
+        case "식신격":
+          // 식신격인 경우, 오늘 일진이 식신을 생조하면 +10, 극제하면 -10
+          if (todayOhaeng === sajuData.palja.ilju.gan.ohaeng) {
+            geokgukScore = 10;
+            geokgukReason = "식신격 강화 (일간과 같은 오행)";
+          } else {
+            // 기타 복잡한 로직은 간소화
+            geokgukScore = 0;
+            geokgukReason = "격국에 중립적 영향";
+          }
+          break;
+        case "재격":
+          // 재격인 경우
+          if (["木", "火"].includes(todayOhaeng) && sajuData.palja.ilju.gan.ohaeng === "土") {
+            geokgukScore = 10;
+            geokgukReason = "재격 강화 (재성 생조)";
+          } else {
+            geokgukScore = 0;
+            geokgukReason = "격국에 중립적 영향";
+          }
+          break;
+        default:
+          geokgukScore = 0;
+          geokgukReason = "격국 분석 불가";
+      }
+
+      totalScore += geokgukScore;
+      analysisDetails.push({
+        type: "격국 유지",
+        score: geokgukScore,
+        reason: geokgukReason,
+        detail: `${geokgukResult.geokguk} × 오늘 일진 ${todayIljin.gapja}`
+      });
+    }
+
+    // 2. 용신 작용 분석
+    if (yongsinResult && yongsinResult.yongsin.length > 0) {
+      const todayOhaeng = todayIljin.gan.ohaeng;
+      let yongsinScore = 0;
+      let yongsinReason = "";
+
+      // 오늘 일진이 용신에 미치는 영향
+      const isYongsinElement = yongsinResult.yongsin.some(y => y.element === todayOhaeng);
+      const isGisinElement = yongsinResult.gisin.some(g => g.element === todayOhaeng);
+
+      if (isYongsinElement) {
+        yongsinScore = 10;
+        yongsinReason = "용신 강화 (오늘 일진이 용신과 같은 오행)";
+      } else if (isGisinElement) {
+        yongsinScore = -10;
+        yongsinReason = "용신 극제 (오늘 일진이 기신과 같은 오행)";
+      } else {
+        yongsinScore = 0;
+        yongsinReason = "용신과 무관계";
+      }
+
+      totalScore += yongsinScore;
+      analysisDetails.push({
+        type: "용신 작용",
+        score: yongsinScore,
+        reason: yongsinReason,
+        detail: `용신: ${yongsinResult.yongsin.map(y => y.element).join(', ')}`
+      });
+    }
+
+    // 3. 원국 구조와 조화 분석 (간단한 생극 순환 분석)
+    const structureScore = analyzeStructuralHarmony(sajuData, todayIljin);
+    totalScore += structureScore.score;
+    analysisDetails.push(structureScore);
+
+    return {
+      totalScore,
+      analysisDetails,
+      geokgukResult,
+      yongsinResult
+    };
+  };
+
+  // 원국 구조와 조화 분석 함수
+  const analyzeStructuralHarmony = (sajuData, todayIljin) => {
+    const ilgan = sajuData.palja.ilju.gan;
+    const todayOhaeng = todayIljin.gan.ohaeng;
+    const ohaeng = sajuData.ohaeng;
+
+    // 오행 상생 순환 분석
+    const ohaengSaeng = { "水": "木", "木": "火", "火": "土", "土": "金", "金": "水" };
+
+    let score = 0;
+    let reason = "";
+
+    // 원국에서 가장 부족한 오행 찾기
+    let minElement = null;
+    let minCount = Infinity;
+    Object.entries(ohaeng).forEach(([element, count]) => {
+      if (count < minCount) {
+        minCount = count;
+        minElement = element;
+      }
+    });
+
+    // 오늘 일진이 부족한 오행을 보충하는지 확인
+    if (todayOhaeng === minElement) {
+      score = 10;
+      reason = "원국의 부족한 오행 보충";
+    } else if (ohaengSaeng[todayOhaeng] === minElement) {
+      score = 5;
+      reason = "원국의 부족한 오행을 간접 생조";
+    } else {
+      // 과잉 오행을 더 강화하는지 확인
+      let maxElement = null;
+      let maxCount = 0;
+      Object.entries(ohaeng).forEach(([element, count]) => {
+        if (count > maxCount) {
+          maxCount = count;
+          maxElement = element;
+        }
+      });
+
+      if (todayOhaeng === maxElement && maxCount >= 3) {
+        score = -10;
+        reason = "과잉 오행 더욱 강화 (불균형 심화)";
+      } else {
+        score = 0;
+        reason = "구조에 중립적 영향";
+      }
+    }
+
+    return {
+      type: "원국 구조 조화",
+      score,
+      reason,
+      detail: `부족 오행: ${minElement}(${minCount}개), 오늘 일진: ${todayOhaeng}`
+    };
+  };
+
+  // 일진 조화 분석 함수 (사용자 일간과 오늘 일진의 십신 관계)
+  const analyzeIljinHarmony = (userIlgan, todayIljin) => {
+    if (!userIlgan || !todayIljin) {
+      return null;
+    }
+
+    const ilganOhaeng = userIlgan.ohaeng;
+    const ilganEumYang = userIlgan.eumYang;
+    const iljinGanOhaeng = todayIljin.gan.ohaeng;
+    const iljinGanEumYang = todayIljin.gan.eumYang;
+
+    // 오행 상생/상극 관계
+    const ohaengSaeng = { "水": "木", "木": "火", "火": "土", "土": "金", "金": "水" };
+    const ohaengGeuk = { "水": "火", "火": "金", "金": "木", "木": "土", "土": "水" };
+
+    let sibsinType = null;
+    let score = 0;
+    let description = "";
+
+    // 사용자 일간과 오늘 일진의 관계로 십신 결정
+    if (iljinGanOhaeng === ilganOhaeng) {
+      // 같은 오행
+      sibsinType = iljinGanEumYang === ilganEumYang ? "비견" : "겁재";
+    } else if (ohaengSaeng[ilganOhaeng] === iljinGanOhaeng) {
+      // 일간이 생하는 오행 (생출)
+      sibsinType = iljinGanEumYang === ilganEumYang ? "식신" : "상관";
+    } else if (ohaengGeuk[ilganOhaeng] === iljinGanOhaeng) {
+      // 일간이 극하는 오행 (극출)
+      sibsinType = iljinGanEumYang === ilganEumYang ? "편재" : "정재";
+    } else if (ohaengGeuk[iljinGanOhaeng] === ilganOhaeng) {
+      // 일간을 극하는 오행 (극입)
+      sibsinType = iljinGanEumYang === ilganEumYang ? "편관" : "정관";
+    } else if (ohaengSaeng[iljinGanOhaeng] === ilganOhaeng) {
+      // 일간을 생하는 오행 (생입)
+      sibsinType = iljinGanEumYang === ilganEumYang ? "편인" : "정인";
+    }
+
+    // 십신별 점수 및 설명 부여
+    switch (sibsinType) {
+      case "정인":
+      case "식신":
+      case "정재":
+      case "정관":
+        score = 10;
+        description = "안정적, 생산적 관계 - 일간을 돕고 균형 유지";
+        break;
+      case "편인":
+      case "편재":
+      case "비견":
+        score = 0;
+        description = "중립 - 긍정/부정 혼재, 명식 따라 다름";
+        break;
+      case "상관":
+      case "편관":
+      case "겁재":
+        score = -10;
+        description = "충돌, 불균형 - 일간을 약화시키거나 극함";
+        break;
+      default:
+        score = 0;
+        description = "관계 없음";
+    }
+
+    return {
+      sibsinType,
+      score,
+      description,
+      todayIljin,
+      userIlgan
+    };
+  };
+
+  // 희신/기신 판단 함수
+  const analyzeHeesinGisin = (sajuData) => {
+    if (!sajuData.palja || !sajuData.ohaeng || !sajuData.palja.ilju) {
+      return null;
+    }
+
+    const ilgan = sajuData.palja.ilju.gan; // 일간 정보
+    const ohaeng = sajuData.ohaeng; // 오행 개수
+    const ilganOhaeng = ilgan.ohaeng; // 일간의 오행
+
+    // 오행 상생/상극 관계
+    const ohaengSaeng = { "水": "木", "木": "火", "火": "土", "土": "金", "金": "水" }; // 생하는 관계
+    const ohaengGeuk = { "水": "火", "火": "金", "金": "木", "木": "土", "土": "水" }; // 극하는 관계
+
+    // 일간 강약 판단 (간단한 로직: 같은 오행의 개수가 2개 이상이면 강함)
+    const ilganCount = ohaeng[ilganOhaeng] || 0;
+    const isIlganStrong = ilganCount >= 2;
+
+    // 희신/기신 판단
+    const heesinGisinAnalysis = {};
+
+    Object.keys(ohaeng).forEach(element => {
+      let type = "보통"; // 기본값
+      let score = 0;
+
+      if (isIlganStrong) {
+        // 일간이 강할 때: 일간을 약하게 하는 오행이 희신
+        if (ohaengGeuk[element] === ilganOhaeng) {
+          // 일간을 극하는 오행 = 희신
+          type = "희신";
+          score = 10;
+        } else if (ohaengSaeng[ilganOhaeng] === element) {
+          // 일간이 생하는 오행 = 희신
+          type = "희신";
+          score = 10;
+        } else if (element === ilganOhaeng || ohaengSaeng[element] === ilganOhaeng) {
+          // 일간과 같은 오행이나 일간을 생하는 오행 = 기신
+          type = "기신";
+          score = -10;
+        }
+      } else {
+        // 일간이 약할 때: 일간을 강하게 하는 오행이 희신
+        if (element === ilganOhaeng || ohaengSaeng[element] === ilganOhaeng) {
+          // 일간과 같은 오행이나 일간을 생하는 오행 = 희신
+          type = "희신";
+          score = 10;
+        } else if (ohaengGeuk[element] === ilganOhaeng || ohaengSaeng[ilganOhaeng] === element) {
+          // 일간을 극하는 오행이나 일간이 생하는 오행 = 기신
+          type = "기신";
+          score = -10;
+        }
+      }
+
+      heesinGisinAnalysis[element] = {
+        type,
+        score,
+        count: ohaeng[element] || 0
+      };
+    });
+
+    return {
+      ilgan: {
+        ohaeng: ilganOhaeng,
+        kor: ilgan.kor,
+        han: ilgan.han,
+        eumYang: ilgan.eumYang
+      },
+      isIlganStrong,
+      heesinGisinAnalysis,
+      totalScore: Object.values(heesinGisinAnalysis).reduce((total, analysis) => {
+        return total + (analysis.score * analysis.count);
+      }, 0)
+    };
+  };
+
   // 사용자의 주된 십신 계산 함수
   const calculateUserPrimarySibsin = async () => {
     if (!userProfile || !userProfile.birthDate) {
@@ -285,6 +775,18 @@ export default function DailyFortunePage() {
         // 오행 분석 (서버에서 계산된 데이터 사용)
         const ohaengAnalysis = analyzeOhaeng(sajuData.ohaeng);
 
+        // 희신/기신 분석
+        const heesinGisinResult = analyzeHeesinGisin(sajuData);
+
+        // 오늘의 일진 계산
+        const todayIljin = calculateTodayIljin();
+
+        // 일진 조화 분석 (사용자 일간과 오늘 일진의 관계)
+        const iljinHarmonyResult = analyzeIljinHarmony(sajuData.palja.ilju.gan, todayIljin);
+
+        // 원국 특성 분석 (격국, 용신, 구조 조화)
+        const wongukResult = analyzeWongukCharacteristics(sajuData, heesinGisinResult, todayIljin);
+
         if (primarySibsin) {
           console.log("🔮 사용자의 주된 십신:", primarySibsin);
 
@@ -302,7 +804,109 @@ export default function DailyFortunePage() {
             }
           });
 
-          return { primarySibsin, ohaengAnalysis };
+          // 희신/기신 분석 결과 출력
+          if (heesinGisinResult) {
+            console.log("\n🎯 희신/기신 분석 결과:");
+            console.log("├─ 일간:", `${heesinGisinResult.ilgan.kor}(${heesinGisinResult.ilgan.han}) - ${heesinGisinResult.ilgan.ohaeng} ${heesinGisinResult.ilgan.eumYang}`);
+            console.log("├─ 일간 강약:", heesinGisinResult.isIlganStrong ? "강함" : "약함");
+            console.log("└─ 희신/기신 분석:");
+
+            // 기본 점수 50점에서 시작
+            let totalScore = 50;
+
+            Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(([element, analysis]) => {
+              if (analysis.count > 0) {
+                const elementScore = analysis.score * analysis.count;
+                totalScore += elementScore;
+
+                const ohaengNames = {
+                  "木": "목(木)", "火": "화(火)", "土": "토(土)",
+                  "金": "금(金)", "水": "수(水)"
+                };
+
+                console.log(`   ${ohaengNames[element]}: ${analysis.type} (${analysis.count}개 × ${analysis.score}점 = ${elementScore > 0 ? '+' : ''}${elementScore}점)`);
+              }
+            });
+
+            console.log(`\n🏆 임시 점수: ${totalScore}점 (기본 50점 + 희신/기신 보정)`);
+            console.log(`   희신/기신 보정: ${heesinGisinResult.totalScore > 0 ? '+' : ''}${heesinGisinResult.totalScore}점`);
+          }
+
+          // 일진 조화 분석 결과 출력 및 최종 점수 계산
+          let finalScore = heesinGisinResult ? 50 + heesinGisinResult.totalScore : 50;
+
+          if (iljinHarmonyResult) {
+            console.log("\n📅 일진 조화 분석:");
+            console.log(`├─ 오늘의 일진: ${iljinHarmonyResult.todayIljin.gapja}(${iljinHarmonyResult.todayIljin.gapjaHan})`);
+            console.log(`├─ 일진 천간: ${iljinHarmonyResult.todayIljin.gan.kor}(${iljinHarmonyResult.todayIljin.gan.han}) - ${iljinHarmonyResult.todayIljin.gan.ohaeng} ${iljinHarmonyResult.todayIljin.gan.eumYang}`);
+            console.log(`├─ 사용자 일간: ${iljinHarmonyResult.userIlgan.kor}(${iljinHarmonyResult.userIlgan.han}) - ${iljinHarmonyResult.userIlgan.ohaeng} ${iljinHarmonyResult.userIlgan.eumYang}`);
+            console.log(`├─ 십신 관계: ${iljinHarmonyResult.sibsinType || '없음'}`);
+            console.log(`├─ 조화 점수: ${iljinHarmonyResult.score > 0 ? '+' : ''}${iljinHarmonyResult.score}점`);
+            console.log(`└─ 설명: ${iljinHarmonyResult.description}`);
+
+            // 일진 조화 점수를 최종 점수에 반영
+            finalScore += iljinHarmonyResult.score;
+
+            console.log(`\n🎯 최종 점수: ${finalScore}점`);
+            console.log(`   = 기본 점수 50점`);
+            if (heesinGisinResult) {
+              console.log(`   + 희신/기신 보정 ${heesinGisinResult.totalScore > 0 ? '+' : ''}${heesinGisinResult.totalScore}점`);
+            }
+            console.log(`   + 일진 조화 보정 ${iljinHarmonyResult.score > 0 ? '+' : ''}${iljinHarmonyResult.score}점`);
+          } else {
+            console.log(`\n🎯 임시 점수: ${finalScore}점 (일진 조화 분석 불가)`);
+          }
+
+          // 원국 특성 분석 결과 출력 및 최종 점수 계산
+          if (wongukResult) {
+            console.log("\n🏛️ 원국 특성 분석:");
+
+            // 격국 정보 출력
+            if (wongukResult.geokgukResult) {
+              console.log(`├─ 격국: ${wongukResult.geokgukResult.geokguk}`);
+              console.log(`├─ 주도 십신: ${wongukResult.geokgukResult.dominantSibsin} (${wongukResult.geokgukResult.maxCount}개)`);
+            }
+
+            // 용신 정보 출력
+            if (wongukResult.yongsinResult) {
+              const yongsinElements = wongukResult.yongsinResult.yongsin.map(y => y.element).join(', ');
+              const gisinElements = wongukResult.yongsinResult.gisin.map(g => g.element).join(', ');
+              console.log(`├─ 용신: ${yongsinElements || '없음'}`);
+              console.log(`├─ 기신: ${gisinElements || '없음'}`);
+            }
+
+            // 원국 특성 분석 상세 출력
+            console.log("└─ 원국 특성 분석 상세:");
+            wongukResult.analysisDetails.forEach((detail, index) => {
+              const prefix = index === wongukResult.analysisDetails.length - 1 ? "   └─" : "   ├─";
+              console.log(`${prefix} ${detail.type}: ${detail.score > 0 ? '+' : ''}${detail.score}점 (${detail.reason})`);
+              console.log(`      ${detail.detail}`);
+            });
+
+            // 원국 특성 점수를 최종 점수에 반영
+            finalScore += wongukResult.totalScore;
+
+            console.log(`\n🎯 최종 점수: ${finalScore}점`);
+            console.log(`   = 기본 점수 50점`);
+            if (heesinGisinResult) {
+              console.log(`   + 희신/기신 보정 ${heesinGisinResult.totalScore > 0 ? '+' : ''}${heesinGisinResult.totalScore}점`);
+            }
+            if (iljinHarmonyResult) {
+              console.log(`   + 일진 조화 보정 ${iljinHarmonyResult.score > 0 ? '+' : ''}${iljinHarmonyResult.score}점`);
+            }
+            console.log(`   + 원국 특성 보정 ${wongukResult.totalScore > 0 ? '+' : ''}${wongukResult.totalScore}점`);
+          } else {
+            console.log(`\n🎯 최종 점수: ${finalScore}점 (원국 특성 분석 불가)`);
+          }
+
+          return {
+            primarySibsin,
+            ohaengAnalysis,
+            heesinGisinResult,
+            iljinHarmonyResult,
+            wongukResult,
+            finalScore
+          };
         }
       }
 
