@@ -6,7 +6,7 @@
 .container {
   border-radius: 16px;
   border: 2px solid #fca311;
-  padding: 20px;
+  /* padding: 20px; */
   background: rgba(10, 10, 10, 0.5);
   margin: 20px;
 }
@@ -53,7 +53,7 @@
 }
 
 .card-wrapper {
-  max-width: 400px;
+  /* max-width: 400px; */
   margin: 0 auto;
   padding: 20px;
 }
@@ -159,7 +159,98 @@
 .fortune-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
+}
+
+/* 새로운 카드 스타일 */
+.fortune-main-card,
+.fortune-lucky-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.fortune-main-card:hover,
+.fortune-lucky-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.1);
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #d4af37;
+  font-family: "Noto Serif KR", serif;
+  margin: 0 0 20px;
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.fortune-item {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fortune-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.fortune-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d4af37;
+  margin-bottom: 8px;
+  font-family: "Noto Serif KR", serif;
+}
+
+.fortune-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.lucky-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lucky-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  transition: all 0.3s;
+}
+
+.lucky-item:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+.lucky-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.lucky-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #d4af37;
 }
 
 .fortune-sections {
@@ -439,5 +530,34 @@
   .modal-button-cancel,
   .modal-button-primary {
     width: 100%;
+  }
+
+  .fortune-main-card,
+  .fortune-lucky-card {
+    padding: 16px;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .fortune-label {
+    font-size: 13px;
+  }
+
+  .fortune-text {
+    font-size: 13px;
+  }
+
+  .lucky-item {
+    padding: 10px 12px;
+  }
+
+  .lucky-label {
+    font-size: 13px;
+  }
+
+  .lucky-value {
+    font-size: 14px;
   }
 }

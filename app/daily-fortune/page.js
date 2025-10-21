@@ -133,7 +133,7 @@ export default function DailyFortunePage() {
       편관: "권력, 추진력, 결단력",
       정관: "명예, 권위, 책임감",
       편인: "특수재능, 종교성, 예술성",
-      정인: "학문, 지혜, 인덕"
+      정인: "학문, 지혜, 인덕",
     };
     return meanings[sibsinName] || "운명의 길";
   };
@@ -141,19 +141,19 @@ export default function DailyFortunePage() {
   // 오행 분석 함수
   const analyzeOhaeng = (ohaeng) => {
     const ohaengNames = {
-      "木": "목(木)",
-      "火": "화(火)",
-      "土": "토(土)",
-      "金": "금(金)",
-      "水": "수(水)"
+      木: "목(木)",
+      火: "화(火)",
+      土: "토(土)",
+      金: "금(金)",
+      水: "수(水)",
     };
 
     const ohaengMeanings = {
-      "木": "성장, 창조, 유연성",
-      "火": "열정, 활력, 확산",
-      "土": "안정, 신용, 중재",
-      "金": "질서, 정의, 수렴",
-      "水": "지혜, 적응, 유동"
+      木: "성장, 창조, 유연성",
+      火: "열정, 활력, 확산",
+      土: "안정, 신용, 중재",
+      金: "질서, 정의, 수렴",
+      水: "지혜, 적응, 유동",
     };
 
     // 총 개수 계산
@@ -178,20 +178,22 @@ export default function DailyFortunePage() {
         count,
         percentage,
         name: ohaengNames[element] || element,
-        meaning: ohaengMeanings[element] || "알 수 없음"
+        meaning: ohaengMeanings[element] || "알 수 없음",
       };
     }
 
     return {
       total,
-      dominantOhaeng: dominantOhaeng ? {
-        element: dominantOhaeng,
-        name: ohaengNames[dominantOhaeng],
-        count: maxCount,
-        percentage: total > 0 ? Math.round((maxCount / total) * 100) : 0,
-        meaning: ohaengMeanings[dominantOhaeng]
-      } : null,
-      distribution
+      dominantOhaeng: dominantOhaeng
+        ? {
+            element: dominantOhaeng,
+            name: ohaengNames[dominantOhaeng],
+            count: maxCount,
+            percentage: total > 0 ? Math.round((maxCount / total) * 100) : 0,
+            meaning: ohaengMeanings[dominantOhaeng],
+          }
+        : null,
+      distribution,
     };
   };
 
@@ -205,34 +207,92 @@ export default function DailyFortunePage() {
     const gapjaIndex = daysDiff % 60;
 
     // 60갑자 배열
-    const cheongan = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'];
-    const jiji = ['자', '축', '인', '묘', '진', '사', '오', '미', '신', '유', '술', '해'];
+    const cheongan = [
+      "갑",
+      "을",
+      "병",
+      "정",
+      "무",
+      "기",
+      "경",
+      "신",
+      "임",
+      "계",
+    ];
+    const jiji = [
+      "자",
+      "축",
+      "인",
+      "묘",
+      "진",
+      "사",
+      "오",
+      "미",
+      "신",
+      "유",
+      "술",
+      "해",
+    ];
 
     const ganIndex = gapjaIndex % 10;
     const jiIndex = gapjaIndex % 12;
 
     // 천간을 한자로 변환
     const ganToHan = {
-      '갑': '甲', '을': '乙', '병': '丙', '정': '丁', '무': '戊',
-      '기': '己', '경': '庚', '신': '辛', '임': '壬', '계': '癸'
+      갑: "甲",
+      을: "乙",
+      병: "丙",
+      정: "丁",
+      무: "戊",
+      기: "己",
+      경: "庚",
+      신: "辛",
+      임: "壬",
+      계: "癸",
     };
 
     // 지지를 한자로 변환
     const jiToHan = {
-      '자': '子', '축': '丑', '인': '寅', '묘': '卯', '진': '辰', '사': '巳',
-      '오': '午', '미': '未', '신': '申', '유': '酉', '술': '戌', '해': '亥'
+      자: "子",
+      축: "丑",
+      인: "寅",
+      묘: "卯",
+      진: "辰",
+      사: "巳",
+      오: "午",
+      미: "未",
+      신: "申",
+      유: "酉",
+      술: "戌",
+      해: "亥",
     };
 
     // 천간 오행 매핑
     const ganOhaeng = {
-      '갑': '木', '을': '木', '병': '火', '정': '火', '무': '土',
-      '기': '土', '경': '金', '신': '金', '임': '水', '계': '水'
+      갑: "木",
+      을: "木",
+      병: "火",
+      정: "火",
+      무: "土",
+      기: "土",
+      경: "金",
+      신: "金",
+      임: "水",
+      계: "水",
     };
 
     // 천간 음양 매핑
     const ganEumYang = {
-      '갑': '陽', '을': '陰', '병': '陽', '정': '陰', '무': '陽',
-      '기': '陰', '경': '陽', '신': '陰', '임': '陽', '계': '陰'
+      갑: "陽",
+      을: "陰",
+      병: "陽",
+      정: "陰",
+      무: "陽",
+      기: "陰",
+      경: "陽",
+      신: "陰",
+      임: "陽",
+      계: "陰",
     };
 
     const ganKor = cheongan[ganIndex];
@@ -243,14 +303,14 @@ export default function DailyFortunePage() {
         kor: ganKor,
         han: ganToHan[ganKor],
         ohaeng: ganOhaeng[ganKor],
-        eumYang: ganEumYang[ganKor]
+        eumYang: ganEumYang[ganKor],
       },
       ji: {
         kor: jiKor,
-        han: jiToHan[jiKor]
+        han: jiToHan[jiKor],
       },
       gapja: `${ganKor}${jiKor}`,
-      gapjaHan: `${ganToHan[ganKor]}${jiToHan[jiKor]}`
+      gapjaHan: `${ganToHan[ganKor]}${jiToHan[jiKor]}`,
     };
   };
 
@@ -264,7 +324,9 @@ export default function DailyFortunePage() {
     const ilgan = sajuData.palja.ilju.gan;
 
     // 십신별 개수
-    const sibsinCounts = Object.entries(sibsin).filter(([_, count]) => count > 0);
+    const sibsinCounts = Object.entries(sibsin).filter(
+      ([_, count]) => count > 0
+    );
 
     // 가장 많은 십신 찾기 (일간 제외한 나머지 십신 중)
     let dominantSibsin = null;
@@ -319,7 +381,7 @@ export default function DailyFortunePage() {
       dominantSibsin,
       maxCount,
       geokgukScore,
-      sibsinCounts
+      sibsinCounts,
     };
   };
 
@@ -339,49 +401,57 @@ export default function DailyFortunePage() {
     // 기본적인 용신 찾기 로직
     if (isIlganStrong) {
       // 일간이 강할 때: 일간을 약하게 하는 오행이 용신
-      Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(([element, analysis]) => {
-        if (analysis.type === "희신") {
-          yongsin.push({
-            element,
-            reason: "일간이 강하므로 약하게 하는 오행",
-            priority: 1
-          });
-        } else if (analysis.type === "기신") {
-          gisin.push({
-            element,
-            reason: "일간이 강할 때 더 강하게 하는 오행",
-            priority: 1
-          });
+      Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(
+        ([element, analysis]) => {
+          if (analysis.type === "희신") {
+            yongsin.push({
+              element,
+              reason: "일간이 강하므로 약하게 하는 오행",
+              priority: 1,
+            });
+          } else if (analysis.type === "기신") {
+            gisin.push({
+              element,
+              reason: "일간이 강할 때 더 강하게 하는 오행",
+              priority: 1,
+            });
+          }
         }
-      });
+      );
     } else {
       // 일간이 약할 때: 일간을 강하게 하는 오행이 용신
-      Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(([element, analysis]) => {
-        if (analysis.type === "희신") {
-          yongsin.push({
-            element,
-            reason: "일간이 약하므로 강하게 하는 오행",
-            priority: 1
-          });
-        } else if (analysis.type === "기신") {
-          gisin.push({
-            element,
-            reason: "일간이 약할 때 더 약하게 하는 오행",
-            priority: 1
-          });
+      Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(
+        ([element, analysis]) => {
+          if (analysis.type === "희신") {
+            yongsin.push({
+              element,
+              reason: "일간이 약하므로 강하게 하는 오행",
+              priority: 1,
+            });
+          } else if (analysis.type === "기신") {
+            gisin.push({
+              element,
+              reason: "일간이 약할 때 더 약하게 하는 오행",
+              priority: 1,
+            });
+          }
         }
-      });
+      );
     }
 
     return {
       yongsin,
       gisin,
-      isIlganStrong
+      isIlganStrong,
     };
   };
 
   // 원국 특성 분석 함수
-  const analyzeWongukCharacteristics = (sajuData, heesinGisinResult, todayIljin) => {
+  const analyzeWongukCharacteristics = (
+    sajuData,
+    heesinGisinResult,
+    todayIljin
+  ) => {
     if (!sajuData || !heesinGisinResult || !todayIljin) {
       return null;
     }
@@ -416,7 +486,10 @@ export default function DailyFortunePage() {
           break;
         case "재격":
           // 재격인 경우
-          if (["木", "火"].includes(todayOhaeng) && sajuData.palja.ilju.gan.ohaeng === "土") {
+          if (
+            ["木", "火"].includes(todayOhaeng) &&
+            sajuData.palja.ilju.gan.ohaeng === "土"
+          ) {
             geokgukScore = 10;
             geokgukReason = "재격 강화 (재성 생조)";
           } else {
@@ -434,7 +507,7 @@ export default function DailyFortunePage() {
         type: "격국 유지",
         score: geokgukScore,
         reason: geokgukReason,
-        detail: `${geokgukResult.geokguk} × 오늘 일진 ${todayIljin.gapja}`
+        detail: `${geokgukResult.geokguk} × 오늘 일진 ${todayIljin.gapja}`,
       });
     }
 
@@ -445,8 +518,12 @@ export default function DailyFortunePage() {
       let yongsinReason = "";
 
       // 오늘 일진이 용신에 미치는 영향
-      const isYongsinElement = yongsinResult.yongsin.some(y => y.element === todayOhaeng);
-      const isGisinElement = yongsinResult.gisin.some(g => g.element === todayOhaeng);
+      const isYongsinElement = yongsinResult.yongsin.some(
+        (y) => y.element === todayOhaeng
+      );
+      const isGisinElement = yongsinResult.gisin.some(
+        (g) => g.element === todayOhaeng
+      );
 
       if (isYongsinElement) {
         yongsinScore = 10;
@@ -464,7 +541,9 @@ export default function DailyFortunePage() {
         type: "용신 작용",
         score: yongsinScore,
         reason: yongsinReason,
-        detail: `용신: ${yongsinResult.yongsin.map(y => y.element).join(', ')}`
+        detail: `용신: ${yongsinResult.yongsin
+          .map((y) => y.element)
+          .join(", ")}`,
       });
     }
 
@@ -477,7 +556,7 @@ export default function DailyFortunePage() {
       totalScore,
       analysisDetails,
       geokgukResult,
-      yongsinResult
+      yongsinResult,
     };
   };
 
@@ -488,7 +567,7 @@ export default function DailyFortunePage() {
     const ohaeng = sajuData.ohaeng;
 
     // 오행 상생 순환 분석
-    const ohaengSaeng = { "水": "木", "木": "火", "火": "土", "土": "金", "金": "水" };
+    const ohaengSaeng = { 水: "木", 木: "火", 火: "土", 土: "金", 金: "水" };
 
     let score = 0;
     let reason = "";
@@ -534,7 +613,7 @@ export default function DailyFortunePage() {
       type: "원국 구조 조화",
       score,
       reason,
-      detail: `부족 오행: ${minElement}(${minCount}개), 오늘 일진: ${todayOhaeng}`
+      detail: `부족 오행: ${minElement}(${minCount}개), 오늘 일진: ${todayOhaeng}`,
     };
   };
 
@@ -550,8 +629,8 @@ export default function DailyFortunePage() {
     const iljinGanEumYang = todayIljin.gan.eumYang;
 
     // 오행 상생/상극 관계
-    const ohaengSaeng = { "水": "木", "木": "火", "火": "土", "土": "金", "金": "水" };
-    const ohaengGeuk = { "水": "火", "火": "金", "金": "木", "木": "土", "土": "水" };
+    const ohaengSaeng = { 水: "木", 木: "火", 火: "土", 土: "金", 金: "水" };
+    const ohaengGeuk = { 水: "火", 火: "金", 金: "木", 木: "土", 土: "水" };
 
     let sibsinType = null;
     let score = 0;
@@ -606,7 +685,7 @@ export default function DailyFortunePage() {
       score,
       description,
       todayIljin,
-      userIlgan
+      userIlgan,
     };
   };
 
@@ -621,8 +700,8 @@ export default function DailyFortunePage() {
     const ilganOhaeng = ilgan.ohaeng; // 일간의 오행
 
     // 오행 상생/상극 관계
-    const ohaengSaeng = { "水": "木", "木": "火", "火": "土", "土": "金", "金": "水" }; // 생하는 관계
-    const ohaengGeuk = { "水": "火", "火": "金", "金": "木", "木": "土", "土": "水" }; // 극하는 관계
+    const ohaengSaeng = { 水: "木", 木: "火", 火: "土", 土: "金", 金: "水" }; // 생하는 관계
+    const ohaengGeuk = { 水: "火", 火: "金", 金: "木", 木: "土", 土: "水" }; // 극하는 관계
 
     // 일간 강약 판단 (간단한 로직: 같은 오행의 개수가 2개 이상이면 강함)
     const ilganCount = ohaeng[ilganOhaeng] || 0;
@@ -631,7 +710,7 @@ export default function DailyFortunePage() {
     // 희신/기신 판단
     const heesinGisinAnalysis = {};
 
-    Object.keys(ohaeng).forEach(element => {
+    Object.keys(ohaeng).forEach((element) => {
       let type = "보통"; // 기본값
       let score = 0;
 
@@ -645,7 +724,10 @@ export default function DailyFortunePage() {
           // 일간이 생하는 오행 = 희신
           type = "희신";
           score = 10;
-        } else if (element === ilganOhaeng || ohaengSaeng[element] === ilganOhaeng) {
+        } else if (
+          element === ilganOhaeng ||
+          ohaengSaeng[element] === ilganOhaeng
+        ) {
           // 일간과 같은 오행이나 일간을 생하는 오행 = 기신
           type = "기신";
           score = -10;
@@ -656,7 +738,10 @@ export default function DailyFortunePage() {
           // 일간과 같은 오행이나 일간을 생하는 오행 = 희신
           type = "희신";
           score = 10;
-        } else if (ohaengGeuk[element] === ilganOhaeng || ohaengSaeng[ilganOhaeng] === element) {
+        } else if (
+          ohaengGeuk[element] === ilganOhaeng ||
+          ohaengSaeng[ilganOhaeng] === element
+        ) {
           // 일간을 극하는 오행이나 일간이 생하는 오행 = 기신
           type = "기신";
           score = -10;
@@ -666,7 +751,7 @@ export default function DailyFortunePage() {
       heesinGisinAnalysis[element] = {
         type,
         score,
-        count: ohaeng[element] || 0
+        count: ohaeng[element] || 0,
       };
     });
 
@@ -675,13 +760,16 @@ export default function DailyFortunePage() {
         ohaeng: ilganOhaeng,
         kor: ilgan.kor,
         han: ilgan.han,
-        eumYang: ilgan.eumYang
+        eumYang: ilgan.eumYang,
       },
       isIlganStrong,
       heesinGisinAnalysis,
-      totalScore: Object.values(heesinGisinAnalysis).reduce((total, analysis) => {
-        return total + (analysis.score * analysis.count);
-      }, 0)
+      totalScore: Object.values(heesinGisinAnalysis).reduce(
+        (total, analysis) => {
+          return total + analysis.score * analysis.count;
+        },
+        0
+      ),
     };
   };
 
@@ -691,7 +779,7 @@ export default function DailyFortunePage() {
       console.log("프로필 정보가 부족합니다:", {
         hasProfile: !!userProfile,
         hasBirthDate: !!userProfile?.birthDate,
-        hasBirthTime: !!userProfile?.birthTime
+        hasBirthTime: !!userProfile?.birthTime,
       });
       return null;
     }
@@ -700,7 +788,7 @@ export default function DailyFortunePage() {
       const birthDate = new Date(userProfile.birthDate);
 
       // 생시를 시간 인덱스로 변환 (birthTime이 없으면 정오 12시로 처리)
-      let hour = 12;  // 기본값: 정오
+      let hour = 12; // 기본값: 정오
       let minute = 0;
 
       if (userProfile.birthTime) {
@@ -713,44 +801,65 @@ export default function DailyFortunePage() {
 
       if (hour === 0 && minute >= 30) timeIndex = 0;
       else if (hour === 1 || (hour === 2 && minute < 30)) timeIndex = 0;
-      else if ((hour === 2 && minute >= 30) || (hour === 3 && minute < 30)) timeIndex = 1;
-      else if ((hour === 3 && minute >= 30) || (hour === 4 && minute < 30)) timeIndex = 1;
-      else if ((hour === 4 && minute >= 30) || (hour === 5 && minute < 30)) timeIndex = 2;
-      else if ((hour === 5 && minute >= 30) || (hour === 6 && minute < 30)) timeIndex = 2;
-      else if ((hour === 6 && minute >= 30) || (hour === 7 && minute < 30)) timeIndex = 3;
-      else if ((hour === 7 && minute >= 30) || (hour === 8 && minute < 30)) timeIndex = 3;
-      else if ((hour === 8 && minute >= 30) || (hour === 9 && minute < 30)) timeIndex = 4;
-      else if ((hour === 9 && minute >= 30) || (hour === 10 && minute < 30)) timeIndex = 4;
-      else if ((hour === 10 && minute >= 30) || (hour === 11 && minute < 30)) timeIndex = 5;
-      else if ((hour === 11 && minute >= 30) || (hour === 12 && minute < 30)) timeIndex = 5;
-      else if ((hour === 12 && minute >= 30) || (hour === 13 && minute < 30)) timeIndex = 6;
-      else if ((hour === 13 && minute >= 30) || (hour === 14 && minute < 30)) timeIndex = 6;
-      else if ((hour === 14 && minute >= 30) || (hour === 15 && minute < 30)) timeIndex = 7;
-      else if ((hour === 15 && minute >= 30) || (hour === 16 && minute < 30)) timeIndex = 7;
-      else if ((hour === 16 && minute >= 30) || (hour === 17 && minute < 30)) timeIndex = 8;
-      else if ((hour === 17 && minute >= 30) || (hour === 18 && minute < 30)) timeIndex = 8;
-      else if ((hour === 18 && minute >= 30) || (hour === 19 && minute < 30)) timeIndex = 9;
-      else if ((hour === 19 && minute >= 30) || (hour === 20 && minute < 30)) timeIndex = 9;
-      else if ((hour === 20 && minute >= 30) || (hour === 21 && minute < 30)) timeIndex = 10;
-      else if ((hour === 21 && minute >= 30) || (hour === 22 && minute < 30)) timeIndex = 10;
-      else if ((hour === 22 && minute >= 30) || (hour === 23 && minute < 30)) timeIndex = 11;
+      else if ((hour === 2 && minute >= 30) || (hour === 3 && minute < 30))
+        timeIndex = 1;
+      else if ((hour === 3 && minute >= 30) || (hour === 4 && minute < 30))
+        timeIndex = 1;
+      else if ((hour === 4 && minute >= 30) || (hour === 5 && minute < 30))
+        timeIndex = 2;
+      else if ((hour === 5 && minute >= 30) || (hour === 6 && minute < 30))
+        timeIndex = 2;
+      else if ((hour === 6 && minute >= 30) || (hour === 7 && minute < 30))
+        timeIndex = 3;
+      else if ((hour === 7 && minute >= 30) || (hour === 8 && minute < 30))
+        timeIndex = 3;
+      else if ((hour === 8 && minute >= 30) || (hour === 9 && minute < 30))
+        timeIndex = 4;
+      else if ((hour === 9 && minute >= 30) || (hour === 10 && minute < 30))
+        timeIndex = 4;
+      else if ((hour === 10 && minute >= 30) || (hour === 11 && minute < 30))
+        timeIndex = 5;
+      else if ((hour === 11 && minute >= 30) || (hour === 12 && minute < 30))
+        timeIndex = 5;
+      else if ((hour === 12 && minute >= 30) || (hour === 13 && minute < 30))
+        timeIndex = 6;
+      else if ((hour === 13 && minute >= 30) || (hour === 14 && minute < 30))
+        timeIndex = 6;
+      else if ((hour === 14 && minute >= 30) || (hour === 15 && minute < 30))
+        timeIndex = 7;
+      else if ((hour === 15 && minute >= 30) || (hour === 16 && minute < 30))
+        timeIndex = 7;
+      else if ((hour === 16 && minute >= 30) || (hour === 17 && minute < 30))
+        timeIndex = 8;
+      else if ((hour === 17 && minute >= 30) || (hour === 18 && minute < 30))
+        timeIndex = 8;
+      else if ((hour === 18 && minute >= 30) || (hour === 19 && minute < 30))
+        timeIndex = 9;
+      else if ((hour === 19 && minute >= 30) || (hour === 20 && minute < 30))
+        timeIndex = 9;
+      else if ((hour === 20 && minute >= 30) || (hour === 21 && minute < 30))
+        timeIndex = 10;
+      else if ((hour === 21 && minute >= 30) || (hour === 22 && minute < 30))
+        timeIndex = 10;
+      else if ((hour === 22 && minute >= 30) || (hour === 23 && minute < 30))
+        timeIndex = 11;
       else if (hour === 23 && minute >= 30) timeIndex = 0;
 
       // 서버 사주 계산 API 호출 (consultation과 동일한 로직)
-      const response = await fetch('/api/saju/calculate', {
-        method: 'POST',
+      const response = await fetch("/api/saju/calculate", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           birthDate: birthDate.toISOString(),
           timeIndex: timeIndex,
-          isLunar: userProfile.calendar === 'lunar'
-        })
+          isLunar: userProfile.calendar === "lunar",
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('사주 계산 API 호출 실패');
+        throw new Error("사주 계산 API 호출 실패");
       }
 
       const apiResult = await response.json();
@@ -760,17 +869,22 @@ export default function DailyFortunePage() {
 
         // consultation과 동일한 방식: 단순히 개수가 가장 많은 십신 찾기
         const dominantGod = Object.entries(sajuData.sibsin).reduce(
-          (max, [god, value]) => (value > (max.value || 0) ? { god, value } : max),
+          (max, [god, value]) =>
+            value > (max.value || 0) ? { god, value } : max,
           {}
         );
 
         // consultation과 동일한 형태로 주된 십신 정보 구성
-        const primarySibsin = dominantGod.god ? {
-          name: dominantGod.god,
-          count: dominantGod.value,
-          meaning: getSibsinMeaning(dominantGod.god),
-          description: `${dominantGod.god}(${getSibsinMeaning(dominantGod.god)}) - ${dominantGod.value}개`
-        } : null;
+        const primarySibsin = dominantGod.god
+          ? {
+              name: dominantGod.god,
+              count: dominantGod.value,
+              meaning: getSibsinMeaning(dominantGod.god),
+              description: `${dominantGod.god}(${getSibsinMeaning(
+                dominantGod.god
+              )}) - ${dominantGod.value}개`,
+            }
+          : null;
 
         // 오행 분석 (서버에서 계산된 데이터 사용)
         const ohaengAnalysis = analyzeOhaeng(sajuData.ohaeng);
@@ -782,10 +896,17 @@ export default function DailyFortunePage() {
         const todayIljin = calculateTodayIljin();
 
         // 일진 조화 분석 (사용자 일간과 오늘 일진의 관계)
-        const iljinHarmonyResult = analyzeIljinHarmony(sajuData.palja.ilju.gan, todayIljin);
+        const iljinHarmonyResult = analyzeIljinHarmony(
+          sajuData.palja.ilju.gan,
+          todayIljin
+        );
 
         // 원국 특성 분석 (격국, 용신, 구조 조화)
-        const wongukResult = analyzeWongukCharacteristics(sajuData, heesinGisinResult, todayIljin);
+        const wongukResult = analyzeWongukCharacteristics(
+          sajuData,
+          heesinGisinResult,
+          todayIljin
+        );
 
         if (primarySibsin) {
           console.log("🔮 사용자의 주된 십신:", primarySibsin);
@@ -798,63 +919,125 @@ export default function DailyFortunePage() {
 
           // 각 오행별 상세 정보
           console.log("📊 오행별 상세:");
-          Object.entries(ohaengAnalysis.distribution).forEach(([element, info]) => {
-            if (info.count > 0) {
-              console.log(`   ${info.name}: ${info.count}개 (${info.percentage}%) - ${info.meaning}`);
+          Object.entries(ohaengAnalysis.distribution).forEach(
+            ([element, info]) => {
+              if (info.count > 0) {
+                console.log(
+                  `   ${info.name}: ${info.count}개 (${info.percentage}%) - ${info.meaning}`
+                );
+              }
             }
-          });
+          );
 
           // 희신/기신 분석 결과 출력
           if (heesinGisinResult) {
             console.log("\n🎯 희신/기신 분석 결과:");
-            console.log("├─ 일간:", `${heesinGisinResult.ilgan.kor}(${heesinGisinResult.ilgan.han}) - ${heesinGisinResult.ilgan.ohaeng} ${heesinGisinResult.ilgan.eumYang}`);
-            console.log("├─ 일간 강약:", heesinGisinResult.isIlganStrong ? "강함" : "약함");
+            console.log(
+              "├─ 일간:",
+              `${heesinGisinResult.ilgan.kor}(${heesinGisinResult.ilgan.han}) - ${heesinGisinResult.ilgan.ohaeng} ${heesinGisinResult.ilgan.eumYang}`
+            );
+            console.log(
+              "├─ 일간 강약:",
+              heesinGisinResult.isIlganStrong ? "강함" : "약함"
+            );
             console.log("└─ 희신/기신 분석:");
 
-            // 기본 점수 50점에서 시작
-            let totalScore = 50;
+            // 기본 점수 70점에서 시작
+            let totalScore = 70;
 
-            Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(([element, analysis]) => {
-              if (analysis.count > 0) {
-                const elementScore = analysis.score * analysis.count;
-                totalScore += elementScore;
+            Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(
+              ([element, analysis]) => {
+                if (analysis.count > 0) {
+                  const elementScore = analysis.score * analysis.count;
+                  totalScore += elementScore;
 
-                const ohaengNames = {
-                  "木": "목(木)", "火": "화(火)", "土": "토(土)",
-                  "金": "금(金)", "水": "수(水)"
-                };
+                  const ohaengNames = {
+                    木: "목(木)",
+                    火: "화(火)",
+                    土: "토(土)",
+                    金: "금(金)",
+                    水: "수(水)",
+                  };
 
-                console.log(`   ${ohaengNames[element]}: ${analysis.type} (${analysis.count}개 × ${analysis.score}점 = ${elementScore > 0 ? '+' : ''}${elementScore}점)`);
+                  console.log(
+                    `   ${ohaengNames[element]}: ${analysis.type} (${
+                      analysis.count
+                    }개 × ${analysis.score}점 = ${
+                      elementScore > 0 ? "+" : ""
+                    }${elementScore}점)`
+                  );
+                }
               }
-            });
+            );
 
-            console.log(`\n🏆 임시 점수: ${totalScore}점 (기본 50점 + 희신/기신 보정)`);
-            console.log(`   희신/기신 보정: ${heesinGisinResult.totalScore > 0 ? '+' : ''}${heesinGisinResult.totalScore}점`);
+            console.log(
+              `\n🏆 임시 점수: ${totalScore}점 (기본 70점 + 희신/기신 보정)`
+            );
+            console.log(
+              `   희신/기신 보정: ${
+                heesinGisinResult.totalScore > 0 ? "+" : ""
+              }${heesinGisinResult.totalScore}점`
+            );
           }
 
           // 일진 조화 분석 결과 출력 및 최종 점수 계산
-          let finalScore = heesinGisinResult ? 50 + heesinGisinResult.totalScore : 50;
+          let finalScore = heesinGisinResult
+            ? 70 + heesinGisinResult.totalScore
+            : 70;
 
           if (iljinHarmonyResult) {
             console.log("\n📅 일진 조화 분석:");
-            console.log(`├─ 오늘의 일진: ${iljinHarmonyResult.todayIljin.gapja}(${iljinHarmonyResult.todayIljin.gapjaHan})`);
-            console.log(`├─ 일진 천간: ${iljinHarmonyResult.todayIljin.gan.kor}(${iljinHarmonyResult.todayIljin.gan.han}) - ${iljinHarmonyResult.todayIljin.gan.ohaeng} ${iljinHarmonyResult.todayIljin.gan.eumYang}`);
-            console.log(`├─ 사용자 일간: ${iljinHarmonyResult.userIlgan.kor}(${iljinHarmonyResult.userIlgan.han}) - ${iljinHarmonyResult.userIlgan.ohaeng} ${iljinHarmonyResult.userIlgan.eumYang}`);
-            console.log(`├─ 십신 관계: ${iljinHarmonyResult.sibsinType || '없음'}`);
-            console.log(`├─ 조화 점수: ${iljinHarmonyResult.score > 0 ? '+' : ''}${iljinHarmonyResult.score}점`);
+            console.log(
+              `├─ 오늘의 일진: ${iljinHarmonyResult.todayIljin.gapja}(${iljinHarmonyResult.todayIljin.gapjaHan})`
+            );
+            console.log(
+              `├─ 일진 천간: ${iljinHarmonyResult.todayIljin.gan.kor}(${iljinHarmonyResult.todayIljin.gan.han}) - ${iljinHarmonyResult.todayIljin.gan.ohaeng} ${iljinHarmonyResult.todayIljin.gan.eumYang}`
+            );
+            console.log(
+              `├─ 사용자 일간: ${iljinHarmonyResult.userIlgan.kor}(${iljinHarmonyResult.userIlgan.han}) - ${iljinHarmonyResult.userIlgan.ohaeng} ${iljinHarmonyResult.userIlgan.eumYang}`
+            );
+            console.log(
+              `├─ 십신 관계: ${iljinHarmonyResult.sibsinType || "없음"}`
+            );
+            console.log(
+              `├─ 조화 점수: ${iljinHarmonyResult.score > 0 ? "+" : ""}${
+                iljinHarmonyResult.score
+              }점`
+            );
             console.log(`└─ 설명: ${iljinHarmonyResult.description}`);
 
             // 일진 조화 점수를 최종 점수에 반영
             finalScore += iljinHarmonyResult.score;
 
             console.log(`\n🎯 최종 점수: ${finalScore}점`);
-            console.log(`   = 기본 점수 50점`);
+            console.log(`   = 기본 점수 70점`);
             if (heesinGisinResult) {
-              console.log(`   + 희신/기신 보정 ${heesinGisinResult.totalScore > 0 ? '+' : ''}${heesinGisinResult.totalScore}점`);
+              console.log(
+                `   + 희신/기신 보정 ${
+                  heesinGisinResult.totalScore > 0 ? "+" : ""
+                }${heesinGisinResult.totalScore}점`
+              );
             }
-            console.log(`   + 일진 조화 보정 ${iljinHarmonyResult.score > 0 ? '+' : ''}${iljinHarmonyResult.score}점`);
+            console.log(
+              `   + 일진 조화 보정 ${iljinHarmonyResult.score > 0 ? "+" : ""}${
+                iljinHarmonyResult.score
+              }점`
+            );
           } else {
-            console.log(`\n🎯 임시 점수: ${finalScore}점 (일진 조화 분석 불가)`);
+            // 일진 조화 분석이 없는 경우에도 점수 범위 조정
+            const adjustedScore = Math.max(50, Math.min(100, finalScore));
+
+            console.log(
+              `\n🎯 임시 점수: ${adjustedScore}점 (일진 조화 분석 불가)`
+            );
+
+            if (finalScore !== adjustedScore) {
+              console.log(
+                `   ⚖️ 점수 조정: ${finalScore}점 → ${adjustedScore}점 (50-100점 범위 적용)`
+              );
+            }
+
+            finalScore = adjustedScore;
           }
 
           // 원국 특성 분석 결과 출력 및 최종 점수 계산
@@ -864,39 +1047,89 @@ export default function DailyFortunePage() {
             // 격국 정보 출력
             if (wongukResult.geokgukResult) {
               console.log(`├─ 격국: ${wongukResult.geokgukResult.geokguk}`);
-              console.log(`├─ 주도 십신: ${wongukResult.geokgukResult.dominantSibsin} (${wongukResult.geokgukResult.maxCount}개)`);
+              console.log(
+                `├─ 주도 십신: ${wongukResult.geokgukResult.dominantSibsin} (${wongukResult.geokgukResult.maxCount}개)`
+              );
             }
 
             // 용신 정보 출력
             if (wongukResult.yongsinResult) {
-              const yongsinElements = wongukResult.yongsinResult.yongsin.map(y => y.element).join(', ');
-              const gisinElements = wongukResult.yongsinResult.gisin.map(g => g.element).join(', ');
-              console.log(`├─ 용신: ${yongsinElements || '없음'}`);
-              console.log(`├─ 기신: ${gisinElements || '없음'}`);
+              const yongsinElements = wongukResult.yongsinResult.yongsin
+                .map((y) => y.element)
+                .join(", ");
+              const gisinElements = wongukResult.yongsinResult.gisin
+                .map((g) => g.element)
+                .join(", ");
+              console.log(`├─ 용신: ${yongsinElements || "없음"}`);
+              console.log(`├─ 기신: ${gisinElements || "없음"}`);
             }
 
             // 원국 특성 분석 상세 출력
             console.log("└─ 원국 특성 분석 상세:");
             wongukResult.analysisDetails.forEach((detail, index) => {
-              const prefix = index === wongukResult.analysisDetails.length - 1 ? "   └─" : "   ├─";
-              console.log(`${prefix} ${detail.type}: ${detail.score > 0 ? '+' : ''}${detail.score}점 (${detail.reason})`);
+              const prefix =
+                index === wongukResult.analysisDetails.length - 1
+                  ? "   └─"
+                  : "   ├─";
+              console.log(
+                `${prefix} ${detail.type}: ${detail.score > 0 ? "+" : ""}${
+                  detail.score
+                }점 (${detail.reason})`
+              );
               console.log(`      ${detail.detail}`);
             });
 
             // 원국 특성 점수를 최종 점수에 반영
             finalScore += wongukResult.totalScore;
 
-            console.log(`\n🎯 최종 점수: ${finalScore}점`);
-            console.log(`   = 기본 점수 50점`);
+            // 점수 범위 조정 (50-100점 제한)
+            const adjustedScore = Math.max(50, Math.min(100, finalScore));
+
+            console.log(`\n🎯 최종 점수: ${adjustedScore}점`);
+            console.log(`   = 기본 점수 70점`);
             if (heesinGisinResult) {
-              console.log(`   + 희신/기신 보정 ${heesinGisinResult.totalScore > 0 ? '+' : ''}${heesinGisinResult.totalScore}점`);
+              console.log(
+                `   + 희신/기신 보정 ${
+                  heesinGisinResult.totalScore > 0 ? "+" : ""
+                }${heesinGisinResult.totalScore}점`
+              );
             }
             if (iljinHarmonyResult) {
-              console.log(`   + 일진 조화 보정 ${iljinHarmonyResult.score > 0 ? '+' : ''}${iljinHarmonyResult.score}점`);
+              console.log(
+                `   + 일진 조화 보정 ${
+                  iljinHarmonyResult.score > 0 ? "+" : ""
+                }${iljinHarmonyResult.score}점`
+              );
             }
-            console.log(`   + 원국 특성 보정 ${wongukResult.totalScore > 0 ? '+' : ''}${wongukResult.totalScore}점`);
+            console.log(
+              `   + 원국 특성 보정 ${wongukResult.totalScore > 0 ? "+" : ""}${
+                wongukResult.totalScore
+              }점`
+            );
+
+            if (finalScore !== adjustedScore) {
+              console.log(
+                `   ⚖️ 점수 조정: ${finalScore}점 → ${adjustedScore}점 (50-100점 범위 적용)`
+              );
+            }
+
+            // 최종 점수를 조정된 점수로 업데이트
+            finalScore = adjustedScore;
           } else {
-            console.log(`\n🎯 최종 점수: ${finalScore}점 (원국 특성 분석 불가)`);
+            // 원국 특성 분석이 없는 경우에도 점수 범위 조정
+            const adjustedScore = Math.max(50, Math.min(100, finalScore));
+
+            console.log(
+              `\n🎯 최종 점수: ${adjustedScore}점 (원국 특성 분석 불가)`
+            );
+
+            if (finalScore !== adjustedScore) {
+              console.log(
+                `   ⚖️ 점수 조정: ${finalScore}점 → ${adjustedScore}점 (50-100점 범위 적용)`
+              );
+            }
+
+            finalScore = adjustedScore;
           }
 
           return {
@@ -905,7 +1138,7 @@ export default function DailyFortunePage() {
             heesinGisinResult,
             iljinHarmonyResult,
             wongukResult,
-            finalScore
+            finalScore,
           };
         }
       }
@@ -913,6 +1146,66 @@ export default function DailyFortunePage() {
       return null;
     } catch (error) {
       console.error("십신 계산 중 오류:", error);
+      return null;
+    }
+  };
+
+  // 십신별 운세 데이터 가져오기
+  const loadFortuneData = async (sibsinName, finalScore) => {
+    try {
+      // 십신 이름 정규화 (예: 비견, 겁재, 식신 등)
+      const sibsinFileName = `${sibsinName}_오늘의운세.json`;
+      const response = await fetch(`/documents/오늘의운세/${sibsinFileName}`);
+
+      if (!response.ok) {
+        console.error(`운세 파일을 찾을 수 없습니다: ${sibsinFileName}`);
+        return null;
+      }
+
+      const data = await response.json();
+
+      // 점수에 맞는 운세 찾기 (50, 60, 70, 80, 90, 100 중 가장 가까운 값)
+      const scoreKeys = [50, 60, 70, 80, 90, 100];
+      const closestScore = scoreKeys.reduce((prev, curr) =>
+        Math.abs(curr - finalScore) < Math.abs(prev - finalScore) ? curr : prev
+      );
+
+      // JSON 구조에서 데이터 가져오기: {sibsinName: {score: {category: [items]}}}
+      const fortuneData = data[sibsinName]?.[closestScore.toString()];
+
+      if (!fortuneData) {
+        console.error(
+          `점수 ${closestScore}에 해당하는 운세 데이터를 찾을 수 없습니다`
+        );
+        return null;
+      }
+
+      // 각 카테고리에서 랜덤하게 하나씩 선택
+      const getRandomItem = (arr) => {
+        if (!arr || !Array.isArray(arr) || arr.length === 0) return null;
+        return arr[Math.floor(Math.random() * arr.length)];
+      };
+
+      const selectedFortune = {
+        score: closestScore,
+        sibsin: sibsinName,
+        총운: getRandomItem(fortuneData.총운),
+        재물: getRandomItem(fortuneData.재물),
+        연애: getRandomItem(fortuneData.연애),
+        커리어: getRandomItem(fortuneData.커리어),
+        건강: getRandomItem(fortuneData.건강),
+        가족: getRandomItem(fortuneData.가족),
+      };
+
+      console.log("📖 오늘의 운세 데이터 로드 완료:", {
+        십신: sibsinName,
+        점수: closestScore,
+        원점수: finalScore,
+      });
+
+      return selectedFortune;
+    } catch (error) {
+      console.error("운세 데이터 로드 실패:", error);
       return null;
     }
   };
@@ -928,9 +1221,37 @@ export default function DailyFortunePage() {
       // 사용자의 주된 십신 및 오행 계산 및 콘솔 출력
       const result = await calculateUserPrimarySibsin();
       if (result && result.primarySibsin) {
-        console.log("=" .repeat(50));
+        console.log("=".repeat(50));
         console.log("🎯 사주팔자 분석 결과");
-        console.log("=" .repeat(50));
+        console.log("=".repeat(50));
+
+        // 십신별 운세 데이터 로드
+        const fortuneData = await loadFortuneData(
+          result.primarySibsin.name,
+          result.finalScore
+        );
+
+        if (fortuneData) {
+          // 운세 데이터를 상태로 저장
+          setFortune({
+            title: `${result.primarySibsin.name} - ${fortuneData.score}점`,
+            description:
+              fortuneData.총운 || "오늘은 평온한 하루가 될 것입니다.",
+            general: fortuneData.총운,
+            love: fortuneData.연애,
+            career: fortuneData.커리어,
+            wealth: fortuneData.재물,
+            health: fortuneData.건강,
+            family: fortuneData.가족,
+            luckyNumber: Math.floor(Math.random() * 9) + 1,
+            luckyColor: ["빨강", "파랑", "노랑", "초록", "보라"][
+              Math.floor(Math.random() * 5)
+            ],
+            luckyDirection: ["동", "서", "남", "북"][
+              Math.floor(Math.random() * 4)
+            ],
+          });
+        }
       }
 
       // 카드 뒤집기 시작
@@ -1017,90 +1338,116 @@ export default function DailyFortunePage() {
                   </div>
                 ) : showContent ? (
                   // 운세 내용
-                  <div className={`card ${styles["daily-fortune-card"]}`}>
-                    <div className={styles["card-header"]}>
-                      <h2 className={styles["fortune-title"]}>
-                        {fortune?.title}
-                      </h2>
-                      <p className={styles["fortune-description"]}>
-                        {fortune?.description}
-                      </p>
+                  <>
+                    <h2 className={styles["fortune-title"]}>
+                      {fortune?.title}
+                    </h2>
+                    <div className={`card ${styles["daily-fortune-card"]}`}>
+                      <div className={styles["card-header"]}></div>
+
+                      <div className={styles["fortune-content"]}>
+                        {/* 첫 번째 카드: 운세 상세 정보 */}
+                        <div style={{ padding: "20px" }}>
+                          <h3 className={styles["card-title"]}>상세 운세</h3>
+                          <div className={styles["fortune-sections"]}>
+                            <div className={styles["fortune-item"]}>
+                              <span className={styles["fortune-label"]}>
+                                총운
+                              </span>
+                              <p className={styles["fortune-text"]}>
+                                {fortune?.general}
+                              </p>
+                            </div>
+                            <div className={styles["fortune-item"]}>
+                              <span className={styles["fortune-label"]}>
+                                재물
+                              </span>
+                              <p className={styles["fortune-text"]}>
+                                {fortune?.wealth}
+                              </p>
+                            </div>
+                            <div className={styles["fortune-item"]}>
+                              <span className={styles["fortune-label"]}>
+                                연애
+                              </span>
+                              <p className={styles["fortune-text"]}>
+                                {fortune?.love}
+                              </p>
+                            </div>
+                            <div className={styles["fortune-item"]}>
+                              <span className={styles["fortune-label"]}>
+                                커리어
+                              </span>
+                              <p className={styles["fortune-text"]}>
+                                {fortune?.career}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {hasViewed && (
+                          <p className={styles["viewed-message"]}>
+                            오늘의 운세를 이미 확인하셨습니다
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    <div className={`card ${styles["daily-fortune-card"]}`}>
+                      {/* 두 번째 카드: 랜덤 요소 */}
+                      <div className={styles["fortune-content"]}>
+                        <div style={{ padding: "20px" }}>
+                          <div className={styles["fortune-lucky-card"]}>
+                            <div className={styles["fortune-item"]}>
+                              <span className={styles["fortune-label"]}>
+                                건강
+                              </span>
+                              <p className={styles["fortune-text"]}>
+                                {fortune?.health}
+                              </p>
+                            </div>
+                            <div className={styles["fortune-item"]}>
+                              <span className={styles["fortune-label"]}>
+                                가족
+                              </span>
+                              <p className={styles["fortune-text"]}>
+                                {fortune?.family}
+                              </p>
+                            </div>
 
-                    <div className={styles["fortune-content"]}>
-                      <div className={styles["fortune-sections"]}>
-                        <div className={styles["info-card"]}>
-                          <h3>총운</h3>
-                          <p>{fortune?.general}</p>
-                        </div>
-
-                        <div className={styles["info-card"]}>
-                          <h3>애정운</h3>
-                          <p>{fortune?.love}</p>
-                        </div>
-
-                        <div className={styles["info-card"]}>
-                          <h3>직업운</h3>
-                          <p>{fortune?.career}</p>
-                        </div>
-
-                        <div className={styles["info-card"]}>
-                          <h3>금전운</h3>
-                          <p>{fortune?.wealth}</p>
-                        </div>
-
-                        <div className={styles["info-card"]}>
-                          <h3>건강운</h3>
-                          <p>{fortune?.health}</p>
-                        </div>
-                      </div>
-
-                      <div
-                        className={`${styles["info-card"]} ${styles["luck-card"]}`}
-                      >
-                        <h3>오늘의 행운</h3>
-                        <div className={styles["luck-grid"]}>
-                          <div className={styles["luck-item"]}>
-                            <span className={styles["luck-label"]}>
-                              행운의 숫자
-                            </span>
-                            <span className={styles["luck-value"]}>
-                              {fortune?.luckyNumber}
-                            </span>
-                          </div>
-                          <div className={styles["luck-item"]}>
-                            <span className={styles["luck-label"]}>
-                              행운의 색
-                            </span>
-                            <span className={styles["luck-value"]}>
-                              {fortune?.luckyColor}
-                            </span>
-                          </div>
-                          <div className={styles["luck-item"]}>
-                            <span className={styles["luck-label"]}>
-                              행운의 방향
-                            </span>
-                            <span className={styles["luck-value"]}>
-                              {fortune?.luckyDirection}
-                            </span>
+                            <h3 className={styles["card-title"]}>
+                              오늘의 랜덤 요소
+                            </h3>
+                            <div className={styles["lucky-sections"]}>
+                              <div className={styles["lucky-item"]}>
+                                <span className={styles["lucky-label"]}>
+                                  포인트 컬러
+                                </span>
+                                <span className={styles["lucky-value"]}>
+                                  {fortune?.luckyColor}
+                                </span>
+                              </div>
+                              <div className={styles["lucky-item"]}>
+                                <span className={styles["lucky-label"]}>
+                                  행동
+                                </span>
+                                <span className={styles["lucky-value"]}>
+                                  {fortune?.luckyDirection}쪽으로 향하기
+                                </span>
+                              </div>
+                              <div className={styles["lucky-item"]}>
+                                <span className={styles["lucky-label"]}>
+                                  사물
+                                </span>
+                                <span className={styles["lucky-value"]}>
+                                  숫자 {fortune?.luckyNumber}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-
-                      <div className={styles["advice-section"]}>
-                        <h3>오늘의 조언</h3>
-                        <p className={styles["advice-text"]}>
-                          {fortune?.advice}
-                        </p>
-                      </div>
-
-                      {hasViewed && (
-                        <p className={styles["viewed-message"]}>
-                          오늘의 운세를 이미 확인하셨습니다
-                        </p>
-                      )}
                     </div>
-                  </div>
+                  </>
                 ) : null}
               </div>
 
