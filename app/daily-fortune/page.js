@@ -1211,6 +1211,16 @@ export default function DailyFortunePage() {
         mbtiMessage = getRandomItem(mbtiMessages);
       }
 
+      // 랜덤요소 데이터 생성
+      let randomElements = null;
+      if (data.랜덤요소) {
+        randomElements = {
+          포인트컬러: getRandomItem(data.랜덤요소.포인트컬러),
+          포인트행동: getRandomItem(data.랜덤요소.포인트행동),
+          포인트사물: getRandomItem(data.랜덤요소.포인트사물),
+        };
+      }
+
       const selectedFortune = {
         score: closestScore,
         sibsin: sibsinName,
@@ -1222,6 +1232,7 @@ export default function DailyFortunePage() {
         건강: getRandomItem(fortuneData.건강),
         가족: getRandomItem(fortuneData.가족),
         mbtiMessage: mbtiMessage, // MBTI 기반 추가 메시지
+        randomElements: randomElements, // 랜덤요소
       };
 
       console.log("📖 오늘의 운세 데이터 로드 완료:", {
@@ -1276,13 +1287,13 @@ export default function DailyFortunePage() {
             sibsinName: fortuneData.sibsinName, // 십신 이름 추가
             score: fortuneData.score, // 점수 추가
             mbtiMessage: fortuneData.mbtiMessage, // MBTI 메시지 추가
+            mbtiCorrection: fortuneData.mbtiMessage ? `MBTI보정: ${fortuneData.mbtiMessage}` : null, // DB 저장용
+            randomElements: fortuneData.randomElements, // 랜덤요소 추가
+            // 기존 랜덤 요소는 새로운 랜덤요소로 대체
             luckyNumber: Math.floor(Math.random() * 9) + 1,
-            luckyColor: ["빨강", "파랑", "노랑", "초록", "보라"][
-              Math.floor(Math.random() * 5)
-            ],
-            luckyDirection: ["동", "서", "남", "북"][
-              Math.floor(Math.random() * 4)
-            ],
+            luckyColor: fortuneData.randomElements?.포인트컬러 || "골드",
+            luckyDirection: fortuneData.randomElements?.포인트행동 || "동쪽으로 향하기",
+            luckyItem: fortuneData.randomElements?.포인트사물 || "행운의 아이템",
           };
 
           setFortune(finalFortuneData);
@@ -1497,18 +1508,18 @@ export default function DailyFortunePage() {
                             </div>
                             <div className={styles["lucky-item"]}>
                               <span className={styles["lucky-label"]}>
-                                행동
+                                포인트 행동
                               </span>
                               <span className={styles["lucky-value"]}>
-                                {fortune?.luckyDirection}쪽으로 향하기
+                                {fortune?.luckyDirection}
                               </span>
                             </div>
                             <div className={styles["lucky-item"]}>
                               <span className={styles["lucky-label"]}>
-                                사물
+                                포인트 사물
                               </span>
                               <span className={styles["lucky-value"]}>
-                                숫자 {fortune?.luckyNumber}
+                                {fortune?.luckyItem}
                               </span>
                             </div>
                           </div>
