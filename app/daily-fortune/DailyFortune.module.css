@@ -60,13 +60,7 @@
 
 /* 카드 뒷면 스타일 */
 .card-back {
-  cursor: pointer;
   text-align: center;
-  transition: transform 0.3s;
-}
-
-.card-back:hover {
-  transform: scale(1.02);
 }
 
 .card-image {
@@ -118,6 +112,31 @@
   min-height: 600px;
 }
 
+/* 극도로 높은 특이성으로 글로벌 .card 효과 오버라이드 */
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card,
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card:hover,
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card:focus,
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card:active {
+  transform: none !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+  transition: none !important;
+  -webkit-transition: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  animation: none !important;
+  pointer-events: auto !important;
+}
+
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card::before,
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card:hover::before,
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card:focus::before,
+.daily-fortune-page.daily-fortune-page.daily-fortune-page .daily-fortune-card.daily-fortune-card:active::before {
+  opacity: 0.4 !important;
+  transition: none !important;
+  -webkit-transition: none !important;
+  animation: none !important;
+}
+
 .daily-fortune-card::before {
   content: "";
   position: absolute;
@@ -128,6 +147,10 @@
   background: rgba(0, 0, 0, 0.4);
   border-radius: 16px;
   z-index: 1;
+  opacity: 0.4 !important;
+  transition: none !important;
+  -webkit-transition: none !important;
+  animation: none !important;
 }
 
 .daily-fortune-card > * {
@@ -215,15 +238,6 @@
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 16px;
   padding: 24px;
-  transition: all 0.3s;
-}
-
-.fortune-main-card:hover,
-.fortune-lucky-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(212, 175, 55, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.1);
 }
 
 .card-title {
@@ -276,12 +290,6 @@
   background: rgba(212, 175, 55, 0.05);
   border-radius: 8px;
   border: 1px solid rgba(212, 175, 55, 0.1);
-  transition: all 0.3s;
-}
-
-.lucky-item:hover {
-  background: rgba(212, 175, 55, 0.1);
-  border-color: rgba(212, 175, 55, 0.2);
 }
 
 .lucky-label {
@@ -306,12 +314,6 @@
   border: 1px solid rgba(212, 175, 55, 0.1);
   border-radius: 12px;
   padding: 20px;
-  transition: all 0.3s;
-}
-
-.info-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(212, 175, 55, 0.3);
 }
 
 .info-card h3 {

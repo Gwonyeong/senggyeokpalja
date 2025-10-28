@@ -1403,7 +1403,17 @@ export default function DailyFortunePage() {
                     {/* <h2 className={styles["fortune-title"]}>
                       {fortune?.title}
                     </h2> */}
-                    <div className={`card ${styles["daily-fortune-card"]}`}>
+                    <div
+                      className={`card ${styles["daily-fortune-card"]}`}
+                      style={{
+                        transition: 'none !important',
+                        transform: 'none !important',
+                        animation: 'none !important',
+                        WebkitTransition: 'none !important',
+                        WebkitTransform: 'none !important',
+                        WebkitTapHighlightColor: 'transparent !important'
+                      }}
+                    >
                       <div className={styles["card-header"]}></div>
 
                       <div
@@ -1470,7 +1480,17 @@ export default function DailyFortunePage() {
                         </div>
                       </div>
                     </div>
-                    <div className={`card ${styles["daily-fortune-card"]}`}>
+                    <div
+                      className={`card ${styles["daily-fortune-card"]}`}
+                      style={{
+                        transition: 'none !important',
+                        transform: 'none !important',
+                        animation: 'none !important',
+                        WebkitTransition: 'none !important',
+                        WebkitTransform: 'none !important',
+                        WebkitTapHighlightColor: 'transparent !important'
+                      }}
+                    >
                       {/* 두 번째 카드: 랜덤 요소 */}
                       <div className={styles["fortune-content"]}>
                         <div className={styles["responsive-padding"]}>
