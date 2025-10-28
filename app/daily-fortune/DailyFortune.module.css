@@ -166,36 +166,14 @@
 }
 
 /* 십신과 점수 표시 영역 */
-.sibsin-score-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 12px;
-  padding: 20px;
+.sibsin-score-simple {
+  text-align: center;
   margin-bottom: 30px;
 }
 
-.sibsin-info,
-.score-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.sibsin-label,
-.score-label {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
-}
-
-.sibsin-value,
-.score-value {
-  font-size: 20px;
-  font-weight: 700;
+.sibsin-score-text {
+  font-size: 18px;
+  font-weight: 600;
   color: #d4af37;
   font-family: "Noto Serif KR", serif;
 }
@@ -630,20 +608,8 @@
     padding: 20px;
   }
 
-  .sibsin-score-section {
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-  }
-
-  .sibsin-info,
-  .score-info {
-    width: 100%;
-  }
-
-  .sibsin-value,
-  .score-value {
-    font-size: 18px;
+  .sibsin-score-text {
+    font-size: 16px;
   }
 
   .mbti-message-section {

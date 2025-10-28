@@ -1410,19 +1410,10 @@ export default function DailyFortunePage() {
                         className={`${styles["fortune-content"]} ${styles["responsive-padding"]}`}
                       >
                         {/* 십신과 점수 표시 영역 */}
-                        <div className={styles["sibsin-score-section"]}>
-                          <div className={styles["sibsin-info"]}>
-                            <span className={styles["sibsin-label"]}>주 십신</span>
-                            <span className={styles["sibsin-value"]}>
-                              {fortune?.sibsinName || "알 수 없음"}
-                            </span>
-                          </div>
-                          <div className={styles["score-info"]}>
-                            <span className={styles["score-label"]}>오늘의 점수</span>
-                            <span className={styles["score-value"]}>
-                              {fortune?.score || 0}점
-                            </span>
-                          </div>
+                        <div className={styles["sibsin-score-simple"]}>
+                          <span className={styles["sibsin-score-text"]}>
+                            {fortune?.sibsinName || "알 수 없음"} - {fortune?.score || 0}점
+                          </span>
                         </div>
 
                         {/* MBTI 기반 추가 메시지 */}
