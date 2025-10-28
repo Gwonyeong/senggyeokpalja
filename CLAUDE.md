@@ -54,6 +54,7 @@ When testing a specific page or component:
 - `lib/share-data.js`: In-memory store for temporary share data
 - `lib/user-utils.js`: User profile and authentication utilities
 - `lib/slack-notification.js`: Slack integration for notifications
+- `lib/text-utils.js`: Text formatting utilities for consultation content rendering
 
 ### Database Operations
 **IMPORTANT**: All database operations MUST use Prisma ORM exclusively.
@@ -126,3 +127,34 @@ For analytics:
 ```
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-DRMJZPDY1K
 ```
+
+## Consultation System Architecture
+
+### Consultation Flow
+The consultation system provides detailed saju analysis with a freemium model:
+1. **Free Preview**: Section 1 shows basic info and dominant element analysis with blur effects on premium content
+2. **Payment Integration**: Toss Payments SDK handles Korean payment processing (9,900원)
+3. **Full Content**: After payment, users access 7 comprehensive sections
+
+### Consultation Sections Structure
+Located in `app/consultation/result/[id]/components/`:
+- `Section1BasicInfo.js`: User info, saju chart, and five elements analysis with selective blur
+- `Section2TenGods.js`: Ten gods (십신) detailed analysis
+- `Section3FiveElements.js`: Five elements balance and interpretation
+- `Section4Personality.js`: Character analysis based on saju
+- `Section5Fortune.js`: Major fortune cycles (대운) and yearly fortune (세운)
+- `Section6Advice.js`: Life guidance across different domains (career, wealth, love, health, family)
+- `Section7Conclusion.js`: Comprehensive summary and final recommendations
+
+### Blur Processing System
+Premium content protection implemented in:
+- `FiveElementsChart.js`: Selective blur on sections like [연애·대인], [재물운], [커리어], [성격], [건강], [가족]
+- Full blur on [조언·성장가이드] section
+- Only [총운] displays completely for unpaid users
+- Content structure based on JSON files in `public/documents/오행/`
+
+### Payment Integration
+- Fixed bottom action bar with payment trigger
+- TossPaymentWidget integration for seamless checkout
+- Payment state management with real-time UI updates
+- Mobile-responsive discount timer (hidden on mobile devices)
