@@ -47,9 +47,9 @@ export default function ConsultationResultPage({ params }) {
     };
 
     checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
+    window.addEventListener("resize", checkIsMobile);
 
-    return () => window.removeEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
   // 인증 및 데이터 로드
@@ -223,7 +223,8 @@ export default function ConsultationResultPage({ params }) {
       <div
         className="analyze-page"
         style={{
-          paddingBottom: currentSection === 1 && !consultation.isPaid ? "200px" : "0"
+          paddingBottom:
+            currentSection === 1 && !consultation.isPaid ? "200px" : "0",
         }}
       >
         <main>
@@ -337,24 +338,28 @@ export default function ConsultationResultPage({ params }) {
                             priority
                           />
                         </div>
-
                       </div>
                     </div>
 
                     {/* for_purchase 이미지들 표시 */}
-                    <div style={{
-                      marginTop: "20px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0",
-                      alignItems: "center"
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "20px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "0",
+                        alignItems: "center",
+                      }}
+                    >
                       {[1, 2, 3, 4, 5, 6].map((num) => (
-                        <div key={num} style={{
-                          width: "100%",
-                          maxWidth: "400px",
-                          margin: "0"
-                        }}>
+                        <div
+                          key={num}
+                          style={{
+                            width: "100%",
+                            maxWidth: "400px",
+                            margin: "0",
+                          }}
+                        >
                           <Image
                             src={`/assets/images/consultation/for_purchase/${num}.png`}
                             alt={`구매 안내 이미지 ${num}`}
@@ -363,7 +368,7 @@ export default function ConsultationResultPage({ params }) {
                             style={{
                               width: "100%",
                               height: "auto",
-                              display: "block"
+                              display: "block",
                             }}
                             priority={num <= 2}
                           />
@@ -481,31 +486,38 @@ export default function ConsultationResultPage({ params }) {
               right: "0",
               background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
               borderTop: "2px solid #FCA311",
-              padding: "20px",
+              padding: "10px",
               zIndex: "1000",
               boxShadow: "0 -8px 32px rgba(0, 0, 0, 0.8)",
             }}
           >
-            <div style={{
-              maxWidth: "600px",
-              margin: "0 auto",
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-              alignItems: "center"
-            }}>
-              {/* 복채 정보 */}
-              <div style={{
+            <div
+              style={{
+                maxWidth: "600px",
+                margin: "0 auto",
                 display: "flex",
+                flexDirection: "column",
+                gap: "15px",
                 alignItems: "center",
-                gap: "15px"
-              }}>
-                <div style={{
-                  width: "60px",
-                  height: "2px",
-                  background: "linear-gradient(90deg, transparent, #FCA311, transparent)"
-                }}></div>
-                <div style={{
+              }}
+            >
+              {/* 복채 정보 */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "15px",
+                }}
+              >
+                {/* <div
+                  style={{
+                    width: "60px",
+                    height: "2px",
+                    background:
+                      "linear-gradient(90deg, transparent, #FCA311, transparent)",
+                  }}
+                ></div> */}
+                {/* <div style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -529,32 +541,47 @@ export default function ConsultationResultPage({ params }) {
                   }}>
                     9,900원
                   </p>
-                </div>
-                <div style={{
-                  width: "60px",
-                  height: "2px",
-                  background: "linear-gradient(90deg, transparent, #FCA311, transparent)"
-                }}></div>
+                </div> */}
+                {/* <div
+                  style={{
+                    width: "60px",
+                    height: "2px",
+                    background:
+                      "linear-gradient(90deg, transparent, #FCA311, transparent)",
+                  }}
+                ></div> */}
               </div>
 
               {/* 할인 타이머 - 모바일에서는 숨김 */}
               {!isMobile && (
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  gap: "8px"
-                }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
                   <DiscountTimer />
                 </div>
               )}
 
               {/* 토리와 상담받기 버튼 */}
+
               <button
-                onClick={() => {
-                  const paymentWidget = document.querySelector('[data-testid="payment-widget"]');
-                  if (paymentWidget) {
-                    paymentWidget.scrollIntoView({ behavior: 'smooth' });
+                onClick={(e) => {
+                  // TossPaymentWidget의 버튼을 찾아서 클릭
+                  const paymentButtons = document.querySelectorAll("button");
+                  const paymentButton = Array.from(paymentButtons).find(
+                    (btn) =>
+                      btn.textContent === "토리와 상담받기" &&
+                      btn !== e.currentTarget
+                  );
+                  if (paymentButton) {
+                    paymentButton.click();
+                  } else {
+                    // 버튼을 찾지 못한 경우 페이지 상단의 결제 섹션으로 스크롤
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
                 style={{
@@ -571,7 +598,7 @@ export default function ConsultationResultPage({ params }) {
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   boxShadow: "0 4px 16px rgba(252, 163, 17, 0.4)",
-                  letterSpacing: "1px"
+                  letterSpacing: "1px",
                 }}
                 onMouseOver={(e) => {
                   e.target.style.backgroundColor = "#e8940f";

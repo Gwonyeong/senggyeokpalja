@@ -11,6 +11,123 @@ export default function FiveElementsChart({ consultation }) {
   const [elementDescription, setElementDescription] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // 텍스트를 첫 문장과 나머지로 분리하는 함수
+  const splitTextBySentence = (text) => {
+    if (!text || typeof text !== 'string') return { firstSentence: '', restText: '' };
+
+    // 마침표, 느낌표, 물음표를 기준으로 첫 문장 찾기
+    const sentenceEnd = text.search(/[.!?。]/);
+
+    if (sentenceEnd === -1) {
+      // 문장 끝을 찾을 수 없으면 전체 텍스트를 첫 문장으로 처리
+      return { firstSentence: text, restText: '' };
+    }
+
+    const firstSentence = text.substring(0, sentenceEnd + 1);
+    const restText = text.substring(sentenceEnd + 1).trim();
+
+    return { firstSentence, restText };
+  };
+
+  // 블러 처리가 필요한 섹션인지 확인하는 함수
+  const isBlurSection = (text) => {
+    // 블러 처리할 섹션 제목들 (첫 문장만 표시)
+    const blurSections = ['[연애·대인]', '[재물운]', '[커리어]', '[성격]', '[건강]', '[가족]'];
+
+    // 텍스트가 블러 처리 섹션으로 시작하는지 확인
+    return blurSections.some(section => text.trim().startsWith(section));
+  };
+
+  // 전체 블러 처리가 필요한 섹션인지 확인하는 함수
+  const isFullBlurSection = (text) => {
+    // 전체 블러 처리할 섹션 제목 (모든 문장 블러)
+    const fullBlurSections = ['[조언·성장가이드]'];
+
+    // 텍스트가 전체 블러 처리 섹션으로 시작하는지 확인
+    return fullBlurSections.some(section => text.trim().startsWith(section));
+  };
+
+  // 텍스트를 섹션별로 분리하고 블러 처리를 적용하는 함수
+  const processTextWithSelectiveBlur = (fullText, isPaid) => {
+    if (!fullText) return [];
+
+    // 결제한 사용자는 전체 텍스트를 그대로 반환
+    if (isPaid) {
+      return colorizeElementText(fullText);
+    }
+
+    // 대괄호 섹션 패턴으로 텍스트 분리
+    const sectionPattern = /(\[[^\]]+\])/g;
+    const parts = fullText.split(sectionPattern);
+    let processedParts = [];
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+
+      // 대괄호로 둘러싸인 섹션 제목
+      if (part.match(/^\[.*\]$/)) {
+        // 이전에 내용이 있었다면 줄바꿈 추가
+        if (processedParts.length > 0 && !processedParts[processedParts.length - 1].text?.endsWith('\n')) {
+          processedParts.push({ text: '\n\n', isSpecial: false });
+        }
+
+        // 섹션 제목 추가
+        const titleParts = colorizeElementText(part);
+        processedParts.push(...titleParts);
+        processedParts.push({ text: '\n', isSpecial: false });
+
+        // 다음 파트가 있고 내용이 있는 경우
+        if (i + 1 < parts.length && parts[i + 1].trim()) {
+          const content = parts[i + 1].trim();
+          const isBlurNeeded = isBlurSection(part);
+          const isFullBlurNeeded = isFullBlurSection(part);
+
+          if (isFullBlurNeeded) {
+            // 전체 블러 처리가 필요한 섹션 (조언·성장가이드)
+            processedParts.push({
+              text: content,
+              isSpecial: true,
+              isBlurred: true
+            });
+          } else if (isBlurNeeded) {
+            // 첫 문장만 정상, 나머지 블러 처리가 필요한 섹션
+            const { firstSentence, restText } = splitTextBySentence(content);
+
+            if (firstSentence) {
+              const firstParts = colorizeElementText(firstSentence);
+              processedParts.push(...firstParts);
+            }
+
+            if (restText) {
+              // 블러 처리된 텍스트 앞에 공백 추가
+              if (firstSentence) {
+                processedParts.push({ text: ' ', isSpecial: false });
+              }
+              processedParts.push({
+                text: restText,
+                isSpecial: true,
+                isBlurred: true
+              });
+            }
+          } else {
+            // 일반 섹션 (총운만 정상 출력)
+            const normalParts = colorizeElementText(content);
+            processedParts.push(...normalParts);
+          }
+
+          // 다음 파트 처리했으므로 인덱스 증가
+          i++;
+        }
+      } else if (part.trim()) {
+        // 섹션 제목이 없는 일반 텍스트 (보통 첫 부분)
+        const normalParts = colorizeElementText(part);
+        processedParts.push(...normalParts);
+      }
+    }
+
+    return processedParts;
+  };
+
   // 오행 데이터 추출 (목 → 화 → 수 → 금 → 토 순서)
   const elements = useMemo(
     () => ({
@@ -484,25 +601,47 @@ export default function FiveElementsChart({ consultation }) {
               >
                 {(() => {
                   const text = elementDescription.chapters?.스토리형_리포트 || "상세 설명을 불러올 수 없습니다.";
-                  const colorizedParts = colorizeElementText(text);
+                  const isPaid = consultation?.isPaid;
+                  const processedParts = processTextWithSelectiveBlur(text, isPaid);
 
-                  return colorizedParts.map((part, index) => (
-                    <span
-                      key={index}
-                      style={{
-                        color: part.isSpecial ? part.color : "rgba(255, 255, 255, 0.8)",
-                        fontWeight: part.isSpecial ? "600" : "normal",
-                        fontSize: part.isSubtitle ? "16px" : "14px",
-                        ...(part.isSubtitle && {
-                          display: "inline-block",
-                          marginTop: "12px",
-                          marginBottom: "8px",
-                        }),
-                      }}
-                    >
-                      {part.text}
-                    </span>
-                  ));
+                  return processedParts.map((part, index) => {
+                    // 블러 처리된 부분
+                    if (part.isBlurred) {
+                      return (
+                        <span
+                          key={`blur-${index}`}
+                          style={{
+                            filter: 'blur(4px)',
+                            WebkitFilter: 'blur(4px)',
+                            userSelect: 'none',
+                            pointerEvents: 'none',
+                            color: 'rgba(255, 255, 255, 0.5)'
+                          }}
+                        >
+                          {part.text}
+                        </span>
+                      );
+                    }
+
+                    // 정상 출력 부분
+                    return (
+                      <span
+                        key={index}
+                        style={{
+                          color: part.isSpecial ? part.color : "rgba(255, 255, 255, 0.8)",
+                          fontWeight: part.isSpecial ? "600" : "normal",
+                          fontSize: part.isSubtitle ? "16px" : "14px",
+                          ...(part.isSubtitle && {
+                            display: "inline-block",
+                            marginTop: "12px",
+                            marginBottom: "8px",
+                          }),
+                        }}
+                      >
+                        {part.text}
+                      </span>
+                    );
+                  });
                 })()}
               </div>
             </>
