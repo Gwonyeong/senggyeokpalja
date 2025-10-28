@@ -1206,9 +1206,13 @@ export default function DailyFortunePage() {
 
       // MBTI 기반 추가 메시지 생성
       let mbtiMessage = null;
-      if (userMbti && data.mbtiModifier && data.mbtiModifier[userMbti]) {
-        const mbtiMessages = data.mbtiModifier[userMbti];
-        mbtiMessage = getRandomItem(mbtiMessages);
+      if (userMbti) {
+        // 두 가지 키를 모두 확인: mbtiModifier (겁재) 또는 MBTI보정 (정관 등)
+        const mbtiData = data.mbtiModifier || data["MBTI보정"];
+        if (mbtiData && mbtiData[userMbti]) {
+          const mbtiMessages = mbtiData[userMbti];
+          mbtiMessage = getRandomItem(mbtiMessages);
+        }
       }
 
       // 랜덤요소 데이터 생성
@@ -1241,6 +1245,8 @@ export default function DailyFortunePage() {
         원점수: finalScore,
         MBTI: userMbti,
         MBTI메시지: mbtiMessage ? "포함됨" : "없음",
+        MBTI데이터키: data.mbtiModifier ? "mbtiModifier" : data["MBTI보정"] ? "MBTI보정" : "없음",
+        실제MBTI메시지: mbtiMessage,
       });
 
       return selectedFortune;
