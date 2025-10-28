@@ -41,6 +41,7 @@ model Profile {
   savedResults       SavedResult[]
   consultationResults ConsultationResult[]
   paymentResults     PaymentResult[]
+  dailyFortunes      DailyFortune[]
 
   @@map("profiles")
 }
@@ -239,4 +240,24 @@ model AdminSetting {
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("admin_settings")
+}
+
+// Daily Fortune
+model DailyFortune {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  date           DateTime @map("date") @db.Date
+  sibsinName     String   @map("sibsin_name") @db.VarChar(20)
+  score          Int
+  fortuneData    Json     @map("fortune_data")
+  primarySibsin  Json?    @map("primary_sibsin")
+  ohaengAnalysis Json?    @map("ohaeng_analysis")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("daily_fortunes")
 }

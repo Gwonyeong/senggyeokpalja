@@ -36,6 +36,80 @@ export default function DailyFortunePage() {
             setHasBirthDate(!!data.profile.birthDate);
             setUserProfile(data.profile);
           }
+
+          // DB에서 오늘의 운세 데이터 확인
+          const fortuneResponse = await fetch("/api/daily-fortune");
+          const fortuneData = await fortuneResponse.json();
+
+          if (fortuneData.success && fortuneData.data) {
+            // DB에 저장된 운세가 있으면 사용
+            setFortune(fortuneData.data.fortuneData);
+            setIsFlipped(true);
+            setShowContent(true);
+            setHasViewed(true);
+            // localStorage에도 저장
+            const today = new Date().toDateString();
+            localStorage.setItem("lastFortuneDate", today);
+            localStorage.setItem("todaysFortune", JSON.stringify(fortuneData.data.fortuneData));
+          } else {
+            // DB에 저장된 운세가 없으면 localStorage 확인
+            const today = new Date().toDateString();
+            const lastViewedDate = localStorage.getItem("lastFortuneDate");
+
+            if (lastViewedDate === today) {
+              setHasViewed(true);
+              const savedFortune = localStorage.getItem("todaysFortune");
+              if (savedFortune) {
+                setFortune(JSON.parse(savedFortune));
+                setIsFlipped(true);
+                setShowContent(true);
+              }
+            } else if (lastViewedDate && lastViewedDate !== today) {
+              // 날짜가 변경되었으면 초기화
+              localStorage.removeItem("lastFortuneDate");
+              localStorage.removeItem("todaysFortune");
+              setHasViewed(false);
+              setIsFlipped(false);
+              setShowContent(false);
+              setShowGif(false);
+              // 새로운 날의 운세 생성
+              const newFortune = generateDailyFortune();
+              setFortune(newFortune);
+            } else {
+              // 첫 방문
+              const newFortune = generateDailyFortune();
+              setFortune(newFortune);
+            }
+          }
+        } else {
+          // 로그인하지 않은 사용자는 localStorage만 사용
+          const today = new Date().toDateString();
+          const lastViewedDate = localStorage.getItem("lastFortuneDate");
+
+          if (lastViewedDate === today) {
+            setHasViewed(true);
+            const savedFortune = localStorage.getItem("todaysFortune");
+            if (savedFortune) {
+              setFortune(JSON.parse(savedFortune));
+              setIsFlipped(true);
+              setShowContent(true);
+            }
+          } else if (lastViewedDate && lastViewedDate !== today) {
+            // 날짜가 변경되었으면 초기화
+            localStorage.removeItem("lastFortuneDate");
+            localStorage.removeItem("todaysFortune");
+            setHasViewed(false);
+            setIsFlipped(false);
+            setShowContent(false);
+            setShowGif(false);
+            // 새로운 날의 운세 생성
+            const newFortune = generateDailyFortune();
+            setFortune(newFortune);
+          } else {
+            // 첫 방문
+            const newFortune = generateDailyFortune();
+            setFortune(newFortune);
+          }
         }
       } catch (error) {
         console.error("Error checking profile:", error);
@@ -43,24 +117,6 @@ export default function DailyFortunePage() {
     };
 
     checkUserProfile();
-
-    // 오늘 이미 확인했는지 체크
-    const today = new Date().toDateString();
-    const lastViewedDate = localStorage.getItem("lastFortuneDate");
-
-    if (lastViewedDate === today) {
-      setHasViewed(true);
-      const savedFortune = localStorage.getItem("todaysFortune");
-      if (savedFortune) {
-        setFortune(JSON.parse(savedFortune));
-        setIsFlipped(true);
-        setShowContent(true);
-      }
-    } else {
-      // 새로운 날의 운세 생성
-      const newFortune = generateDailyFortune();
-      setFortune(newFortune);
-    }
   }, []);
 
   const generateDailyFortune = () => {
@@ -1211,6 +1267,17 @@ export default function DailyFortunePage() {
   };
 
   const handleCardClick = async () => {
+    // 날짜 변경 체크
+    const today = new Date().toDateString();
+    const lastViewedDate = localStorage.getItem("lastFortuneDate");
+
+    // 날짜가 바뀌었으면 hasViewed를 false로 설정
+    if (lastViewedDate && lastViewedDate !== today) {
+      setHasViewed(false);
+      localStorage.removeItem("lastFortuneDate");
+      localStorage.removeItem("todaysFortune");
+    }
+
     if (!isFlipped && !hasViewed) {
       // 생년월일이 없으면 모달 표시 (생시는 선택사항이므로 체크하지 않음)
       if (!hasBirthDate) {
@@ -1233,7 +1300,7 @@ export default function DailyFortunePage() {
 
         if (fortuneData) {
           // 운세 데이터를 상태로 저장
-          setFortune({
+          const finalFortuneData = {
             title: `${result.primarySibsin.name} - ${fortuneData.score}점`,
             description:
               fortuneData.총운 || "오늘은 평온한 하루가 될 것입니다.",
@@ -1250,7 +1317,35 @@ export default function DailyFortunePage() {
             luckyDirection: ["동", "서", "남", "북"][
               Math.floor(Math.random() * 4)
             ],
-          });
+          };
+
+          setFortune(finalFortuneData);
+
+          // DB에 저장 (로그인한 사용자만)
+          const supabase = createClient();
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (user) {
+            try {
+              await fetch("/api/daily-fortune", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  sibsinName: result.primarySibsin.name,
+                  score: result.finalScore,
+                  fortuneData: finalFortuneData,
+                  primarySibsin: result.primarySibsin,
+                  ohaengAnalysis: result.ohaengAnalysis,
+                }),
+              });
+            } catch (error) {
+              console.error("Error saving fortune to DB:", error);
+            }
+          }
         }
       }
 
@@ -1272,17 +1367,6 @@ export default function DailyFortunePage() {
     }
   };
 
-  const resetFortune = () => {
-    setIsFlipped(false);
-    setShowGif(false);
-    setShowContent(false);
-    setHasViewed(false);
-    localStorage.removeItem("lastFortuneDate");
-    localStorage.removeItem("todaysFortune");
-    // 새로운 운세 생성
-    const newFortune = generateDailyFortune();
-    setFortune(newFortune);
-  };
 
   return (
     <PageWrapper>
@@ -1446,31 +1530,6 @@ export default function DailyFortunePage() {
                 ) : null}
               </div>
 
-              <div className={styles["bottom-actions"]}>
-                <button
-                  className={styles["share-button"]}
-                  onClick={() => {
-                    if (navigator.share && fortune) {
-                      navigator.share({
-                        title: "오늘의 운세",
-                        text: `오늘의 운세: ${fortune.title}\n${fortune.description}`,
-                        url: window.location.href,
-                      });
-                    }
-                  }}
-                >
-                  공유하기
-                </button>
-
-                {process.env.NODE_ENV === "development" && (
-                  <button
-                    className={styles["reset-button"]}
-                    onClick={resetFortune}
-                  >
-                    초기화 (개발용)
-                  </button>
-                )}
-              </div>
             </div>
           </section>
         </main>
