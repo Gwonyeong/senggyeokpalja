@@ -50,7 +50,10 @@ export default function DailyFortunePage() {
             // localStorage에도 저장
             const today = new Date().toDateString();
             localStorage.setItem("lastFortuneDate", today);
-            localStorage.setItem("todaysFortune", JSON.stringify(fortuneData.data.fortuneData));
+            localStorage.setItem(
+              "todaysFortune",
+              JSON.stringify(fortuneData.data.fortuneData)
+            );
           } else {
             // DB에 저장된 운세가 없으면 localStorage 확인
             const today = new Date().toDateString();
@@ -1367,7 +1370,6 @@ export default function DailyFortunePage() {
     }
   };
 
-
   return (
     <PageWrapper>
       <div className={styles["daily-fortune-page"]}>
@@ -1423,13 +1425,15 @@ export default function DailyFortunePage() {
                 ) : showContent ? (
                   // 운세 내용
                   <>
-                    <h2 className={styles["fortune-title"]}>
+                    {/* <h2 className={styles["fortune-title"]}>
                       {fortune?.title}
-                    </h2>
+                    </h2> */}
                     <div className={`card ${styles["daily-fortune-card"]}`}>
                       <div className={styles["card-header"]}></div>
 
-                      <div className={styles["fortune-content"]}>
+                      <div
+                        className={`${styles["fortune-content"]} ${styles["responsive-padding"]}`}
+                      >
                         {/* 첫 번째 카드: 운세 상세 정보 */}
                         <div>
                           <h3 className={styles["card-title"]}>상세 운세</h3>
@@ -1473,7 +1477,7 @@ export default function DailyFortunePage() {
                     <div className={`card ${styles["daily-fortune-card"]}`}>
                       {/* 두 번째 카드: 랜덤 요소 */}
                       <div className={styles["fortune-content"]}>
-                        <div>
+                        <div className={styles["responsive-padding"]}>
                           <div className={styles["fortune-item"]}>
                             <span className={styles["fortune-label"]}>
                               건강
@@ -1526,7 +1530,6 @@ export default function DailyFortunePage() {
                   </>
                 ) : null}
               </div>
-
             </div>
           </section>
         </main>

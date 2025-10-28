@@ -161,6 +161,10 @@
   gap: 30px;
 }
 
+.responsive-padding {
+  padding: 50px;
+}
+
 /* 새로운 카드 스타일 */
 .fortune-main-card,
 .fortune-lucky-card {
@@ -555,5 +559,9 @@
 
   .lucky-value {
     font-size: 14px;
+  }
+
+  .responsive-padding {
+    padding: 20px;
   }
 }
