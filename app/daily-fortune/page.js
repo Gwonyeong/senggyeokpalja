@@ -1176,15 +1176,20 @@ export default function DailyFortunePage() {
         Math.abs(curr - finalScore) < Math.abs(prev - finalScore) ? curr : prev
       );
 
-      // JSON 구조에서 데이터 가져오기: {fortuneByScore: {sibsinName: [{score, categories...}]}}
-      const fortuneArray = data.fortuneByScore?.[sibsinName];
-      if (!fortuneArray || !Array.isArray(fortuneArray)) {
-        console.error(`${sibsinName}에 대한 운세 배열을 찾을 수 없습니다`);
-        return null;
-      }
+      // JSON 구조 확인 및 데이터 가져오기
+      let fortuneData = null;
 
-      // 점수에 맞는 운세 객체 찾기
-      const fortuneData = fortuneArray.find(item => item.score === closestScore);
+      // 구조 1: {fortuneByScore: {sibsinName: [{score, categories...}]}} (겁재)
+      if (data.fortuneByScore && data.fortuneByScore[sibsinName]) {
+        const fortuneArray = data.fortuneByScore[sibsinName];
+        if (Array.isArray(fortuneArray)) {
+          fortuneData = fortuneArray.find(item => item.score === closestScore);
+        }
+      }
+      // 구조 2: {sibsinName: {score: {categories}}} (나머지 십신들)
+      else if (data[sibsinName] && data[sibsinName][closestScore.toString()]) {
+        fortuneData = data[sibsinName][closestScore.toString()];
+      }
 
       if (!fortuneData) {
         console.error(
