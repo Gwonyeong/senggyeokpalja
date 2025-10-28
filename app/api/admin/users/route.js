@@ -37,44 +37,43 @@ export async function GET(request) {
       where.provider = provider;
     }
 
-    // 사용자 목록 조회
-    const users = await prisma.profile.findMany({
-      where,
-      skip,
-      take: limit,
-      orderBy: {
-        [sortBy]: order
-      },
-      include: {
-        _count: {
-          select: {
-            analysisResults: true,
-            synergyAnalysis: true,
-            consultationResults: true,
-            savedResults: true
+    // 병렬로 사용자 목록과 전체 수 조회
+    const [users, total] = await Promise.all([
+      prisma.profile.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          [sortBy]: order
+        },
+        include: {
+          _count: {
+            select: {
+              analysisResults: true,
+              synergyAnalysis: true,
+              consultationResults: true,
+              savedResults: true
+            }
+          },
+          // 유료 상담 여부를 한 번에 조회
+          consultationResults: {
+            where: { isPaid: true },
+            take: 1,
+            select: { id: true }
           }
         }
-      }
-    });
+      }),
+      prisma.profile.count({ where })
+    ]);
 
-    // 전체 사용자 수
-    const total = await prisma.profile.count({ where });
-
-    // 각 사용자의 추가 정보 조회
-    const enrichedUsers = await Promise.all(users.map(async (user) => {
-      // 유료 상담 여부
-      const hasPaidConsultation = await prisma.consultationResult.count({
-        where: {
-          userId: user.id,
-          isPaid: true
-        }
-      });
-
+    // 각 사용자의 추가 정보 처리 (DB 쿼리 없이)
+    const enrichedUsers = users.map((user) => {
+      const { consultationResults, ...userData } = user;
       return {
-        ...user,
-        hasPaidConsultation: hasPaidConsultation > 0
+        ...userData,
+        hasPaidConsultation: consultationResults.length > 0
       };
-    }));
+    });
 
     return NextResponse.json({
       success: true,

@@ -1345,7 +1345,10 @@ export default function DailyFortunePage() {
                     <div className={`card ${styles["daily-fortune-card"]}`}>
                       <div className={styles["card-header"]}></div>
 
-                      <div className={styles["fortune-content"]}>
+                      <div
+                        className={styles["fortune-content"]}
+                        style={{ paddingBottom: "20px" }}
+                      >
                         {/* 첫 번째 카드: 운세 상세 정보 */}
                         <div style={{ padding: "20px" }}>
                           <h3 className={styles["card-title"]}>상세 운세</h3>
@@ -1384,64 +1387,56 @@ export default function DailyFortunePage() {
                             </div>
                           </div>
                         </div>
-
-                        {hasViewed && (
-                          <p className={styles["viewed-message"]}>
-                            오늘의 운세를 이미 확인하셨습니다
-                          </p>
-                        )}
                       </div>
                     </div>
                     <div className={`card ${styles["daily-fortune-card"]}`}>
                       {/* 두 번째 카드: 랜덤 요소 */}
                       <div className={styles["fortune-content"]}>
                         <div style={{ padding: "20px" }}>
-                          <div className={styles["fortune-lucky-card"]}>
-                            <div className={styles["fortune-item"]}>
-                              <span className={styles["fortune-label"]}>
-                                건강
-                              </span>
-                              <p className={styles["fortune-text"]}>
-                                {fortune?.health}
-                              </p>
-                            </div>
-                            <div className={styles["fortune-item"]}>
-                              <span className={styles["fortune-label"]}>
-                                가족
-                              </span>
-                              <p className={styles["fortune-text"]}>
-                                {fortune?.family}
-                              </p>
-                            </div>
+                          <div className={styles["fortune-item"]}>
+                            <span className={styles["fortune-label"]}>
+                              건강
+                            </span>
+                            <p className={styles["fortune-text"]}>
+                              {fortune?.health}
+                            </p>
+                          </div>
+                          <div className={styles["fortune-item"]}>
+                            <span className={styles["fortune-label"]}>
+                              가족
+                            </span>
+                            <p className={styles["fortune-text"]}>
+                              {fortune?.family}
+                            </p>
+                          </div>
 
-                            <h3 className={styles["card-title"]}>
-                              오늘의 랜덤 요소
-                            </h3>
-                            <div className={styles["lucky-sections"]}>
-                              <div className={styles["lucky-item"]}>
-                                <span className={styles["lucky-label"]}>
-                                  포인트 컬러
-                                </span>
-                                <span className={styles["lucky-value"]}>
-                                  {fortune?.luckyColor}
-                                </span>
-                              </div>
-                              <div className={styles["lucky-item"]}>
-                                <span className={styles["lucky-label"]}>
-                                  행동
-                                </span>
-                                <span className={styles["lucky-value"]}>
-                                  {fortune?.luckyDirection}쪽으로 향하기
-                                </span>
-                              </div>
-                              <div className={styles["lucky-item"]}>
-                                <span className={styles["lucky-label"]}>
-                                  사물
-                                </span>
-                                <span className={styles["lucky-value"]}>
-                                  숫자 {fortune?.luckyNumber}
-                                </span>
-                              </div>
+                          <h3 className={styles["card-title"]}>
+                            오늘의 랜덤 요소
+                          </h3>
+                          <div className={styles["lucky-sections"]}>
+                            <div className={styles["lucky-item"]}>
+                              <span className={styles["lucky-label"]}>
+                                포인트 컬러
+                              </span>
+                              <span className={styles["lucky-value"]}>
+                                {fortune?.luckyColor}
+                              </span>
+                            </div>
+                            <div className={styles["lucky-item"]}>
+                              <span className={styles["lucky-label"]}>
+                                행동
+                              </span>
+                              <span className={styles["lucky-value"]}>
+                                {fortune?.luckyDirection}쪽으로 향하기
+                              </span>
+                            </div>
+                            <div className={styles["lucky-item"]}>
+                              <span className={styles["lucky-label"]}>
+                                사물
+                              </span>
+                              <span className={styles["lucky-value"]}>
+                                숫자 {fortune?.luckyNumber}
+                              </span>
                             </div>
                           </div>
                         </div>
