@@ -47,72 +47,19 @@ export default function DailyFortunePage() {
             setIsFlipped(true);
             setShowContent(true);
             setHasViewed(true);
-            // localStorage에도 저장
-            const today = new Date().toDateString();
-            localStorage.setItem("lastFortuneDate", today);
-            localStorage.setItem(
-              "todaysFortune",
-              JSON.stringify(fortuneData.data.fortuneData)
-            );
           } else {
-            // DB에 저장된 운세가 없으면 localStorage 확인
-            const today = new Date().toDateString();
-            const lastViewedDate = localStorage.getItem("lastFortuneDate");
-
-            if (lastViewedDate === today) {
-              setHasViewed(true);
-              const savedFortune = localStorage.getItem("todaysFortune");
-              if (savedFortune) {
-                setFortune(JSON.parse(savedFortune));
-                setIsFlipped(true);
-                setShowContent(true);
-              }
-            } else if (lastViewedDate && lastViewedDate !== today) {
-              // 날짜가 변경되었으면 초기화
-              localStorage.removeItem("lastFortuneDate");
-              localStorage.removeItem("todaysFortune");
-              setHasViewed(false);
-              setIsFlipped(false);
-              setShowContent(false);
-              setShowGif(false);
-              // 새로운 날의 운세 생성
-              const newFortune = generateDailyFortune();
-              setFortune(newFortune);
-            } else {
-              // 첫 방문
-              const newFortune = generateDailyFortune();
-              setFortune(newFortune);
-            }
-          }
-        } else {
-          // 로그인하지 않은 사용자는 localStorage만 사용
-          const today = new Date().toDateString();
-          const lastViewedDate = localStorage.getItem("lastFortuneDate");
-
-          if (lastViewedDate === today) {
-            setHasViewed(true);
-            const savedFortune = localStorage.getItem("todaysFortune");
-            if (savedFortune) {
-              setFortune(JSON.parse(savedFortune));
-              setIsFlipped(true);
-              setShowContent(true);
-            }
-          } else if (lastViewedDate && lastViewedDate !== today) {
-            // 날짜가 변경되었으면 초기화
-            localStorage.removeItem("lastFortuneDate");
-            localStorage.removeItem("todaysFortune");
+            // DB에 저장된 운세가 없으면 새로운 운세 생성 준비
             setHasViewed(false);
             setIsFlipped(false);
             setShowContent(false);
             setShowGif(false);
-            // 새로운 날의 운세 생성
-            const newFortune = generateDailyFortune();
-            setFortune(newFortune);
-          } else {
-            // 첫 방문
-            const newFortune = generateDailyFortune();
-            setFortune(newFortune);
           }
+        } else {
+          // 로그인하지 않은 사용자도 기본 상태로 설정 (카드 클릭 시 운세 생성)
+          setHasViewed(false);
+          setIsFlipped(false);
+          setShowContent(false);
+          setShowGif(false);
         }
       } catch (error) {
         console.error("Error checking profile:", error);
@@ -1209,8 +1156,8 @@ export default function DailyFortunePage() {
     }
   };
 
-  // 십신별 운세 데이터 가져오기
-  const loadFortuneData = async (sibsinName, finalScore) => {
+  // 십신별 운세 데이터 가져오기 (MBTI 포함)
+  const loadFortuneData = async (sibsinName, finalScore, userMbti = null) => {
     try {
       // 십신 이름 정규화 (예: 비견, 겁재, 식신 등)
       const sibsinFileName = `${sibsinName}_오늘의운세.json`;
@@ -1229,8 +1176,15 @@ export default function DailyFortunePage() {
         Math.abs(curr - finalScore) < Math.abs(prev - finalScore) ? curr : prev
       );
 
-      // JSON 구조에서 데이터 가져오기: {sibsinName: {score: {category: [items]}}}
-      const fortuneData = data[sibsinName]?.[closestScore.toString()];
+      // JSON 구조에서 데이터 가져오기: {fortuneByScore: {sibsinName: [{score, categories...}]}}
+      const fortuneArray = data.fortuneByScore?.[sibsinName];
+      if (!fortuneArray || !Array.isArray(fortuneArray)) {
+        console.error(`${sibsinName}에 대한 운세 배열을 찾을 수 없습니다`);
+        return null;
+      }
+
+      // 점수에 맞는 운세 객체 찾기
+      const fortuneData = fortuneArray.find(item => item.score === closestScore);
 
       if (!fortuneData) {
         console.error(
@@ -1245,21 +1199,32 @@ export default function DailyFortunePage() {
         return arr[Math.floor(Math.random() * arr.length)];
       };
 
+      // MBTI 기반 추가 메시지 생성
+      let mbtiMessage = null;
+      if (userMbti && data.mbtiModifier && data.mbtiModifier[userMbti]) {
+        const mbtiMessages = data.mbtiModifier[userMbti];
+        mbtiMessage = getRandomItem(mbtiMessages);
+      }
+
       const selectedFortune = {
         score: closestScore,
         sibsin: sibsinName,
+        sibsinName: sibsinName, // UI에서 사용할 십신 이름
         총운: getRandomItem(fortuneData.총운),
         재물: getRandomItem(fortuneData.재물),
         연애: getRandomItem(fortuneData.연애),
         커리어: getRandomItem(fortuneData.커리어),
         건강: getRandomItem(fortuneData.건강),
         가족: getRandomItem(fortuneData.가족),
+        mbtiMessage: mbtiMessage, // MBTI 기반 추가 메시지
       };
 
       console.log("📖 오늘의 운세 데이터 로드 완료:", {
         십신: sibsinName,
         점수: closestScore,
         원점수: finalScore,
+        MBTI: userMbti,
+        MBTI메시지: mbtiMessage ? "포함됨" : "없음",
       });
 
       return selectedFortune;
@@ -1270,17 +1235,6 @@ export default function DailyFortunePage() {
   };
 
   const handleCardClick = async () => {
-    // 날짜 변경 체크
-    const today = new Date().toDateString();
-    const lastViewedDate = localStorage.getItem("lastFortuneDate");
-
-    // 날짜가 바뀌었으면 hasViewed를 false로 설정
-    if (lastViewedDate && lastViewedDate !== today) {
-      setHasViewed(false);
-      localStorage.removeItem("lastFortuneDate");
-      localStorage.removeItem("todaysFortune");
-    }
-
     if (!isFlipped && !hasViewed) {
       // 생년월일이 없으면 모달 표시 (생시는 선택사항이므로 체크하지 않음)
       if (!hasBirthDate) {
@@ -1295,10 +1249,11 @@ export default function DailyFortunePage() {
         console.log("🎯 사주팔자 분석 결과");
         console.log("=".repeat(50));
 
-        // 십신별 운세 데이터 로드
+        // 십신별 운세 데이터 로드 (MBTI 포함)
         const fortuneData = await loadFortuneData(
           result.primarySibsin.name,
-          result.finalScore
+          result.finalScore,
+          userProfile?.mbti
         );
 
         if (fortuneData) {
@@ -1313,6 +1268,9 @@ export default function DailyFortunePage() {
             wealth: fortuneData.재물,
             health: fortuneData.건강,
             family: fortuneData.가족,
+            sibsinName: fortuneData.sibsinName, // 십신 이름 추가
+            score: fortuneData.score, // 점수 추가
+            mbtiMessage: fortuneData.mbtiMessage, // MBTI 메시지 추가
             luckyNumber: Math.floor(Math.random() * 9) + 1,
             luckyColor: ["빨강", "파랑", "노랑", "초록", "보라"][
               Math.floor(Math.random() * 5)
@@ -1360,11 +1318,6 @@ export default function DailyFortunePage() {
       setTimeout(() => {
         setShowGif(false);
         setShowContent(true);
-
-        // 오늘 확인했음을 저장
-        const today = new Date().toDateString();
-        localStorage.setItem("lastFortuneDate", today);
-        localStorage.setItem("todaysFortune", JSON.stringify(fortune));
         setHasViewed(true);
       }, 800);
     }
@@ -1434,6 +1387,36 @@ export default function DailyFortunePage() {
                       <div
                         className={`${styles["fortune-content"]} ${styles["responsive-padding"]}`}
                       >
+                        {/* 십신과 점수 표시 영역 */}
+                        <div className={styles["sibsin-score-section"]}>
+                          <div className={styles["sibsin-info"]}>
+                            <span className={styles["sibsin-label"]}>주 십신</span>
+                            <span className={styles["sibsin-value"]}>
+                              {fortune?.sibsinName || "알 수 없음"}
+                            </span>
+                          </div>
+                          <div className={styles["score-info"]}>
+                            <span className={styles["score-label"]}>오늘의 점수</span>
+                            <span className={styles["score-value"]}>
+                              {fortune?.score || 0}점
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* MBTI 기반 추가 메시지 */}
+                        {fortune?.mbtiMessage && (
+                          <div className={styles["mbti-message-section"]}>
+                            <div className={styles["mbti-info"]}>
+                              <span className={styles["mbti-label"]}>
+                                MBTI 특성 ({userProfile?.mbti})
+                              </span>
+                              <p className={styles["mbti-message"]}>
+                                {fortune.mbtiMessage}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
                         {/* 첫 번째 카드: 운세 상세 정보 */}
                         <div>
                           <h3 className={styles["card-title"]}>상세 운세</h3>
