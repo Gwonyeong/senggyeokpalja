@@ -2,6 +2,16 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase-server";
 import { prisma } from "@/lib/prisma";
 
+// 한국 시간대(KST) 기준으로 오늘 날짜를 가져오는 함수
+function getKSTToday() {
+  const now = new Date();
+  const kstOffset = 9 * 60; // 9시간을 분으로 변환
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const kstTime = new Date(utc + (kstOffset * 60000));
+
+  return new Date(kstTime.getFullYear(), kstTime.getMonth(), kstTime.getDate());
+}
+
 export async function GET(request) {
   try {
     const supabase = await createClient();
@@ -13,8 +23,7 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = getKSTToday();
 
     const dailyFortune = await prisma.dailyFortune.findUnique({
       where: {
@@ -65,8 +74,7 @@ export async function POST(request) {
       ohaengAnalysis,
     } = body;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = getKSTToday();
 
     const dailyFortune = await prisma.dailyFortune.upsert({
       where: {
