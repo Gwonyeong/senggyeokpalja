@@ -763,7 +763,7 @@ section {
 
 @media (max-width: 768px) {
   section {
-    padding: 40px 0;
+    /* padding: 40px 0; */
   }
 }
 
@@ -4111,7 +4111,6 @@ input[type="text"]::placeholder {
   gap: 16px;
   flex-wrap: wrap;
 }
-
 
 .detail-label {
   font-size: 14px;

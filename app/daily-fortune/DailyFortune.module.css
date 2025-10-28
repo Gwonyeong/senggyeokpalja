@@ -112,7 +112,7 @@
   background-repeat: no-repeat;
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 16px;
-  padding: 30px;
+  padding: 0;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   position: relative;
   min-height: 600px;
@@ -139,7 +139,6 @@
   text-align: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .fortune-title {
@@ -188,19 +187,16 @@
   margin: 0 0 20px;
   text-align: center;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .fortune-item {
   margin-bottom: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .fortune-item:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
-  border-bottom: none;
 }
 
 .fortune-label {

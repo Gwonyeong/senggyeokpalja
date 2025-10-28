@@ -1429,12 +1429,9 @@ export default function DailyFortunePage() {
                     <div className={`card ${styles["daily-fortune-card"]}`}>
                       <div className={styles["card-header"]}></div>
 
-                      <div
-                        className={styles["fortune-content"]}
-                        style={{ paddingBottom: "20px" }}
-                      >
+                      <div className={styles["fortune-content"]}>
                         {/* 첫 번째 카드: 운세 상세 정보 */}
-                        <div style={{ padding: "20px" }}>
+                        <div>
                           <h3 className={styles["card-title"]}>상세 운세</h3>
                           <div className={styles["fortune-sections"]}>
                             <div className={styles["fortune-item"]}>
@@ -1476,7 +1473,7 @@ export default function DailyFortunePage() {
                     <div className={`card ${styles["daily-fortune-card"]}`}>
                       {/* 두 번째 카드: 랜덤 요소 */}
                       <div className={styles["fortune-content"]}>
-                        <div style={{ padding: "20px" }}>
+                        <div>
                           <div className={styles["fortune-item"]}>
                             <span className={styles["fortune-label"]}>
                               건강
