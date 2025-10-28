@@ -29,6 +29,7 @@ export default function ConsultationResultPage({ params }) {
   const [consultation, setConsultation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentSection, setCurrentSection] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   // const [showEventModal, setShowEventModal] = useState(false);
 
   // URL 파라미터에서 섹션 번호 가져오기
@@ -38,6 +39,18 @@ export default function ConsultationResultPage({ params }) {
       setCurrentSection(parseInt(section));
     }
   }, [searchParams]);
+
+  // 모바일 화면 감지
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   // 인증 및 데이터 로드
   useEffect(() => {
@@ -207,7 +220,12 @@ export default function ConsultationResultPage({ params }) {
 
   return (
     <PageWrapper>
-      <div className="analyze-page">
+      <div
+        className="analyze-page"
+        style={{
+          paddingBottom: currentSection === 1 && !consultation.isPaid ? "200px" : "0"
+        }}
+      >
         <main>
           <section id="analyzer">
             <div className="container">
@@ -320,81 +338,37 @@ export default function ConsultationResultPage({ params }) {
                           />
                         </div>
 
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginBottom: "25px",
-                            gap: "10px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "15px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: "60px",
-                                height: "2px",
-                                background:
-                                  "linear-gradient(90deg, transparent, #FCA311, transparent)",
-                              }}
-                            ></div>
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                gap: "5px",
-                              }}
-                            >
-                              <p
-                                style={{
-                                  fontSize: "16px",
-                                  color: "#666",
-                                  textDecoration: "line-through",
-                                  fontFamily: "'Noto Serif KR', serif",
-                                }}
-                              >
-                                복채: 29,000원
-                              </p>
-                              <p
-                                style={{
-                                  fontSize: "24px",
-                                  fontWeight: "bold",
-                                  color: "#FCA311",
-                                  fontFamily: "'Noto Serif KR', serif",
-                                }}
-                              >
-                                9,900원
-                              </p>
-                            </div>
-                            <div
-                              style={{
-                                width: "60px",
-                                height: "2px",
-                                background:
-                                  "linear-gradient(90deg, transparent, #FCA311, transparent)",
-                              }}
-                            ></div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                          >
-                            <DiscountTimer />
-                          </div>
-                        </div>
                       </div>
+                    </div>
+
+                    {/* for_purchase 이미지들 표시 */}
+                    <div style={{
+                      marginTop: "20px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0",
+                      alignItems: "center"
+                    }}>
+                      {[1, 2, 3, 4, 5, 6].map((num) => (
+                        <div key={num} style={{
+                          width: "100%",
+                          maxWidth: "400px",
+                          margin: "0"
+                        }}>
+                          <Image
+                            src={`/assets/images/consultation/for_purchase/${num}.png`}
+                            alt={`구매 안내 이미지 ${num}`}
+                            width={400}
+                            height={600}
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              display: "block"
+                            }}
+                            priority={num <= 2}
+                          />
+                        </div>
+                      ))}
                     </div>
                   </>
                 )}
@@ -496,6 +470,123 @@ export default function ConsultationResultPage({ params }) {
             </div>
           </section>
         </main>
+
+        {/* 고정 하단 버튼 및 정보 - 결제하지 않은 섹션 1에서만 표시 */}
+        {currentSection === 1 && !consultation.isPaid && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "0",
+              left: "0",
+              right: "0",
+              background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+              borderTop: "2px solid #FCA311",
+              padding: "20px",
+              zIndex: "1000",
+              boxShadow: "0 -8px 32px rgba(0, 0, 0, 0.8)",
+            }}
+          >
+            <div style={{
+              maxWidth: "600px",
+              margin: "0 auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+              alignItems: "center"
+            }}>
+              {/* 복채 정보 */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "15px"
+              }}>
+                <div style={{
+                  width: "60px",
+                  height: "2px",
+                  background: "linear-gradient(90deg, transparent, #FCA311, transparent)"
+                }}></div>
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "5px"
+                }}>
+                  <p style={{
+                    fontSize: "14px",
+                    color: "#666",
+                    textDecoration: "line-through",
+                    fontFamily: "'Noto Serif KR', serif",
+                    margin: "0"
+                  }}>
+                    복채: 29,000원
+                  </p>
+                  <p style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    color: "#FCA311",
+                    fontFamily: "'Noto Serif KR', serif",
+                    margin: "0"
+                  }}>
+                    9,900원
+                  </p>
+                </div>
+                <div style={{
+                  width: "60px",
+                  height: "2px",
+                  background: "linear-gradient(90deg, transparent, #FCA311, transparent)"
+                }}></div>
+              </div>
+
+              {/* 할인 타이머 - 모바일에서는 숨김 */}
+              {!isMobile && (
+                <div style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "8px"
+                }}>
+                  <DiscountTimer />
+                </div>
+              )}
+
+              {/* 토리와 상담받기 버튼 */}
+              <button
+                onClick={() => {
+                  const paymentWidget = document.querySelector('[data-testid="payment-widget"]');
+                  if (paymentWidget) {
+                    paymentWidget.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  maxWidth: "300px",
+                  padding: "16px 24px",
+                  backgroundColor: "#FCA311",
+                  color: "#000",
+                  border: "none",
+                  borderRadius: "12px",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  fontFamily: "'Noto Serif KR', serif",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 4px 16px rgba(252, 163, 17, 0.4)",
+                  letterSpacing: "1px"
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.backgroundColor = "#e8940f";
+                  e.target.style.transform = "translateY(-2px)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.backgroundColor = "#FCA311";
+                  e.target.style.transform = "translateY(0)";
+                }}
+              >
+                토리와 상담받기
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </PageWrapper>
   );
