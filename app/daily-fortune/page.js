@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/PageWrapper";
 import styles from "./DailyFortune.module.css";
 import { useCustomAuth } from "../hooks/useCustomAuth";
+import LoginModal from "../components/LoginModal";
 
 export default function DailyFortunePage() {
   const router = useRouter();
-  const { user } = useCustomAuth();
+  const { user, checkAuth, showLoginModal, setShowLoginModal } = useCustomAuth();
   const [isFlipped, setIsFlipped] = useState(false);
   const [showGif, setShowGif] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -1254,6 +1255,11 @@ export default function DailyFortunePage() {
 
   const handleCardClick = async () => {
     if (!isFlipped && !hasViewed) {
+      // 로그인 체크 먼저 수행
+      if (!checkAuth()) {
+        return;
+      }
+
       // 생년월일이 없으면 모달 표시 (생시는 선택사항이므로 체크하지 않음)
       if (!hasBirthDate) {
         setShowBirthDateModal(true);
@@ -1575,6 +1581,12 @@ export default function DailyFortunePage() {
           </div>
         </div>
       )}
+
+      {/* 로그인 모달 */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </PageWrapper>
   );
 }
