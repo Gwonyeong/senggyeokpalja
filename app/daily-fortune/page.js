@@ -1307,11 +1307,6 @@ export default function DailyFortunePage() {
           setFortune(finalFortuneData);
 
           // DB에 저장 (로그인한 사용자만)
-          const supabase = createClient();
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
-
           if (user) {
             try {
               await fetch("/api/daily-fortune", {

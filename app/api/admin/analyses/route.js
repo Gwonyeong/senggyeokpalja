@@ -1,14 +1,19 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
-import { checkAdminAccess } from '@/lib/supabase-auth';
+import { getCurrentUser, checkAdminAccess } from '@/lib/custom-auth-server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
 
-    if (!user || !checkAdminAccess(user)) {
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    if (!checkAdminAccess(user)) {
       return NextResponse.json(
         { success: false, error: '관리자 권한이 필요합니다.' },
         { status: 403 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { optimizedAuth } from "@/lib/optimized-auth";
+import { getCurrentUser } from "@/lib/custom-auth-server";
 
 // 한국 시간대(KST) 기준으로 오늘 날짜를 가져오는 함수
 function getKSTToday() {
@@ -14,16 +14,14 @@ function getKSTToday() {
 
 export async function GET(request) {
   try {
-    const authResult = await optimizedAuth(request, {
-      requireAuth: true,
-      skipCache: false // 캐시 사용으로 성능 향상
-    });
+    const user = await getCurrentUser();
 
-    if (authResult.response) {
-      return authResult.response;
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required" },
+        { status: 401 }
+      );
     }
-
-    const { user } = authResult;
 
     const today = getKSTToday();
 
@@ -58,16 +56,14 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const authResult = await optimizedAuth(request, {
-      requireAuth: true,
-      skipCache: false // 캐시 사용으로 성능 향상
-    });
+    const user = await getCurrentUser();
 
-    if (authResult.response) {
-      return authResult.response;
+    if (!user) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required" },
+        { status: 401 }
+      );
     }
-
-    const { user } = authResult;
 
     const body = await request.json();
     const {
