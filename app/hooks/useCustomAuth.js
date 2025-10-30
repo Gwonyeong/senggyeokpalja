@@ -9,6 +9,7 @@ export function useCustomAuth(requireAuth = false) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -39,6 +40,11 @@ export function useCustomAuth(requireAuth = false) {
           setUser(currentUser);
         }
       } else {
+        // 로그아웃 중이면 Supabase 세션 확인 건너뛰기
+        if (isLoggingOut) {
+          setUser(null);
+          return;
+        }
 
         // 커스텀 auth 토큰이 없는 경우, Supabase 세션 확인 및 마이그레이션 시도
         try {
@@ -118,6 +124,8 @@ export function useCustomAuth(requireAuth = false) {
 
   const logout = async () => {
     try {
+      setIsLoggingOut(true);
+
       // 서버에 로그아웃 요청
       await fetch('/api/auth/logout', {
         method: 'POST',
@@ -127,15 +135,25 @@ export function useCustomAuth(requireAuth = false) {
       // 클라이언트 로그아웃
       logoutClient();
 
+      // 상태 업데이트
       setUser(null);
       toast.success("로그아웃되었습니다.");
+
+      // 라우터로 이동
       router.push("/");
+
+      // 로그아웃 상태 해제 (재마이그레이션 방지용)
+      setTimeout(() => {
+        setIsLoggingOut(false);
+      }, 1000);
+
     } catch (error) {
       console.error("Logout error:", error);
       // 에러가 발생해도 클라이언트에서 로그아웃 처리
       logoutClient();
       setUser(null);
       router.push("/");
+      setIsLoggingOut(false);
     }
   };
 
