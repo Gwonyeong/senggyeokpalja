@@ -1,61 +1,23 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { authenticateUser } from "@/lib/auth-middleware-v2";
 
 export async function POST(request) {
   try {
-    // 서버 사이드용 Supabase 클라이언트 생성
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) => {
-                cookieStore.set(name, value, options);
-              });
-            } catch (error) {
-              // 서버 컴포넌트에서는 쿠키 설정이 불가능할 수 있음
-            }
-          },
-        },
-      }
-    );
-
-    // 1. Supabase 인증 확인
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    // 자체 인증 확인 (로그인하지 않은 사용자도 허용)
+    const authResult = await authenticateUser(request, {
+      requireAuth: false
+    });
 
     // 로그인하지 않은 사용자는 저장하지 않음
-    if (!user || !user.email) {
+    if (!authResult.user) {
       return NextResponse.json({
         success: true,
         message: "Not logged in, result not saved",
       });
     }
 
-    // 2. Supabase user email로 Prisma Profile 테이블 조회
-    const profile = await prisma.profile.findUnique({
-      where: {
-        email: user.email,
-      },
-    });
-
-    // Profile이 없으면 저장하지 않음
-    if (!profile) {
-      return NextResponse.json({
-        success: false,
-        error: "Profile not found",
-        message: "User profile not found in database",
-      });
-    }
+    const { user } = authResult;
 
     // 요청 데이터 파싱
     const body = await request.json();
@@ -108,7 +70,7 @@ export async function POST(request) {
     // 3. Profile 정보를 이용해 데이터베이스에 저장
     const savedResult = await prisma.analysisResult.create({
       data: {
-        userId: profile.id,
+        userId: user.id,
         personalityType: personalityType,
         paljaType: personalityType, // 팔자유형과 동일
         birthDate: birthDate,

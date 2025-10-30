@@ -1,21 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createClient } from "@/lib/supabase-server";
+import { getCurrentUser } from "@/lib/custom-auth-server";
 import { calculateSajuForServer } from "@/lib/saju-utils-server";
 import { DEFAULT_TRANSACTION_OPTIONS } from "@/lib/db-config";
 
 export async function POST(request) {
   try {
-    // Supabase Auth 클라이언트 생성
-    const supabase = await createClient();
-
     // 현재 로그인한 사용자 확인
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+    const user = await getCurrentUser();
 
-    if (authError || !user) {
+    if (!user) {
       return NextResponse.json(
         { error: "로그인이 필요합니다." },
         { status: 401 }

@@ -1,19 +1,20 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase-server';
-import { checkAdminAccess } from '@/lib/supabase-auth';
 import { prisma } from '@/lib/prisma';
+import { optimizedAuth } from '@/lib/optimized-auth';
 
 export async function GET(request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const authResult = await optimizedAuth(request, {
+      requireAuth: true,
+      requireAdmin: true, // 관리자 권한 필요
+      skipCache: false
+    });
 
-    if (!user || !checkAdminAccess(user)) {
-      return NextResponse.json(
-        { success: false, error: '관리자 권한이 필요합니다.' },
-        { status: 403 }
-      );
+    if (authResult.response) {
+      return authResult.response;
     }
+
+    const { user } = authResult;
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase-server";
 import { prisma } from "@/lib/prisma";
+import { optimizedAuth } from "@/lib/optimized-auth";
 
 // 한국 시간대(KST) 기준으로 오늘 날짜를 가져오는 함수
 function getKSTToday() {
@@ -14,14 +14,16 @@ function getKSTToday() {
 
 export async function GET(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authResult = await optimizedAuth(request, {
+      requireAuth: true,
+      skipCache: false // 캐시 사용으로 성능 향상
+    });
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (authResult.response) {
+      return authResult.response;
     }
+
+    const { user } = authResult;
 
     const today = getKSTToday();
 
@@ -56,14 +58,16 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const authResult = await optimizedAuth(request, {
+      requireAuth: true,
+      skipCache: false // 캐시 사용으로 성능 향상
+    });
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (authResult.response) {
+      return authResult.response;
     }
+
+    const { user } = authResult;
 
     const body = await request.json();
     const {

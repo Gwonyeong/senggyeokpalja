@@ -6,8 +6,7 @@ import {
   CRITICAL_RETRY_OPTIONS,
   handleDatabaseError,
 } from "@/lib/db-retry";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { getCurrentUser } from "@/lib/custom-auth-server";
 import { sendPaymentSuccessNotification } from "@/lib/slack-notification";
 
 export async function GET(request) {
@@ -26,10 +25,7 @@ export async function GET(request) {
     // Get authenticated user (optional)
     let userId = null;
     try {
-      const supabase = createRouteHandlerClient({ cookies });
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const user = await getCurrentUser();
       userId = user?.id;
     } catch (error) {
       console.error("Error getting user:", error);

@@ -1,79 +1,25 @@
 import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { DEFAULT_TRANSACTION_OPTIONS } from '@/lib/db-config';
 import { calculateSaju, determinePaljaType } from '@/lib/saju-utils';
-
-// Supabase 클라이언트 생성 헬퍼 함수
-async function createSupabaseClient() {
-  const cookieStore = await cookies();
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch (error) {
-            // 서버 컴포넌트에서는 쿠키 설정이 불가능할 수 있음
-          }
-        },
-      },
-    }
-  );
-}
+import { authenticateUser } from '@/lib/auth-middleware-v2';
 
 // GET 메서드: 프로필 정보 조회
-export async function GET() {
+export async function GET(request) {
   try {
-    const supabase = await createSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const profile = await prisma.profile.findUnique({
-      where: { id: user.id },
-      select: {
-        id: true,
-        email: true,
-        displayName: true,
-        photoUrl: true,
-        name: true,
-        birthDate: true,
-        birthTime: true,
-        gender: true,
-        mbti: true,
-        calendar: true,
-        isLeapMonth: true,
-        personalityType: true,
-        phone: true,
-        createdAt: true,
-        updatedAt: true,
-      }
+    const authResult = await authenticateUser(request, {
+      requireAuth: true
     });
 
-    if (!profile) {
-      return NextResponse.json(
-        { success: false, error: 'Profile not found' },
-        { status: 404 }
-      );
+    if (authResult.response) {
+      return authResult.response;
     }
+
+    const { user } = authResult;
 
     return NextResponse.json({
       success: true,
-      profile: profile
+      profile: user
     });
 
   } catch (error) {
@@ -88,15 +34,15 @@ export async function GET() {
 // PUT 메서드: 프로필 정보 업데이트
 export async function PUT(request) {
   try {
-    const supabase = await createSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const authResult = await authenticateUser(request, {
+      requireAuth: true
+    });
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
+    if (authResult.response) {
+      return authResult.response;
     }
+
+    const { user } = authResult;
 
     const body = await request.json();
     const {
@@ -239,18 +185,17 @@ export async function PUT(request) {
   }
 }
 
-export async function POST() {
+export async function POST(request) {
   try {
-    const supabase = await createSupabaseClient();
+    const authResult = await authenticateUser(request, {
+      requireAuth: true
+    });
 
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Unauthorized' },
-        { status: 401 }
-      );
+    if (authResult.response) {
+      return authResult.response;
     }
+
+    const { user } = authResult;
 
     // 사용자 이름 결정
     let displayName = user.user_metadata?.full_name ||

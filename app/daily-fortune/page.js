@@ -5,10 +5,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/PageWrapper";
 import styles from "./DailyFortune.module.css";
-import { createClient } from "@/lib/supabase";
+import { useCustomAuth } from "../hooks/useCustomAuth";
 
 export default function DailyFortunePage() {
   const router = useRouter();
+  const { user } = useCustomAuth();
   const [isFlipped, setIsFlipped] = useState(false);
   const [showGif, setShowGif] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -21,11 +22,6 @@ export default function DailyFortunePage() {
   useEffect(() => {
     const checkUserProfile = async () => {
       try {
-        const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
         if (user) {
           // 프로필 정보 가져오기
           const response = await fetch("/api/auth/profile");
@@ -67,7 +63,7 @@ export default function DailyFortunePage() {
     };
 
     checkUserProfile();
-  }, []);
+  }, [user]);
 
   const generateDailyFortune = () => {
     const fortunes = [

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { calculateSaju, determinePaljaType } from "../../lib/saju-utils";
-import { createClient } from "../../lib/supabase";
+import { useCustomAuth } from "../hooks/useCustomAuth";
 import {
   saveUserFormData,
   loadUserFormData,
@@ -16,6 +16,7 @@ import Link from "next/link";
 function AnalyzeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useCustomAuth();
   const [formData, setFormData] = useState({
     name: "",
     year: "",
@@ -28,70 +29,31 @@ function AnalyzeContent() {
   });
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
   const [savedToDb, setSavedToDb] = useState(false);
   const [showConsultationModal, setShowConsultationModal] = useState(false);
   const [modalShown, setModalShown] = useState(false);
   const [isQueryMode, setIsQueryMode] = useState(false);
   const invitationRef = useRef(null);
 
-  // 사용자 인증 상태 확인 및 localStorage에서 데이터 로드
+  // localStorage에서 데이터 로드 (로그인한 사용자인 경우)
   useEffect(() => {
-    const checkUser = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-
-      // 로그인한 사용자인 경우 localStorage에서 데이터 로드
-      if (user) {
-        const savedData = loadUserFormData();
-        if (savedData) {
-          setFormData((prev) => ({
-            ...prev,
-            name: savedData.name || prev.name,
-            year: savedData.year || prev.year,
-            month: savedData.month || prev.month,
-            day: savedData.day || prev.day,
-            hour: savedData.hour || prev.hour,
-            gender: savedData.gender || prev.gender,
-            calendar: savedData.calendar || prev.calendar,
-            isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
-          }));
-        }
+    if (user) {
+      const savedData = loadUserFormData();
+      if (savedData) {
+        setFormData((prev) => ({
+          ...prev,
+          name: savedData.name || prev.name,
+          year: savedData.year || prev.year,
+          month: savedData.month || prev.month,
+          day: savedData.day || prev.day,
+          hour: savedData.hour || prev.hour,
+          gender: savedData.gender || prev.gender,
+          calendar: savedData.calendar || prev.calendar,
+          isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
+        }));
       }
-    };
-    checkUser();
-
-    // 인증 상태 변경 감지
-    const supabase = createClient();
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-
-      // 로그인 시 localStorage에서 데이터 로드
-      if (session?.user) {
-        const savedData = loadUserFormData();
-        if (savedData) {
-          setFormData((prev) => ({
-            ...prev,
-            name: savedData.name || prev.name,
-            year: savedData.year || prev.year,
-            month: savedData.month || prev.month,
-            day: savedData.day || prev.day,
-            hour: savedData.hour || prev.hour,
-            gender: savedData.gender || prev.gender,
-            calendar: savedData.calendar || prev.calendar,
-            isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
-          }));
-        }
-      }
-    });
-
-    return () => subscription?.unsubscribe();
-  }, []);
+    }
+  }, [user]);
 
   // Query parameter에서 팔자 유형 확인 및 자동 결과 표시
   useEffect(() => {

@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
-import { upsertProfile } from "@/lib/supabase-auth";
 import PageWrapper from "@/components/PageWrapper";
+import { toast } from "sonner";
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -19,21 +19,48 @@ export default function AuthCallback() {
 
         if (error) {
           console.error("Auth callback error:", error);
-          router.push("/auth/login?error=callback_failed");
+          toast.error("로그인 처리 중 오류가 발생했습니다.");
+          router.push("/?error=callback_failed");
           return;
         }
 
         if (data.session) {
-          // 사용자 프로필 생성/업데이트
-          const profile = await upsertProfile();
+          // 자체 인증 시스템으로 마이그레이션
+          const response = await fetch('/api/auth/migrate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              supabaseUser: data.session.user
+            }),
+            credentials: 'include'
+          });
 
-          // 홈페이지로 리디렉트
-          router.push("/");
+          const result = await response.json();
+
+          if (result.success) {
+            // 서버에서 쿠키 설정이 안된 경우를 대비해 클라이언트에서도 설정
+            if (result.token) {
+              const maxAge = 7 * 24 * 60 * 60; // 7일
+              const secure = window.location.protocol === 'https:';
+              document.cookie = `plaja_auth=${result.token}; max-age=${maxAge}; path=/; samesite=lax${secure ? '; secure' : ''}`;
+            }
+
+            toast.success("로그인이 완료되었습니다!");
+            // 페이지 강제 새로고침으로 쿠키 적용
+            window.location.href = "/";
+          } else {
+            throw new Error(result.error || 'Migration failed');
+          }
         } else {
-          router.push("/auth/login");
+          toast.error("인증 세션을 찾을 수 없습니다.");
+          router.push("/?error=no_session");
         }
       } catch (error) {
-        router.push("/auth/login?error=unexpected");
+        console.error("Auth callback error:", error);
+        toast.error("로그인 처리 중 오류가 발생했습니다.");
+        router.push("/?error=unexpected");
       }
     };
 

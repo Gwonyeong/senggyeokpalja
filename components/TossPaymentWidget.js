@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
-import { createClient } from "@/lib/supabase";
+import { useCustomAuth } from "../app/hooks/useCustomAuth";
 
 const TossPaymentWidget = ({
   consultationId,
@@ -10,9 +10,9 @@ const TossPaymentWidget = ({
   orderName = "성격팔자 상세리포트",
   onPaymentSuccess,
 }) => {
+  const { user } = useCustomAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
     // SDK v2 스크립트 로드
@@ -22,24 +22,7 @@ const TossPaymentWidget = ({
 
     document.body.appendChild(script);
 
-    // 현재 로그인한 유저 정보 가져오기
-    const getUser = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUser({
-          email: user.email,
-          name:
-            user.user_metadata?.full_name ||
-            user.user_metadata?.name ||
-            user.email?.split("@")[0] ||
-            "고객",
-        });
-      }
-    };
-    getUser();
+    // SDK 스크립트 로딩 완료
 
     return () => {
       if (document.body.contains(script)) {

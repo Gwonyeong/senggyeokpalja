@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
+import { getCurrentUser } from '@/lib/custom-auth-server';
 import { QUICK_TRANSACTION_OPTIONS } from '@/lib/db-config';
 import { withRetry, STANDARD_RETRY_OPTIONS } from '@/lib/db-retry';
 
 export async function GET(request) {
   try {
-    const cookieStore = await cookies();
     const url = new URL(request.url);
+
+    // 현재 로그인한 사용자 확인
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
 
     // 페이지네이션 파라미터
     const page = parseInt(url.searchParams.get('page') || '1');
@@ -20,32 +28,6 @@ export async function GET(request) {
     const fromDate = url.searchParams.get('fromDate');
     const toDate = url.searchParams.get('toDate');
     const searchTerm = url.searchParams.get('search');
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll();
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          },
-        },
-      }
-    );
-
-    const { data: { user }, error } = await supabase.auth.getUser();
-
-    if (error || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
 
     // WHERE 조건 구성
     const whereConditions = {

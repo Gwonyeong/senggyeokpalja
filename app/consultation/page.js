@@ -3,15 +3,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 // import { calculateSajuWithManseryeok } from "../../lib/saju-utils-manseryeok"; // 서버에서 계산하므로 불필요
-import { createClient } from "../../lib/supabase";
+import { useCustomAuth } from "../hooks/useCustomAuth";
 import { saveUserFormData, loadUserFormData } from "../../lib/localStorage-utils";
 import PageWrapper from "@/components/PageWrapper";
 import AuthProtectedPage from "../components/AuthProtectedPage";
 
 export default function ConsultationPage() {
   const router = useRouter();
-  const supabase = createClient();
-  const [user, setUser] = useState(null);
+  const { user, loading: authLoading } = useCustomAuth();
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -28,68 +27,32 @@ export default function ConsultationPage() {
 
   const [loading, setLoading] = useState(false);
 
-  // 로그인 상태 확인 및 localStorage에서 데이터 로드
+  // 인증 상태 체크
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
+    setCheckingAuth(authLoading);
+  }, [authLoading]);
 
-        // 로그인한 사용자인 경우 localStorage에서 데이터 로드
-        if (user) {
-          const savedData = loadUserFormData();
-          if (savedData) {
-            setFormData(prev => ({
-              ...prev,
-              name: savedData.name || prev.name,
-              year: savedData.year || prev.year,
-              month: savedData.month || prev.month,
-              day: savedData.day || prev.day,
-              hour: savedData.hour || prev.hour,
-              gender: savedData.gender || prev.gender,
-              mbti: savedData.mbti || prev.mbti,
-              calendar: savedData.calendar || prev.calendar,
-              isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
-            }));
-          }
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-      } finally {
-        setCheckingAuth(false);
+  // localStorage에서 데이터 로드 (로그인한 사용자인 경우)
+  useEffect(() => {
+    if (user) {
+      const savedData = loadUserFormData();
+      if (savedData) {
+        setFormData(prev => ({
+          ...prev,
+          name: savedData.name || prev.name,
+          year: savedData.year || prev.year,
+          month: savedData.month || prev.month,
+          day: savedData.day || prev.day,
+          hour: savedData.hour || prev.hour,
+          gender: savedData.gender || prev.gender,
+          mbti: savedData.mbti || prev.mbti,
+          calendar: savedData.calendar || prev.calendar,
+          isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
+        }));
       }
-    };
-
-    checkUser();
-
-    // Auth 상태 변경 리스너
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-
-      // 로그인 시 localStorage에서 데이터 로드
-      if (session?.user) {
-        const savedData = loadUserFormData();
-        if (savedData) {
-          setFormData(prev => ({
-            ...prev,
-            name: savedData.name || prev.name,
-            year: savedData.year || prev.year,
-            month: savedData.month || prev.month,
-            day: savedData.day || prev.day,
-            hour: savedData.hour || prev.hour,
-            gender: savedData.gender || prev.gender,
-            mbti: savedData.mbti || prev.mbti,
-            calendar: savedData.calendar || prev.calendar,
-            isLeapMonth: savedData.isLeapMonth || prev.isLeapMonth,
-          }));
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [supabase]);
+    }
+    setCheckingAuth(authLoading);
+  }, [user, authLoading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

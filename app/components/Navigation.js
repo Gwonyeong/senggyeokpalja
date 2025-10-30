@@ -3,63 +3,26 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import {
-  onAuthStateChange,
-  signOut,
-  checkAdminAccess,
-} from "../../lib/supabase-auth";
+import { useCustomAuth } from "../hooks/useCustomAuth";
 import LoginModal from "./LoginModal";
 import PremiumModal from "./PremiumModal";
 
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [menuToggleOpen, setMenuToggleOpen] = useState(true);
   const [serviceToggleOpen, setServiceToggleOpen] = useState(true);
-  const [userProfile, setUserProfile] = useState(null);
 
-  useEffect(() => {
-    // Supabase 인증 상태 감시
-    const {
-      data: { subscription },
-    } = onAuthStateChange(async (authUser) => {
-      setUser(authUser);
-      setIsAdmin(authUser ? checkAdminAccess(authUser) : false);
+  // 자체 인증 훅 사용
+  const { user, isAdmin, showLoginModal, setShowLoginModal, logout: authLogout } = useCustomAuth();
 
-      // 사용자 프로필 정보 설정 및 DB 프로필 자동 생성
-      if (authUser) {
-        // 클라이언트 사이드 프로필 정보 설정
-        setUserProfile({
-          name:
-            authUser.user_metadata?.full_name ||
-            authUser.user_metadata?.name ||
-            authUser.email?.split("@")[0] ||
-            "Unknown",
-          email: authUser.email,
-          photoURL:
-            authUser.user_metadata?.avatar_url ||
-            authUser.user_metadata?.picture ||
-            "",
-          joinDate: authUser.created_at,
-        });
-
-        // DB 프로필 자동 생성/업데이트 (백그라운드에서 실행)
-        try {
-          const { upsertProfile } = await import("../../lib/supabase-auth");
-          const profile = await upsertProfile();
-        } catch (error) {
-          // 프로필 생성 실패는 로그만 남기고 사용자 경험을 방해하지 않음
-        }
-      } else {
-        setUserProfile(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  // 사용자 프로필 정보 (user 객체에서 직접 사용)
+  const userProfile = user ? {
+    name: user.name || user.displayName || "Unknown",
+    email: user.email,
+    photoURL: user.photoUrl || "",
+    joinDate: user.createdAt,
+  } : null;
 
   // 메뉴 열림/닫힘에 따른 body 스크롤 제어
   useEffect(() => {
@@ -79,35 +42,11 @@ export default function Navigation() {
 
   const handleLogout = async () => {
     try {
-      // 로그아웃 실행
-      const result = await signOut();
-
-      // 상태 초기화
-      setUser(null);
-      setIsAdmin(false);
-      setUserProfile(null);
-
-      // 모바일 메뉴 닫기
+      await authLogout();
       setMobileMenuOpen(false);
-
-      alert("로그아웃되었습니다.");
-
-      // 홈페이지로 리다이렉션
-      window.location.href = "/";
     } catch (error) {
       console.error("로그아웃 실패:", error);
-      console.error("에러 상세:", error.message, error.stack);
-
-      // 에러가 발생해도 강제로 상태 초기화
-      setUser(null);
-      setIsAdmin(false);
-      setUserProfile(null);
       setMobileMenuOpen(false);
-
-      alert(`로그아웃에 실패했습니다: ${error.message || "알 수 없는 오류"}`);
-
-      // 강제 리다이렉션
-      window.location.href = "/";
     }
   };
 
