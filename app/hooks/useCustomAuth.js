@@ -107,11 +107,7 @@ export function useCustomAuth(requireAuth = false) {
 
   useEffect(() => {
     checkAuthState();
-
-    // 주기적 인증 확인 (5분마다)
-    const interval = setInterval(checkAuthState, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
+    // 주기적 인증 확인 제거 - 성능 최적화를 위해 필요시에만 확인
   }, [requireAuth, router, pathname]);
 
   const checkAuth = () => {

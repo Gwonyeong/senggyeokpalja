@@ -14,7 +14,6 @@ import Section4Personality from "./components/Section4Personality";
 import Section5Fortune from "./components/Section5Fortune";
 import Section6Advice from "./components/Section6Advice";
 import Section7Conclusion from "./components/Section7Conclusion";
-import DiscountTimer from "../../../../components/DiscountTimer";
 
 import Image from "next/image";
 
@@ -30,6 +29,7 @@ export default function ConsultationResultPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [currentSection, setCurrentSection] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [soldCount, setSoldCount] = useState(0);
   // const [showEventModal, setShowEventModal] = useState(false);
 
   // URL 파라미터에서 섹션 번호 가져오기
@@ -74,6 +74,18 @@ export default function ConsultationResultPage({ params }) {
 
         if (response.ok) {
           setConsultation(result.consultation);
+
+          // 판매된 상세리포트 수 가져오기
+          try {
+            const statsResponse = await fetch("/api/consultation/stats");
+            if (statsResponse.ok) {
+              const statsResult = await statsResponse.json();
+              setSoldCount(statsResult.paidCount || 0);
+            }
+          } catch (error) {
+            console.log("Stats loading failed, using default value");
+            setSoldCount(0);
+          }
         } else {
           if (response.status === 401) {
             alert("로그인이 필요합니다.");
@@ -338,6 +350,18 @@ export default function ConsultationResultPage({ params }) {
                             priority
                           />
                         </div>
+                        {/* 리포트 구매 안내 문구 */}
+                        <p
+                          style={{
+                            marginTop: "15px",
+                            fontSize: "14px",
+                            color: "#999",
+                            textAlign: "center",
+                            fontFamily: "'Noto Serif KR', serif",
+                          }}
+                        >
+                          리포트를 구매하면 모든 내용을 확인할 수 있습니다.
+                        </p>
                       </div>
                     </div>
 
@@ -501,70 +525,66 @@ export default function ConsultationResultPage({ params }) {
                 alignItems: "center",
               }}
             >
-              {/* 복채 정보 */}
+              {/* 남은 수량 및 가격 정보 */}
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                }}
-              >
-                {/* <div
-                  style={{
-                    width: "60px",
-                    height: "2px",
-                    background:
-                      "linear-gradient(90deg, transparent, #FCA311, transparent)",
-                  }}
-                ></div> */}
-                {/* <div style={{
-                  display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  gap: "5px"
-                }}>
-                  <p style={{
-                    fontSize: "14px",
-                    color: "#666",
-                    textDecoration: "line-through",
-                    fontFamily: "'Noto Serif KR', serif",
-                    margin: "0"
-                  }}>
-                    복채: 29,000원
-                  </p>
-                  <p style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    color: "#FCA311",
-                    fontFamily: "'Noto Serif KR', serif",
-                    margin: "0"
-                  }}>
-                    9,900원
-                  </p>
-                </div> */}
-                {/* <div
+                  gap: "8px",
+                }}
+              >
+                {/* 남은 수량 */}
+                <p
                   style={{
-                    width: "60px",
-                    height: "2px",
-                    background:
-                      "linear-gradient(90deg, transparent, #FCA311, transparent)",
+                    fontSize: "14px",
+                    color: "#FF6B35",
+                    fontFamily: "'Noto Serif KR', serif",
+                    margin: "0",
+                    fontWeight: "500",
                   }}
-                ></div> */}
-              </div>
+                >
+                  남은 수량: {Math.max(0, 100 - soldCount)}개
+                </p>
 
-              {/* 할인 타이머 - 모바일에서는 숨김 */}
-              {!isMobile && (
+                {/* 가격 정보 */}
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "column",
                     alignItems: "center",
-                    gap: "8px",
+                    gap: "10px",
                   }}
                 >
-                  <DiscountTimer />
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      color: "#666",
+                      textDecoration: "line-through",
+                      fontFamily: "'Noto Serif KR', serif",
+                    }}
+                  >
+                    정가 29,000원
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      color: "#666",
+                    }}
+                  >
+                    →
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      color: "#FCA311",
+                      fontFamily: "'Noto Serif KR', serif",
+                    }}
+                  >
+                    특가 9,900원
+                  </span>
                 </div>
-              )}
+              </div>
 
               {/* 토리와 상담받기 버튼 */}
 
