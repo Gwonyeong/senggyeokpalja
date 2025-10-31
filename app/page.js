@@ -32,10 +32,15 @@ export default function Home() {
 
   const handleSynergyClick = (e) => {
     e.preventDefault();
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
+    if (!user) {
+      setShowLoginModal(true);
+    } else {
+      // 로그인된 사용자는 준비중 토스트 표시
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    }
   };
 
   const handleConsultationClick = (e) => {
@@ -44,6 +49,24 @@ export default function Home() {
       setShowLoginModal(true);
     } else {
       window.location.href = "/consultation";
+    }
+  };
+
+  const handleAnalyzeClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLoginModal(true);
+    } else {
+      window.location.href = "/analyze";
+    }
+  };
+
+  const handleSynergyNavigateClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLoginModal(true);
+    } else {
+      window.location.href = "/synergy";
     }
   };
 
@@ -110,7 +133,10 @@ export default function Home() {
             </div>
 
             <div className="services-image-grid">
-              <Link href="/analyze" className="service-image-item">
+              <div
+                onClick={handleAnalyzeClick}
+                className="service-image-item cursor-pointer"
+              >
                 <div className="service-image-badge">무료</div>
                 <div className="service-image-wrapper">
                   <img src="/assets/images/service-1.png" alt="팔자유형 분석" />
@@ -121,8 +147,11 @@ export default function Home() {
                     사주판 mbti를 알아보세요.
                   </p>
                 </div>
-              </Link>
-              <Link href="/synergy" className="service-image-item">
+              </div>
+              <div
+                onClick={handleSynergyNavigateClick}
+                className="service-image-item cursor-pointer"
+              >
                 <div className="service-image-badge">무료</div>
                 <div className="service-image-wrapper">
                   <img
@@ -136,8 +165,11 @@ export default function Home() {
                     mbti와 팔자유형의 궁합 점수를 알아보세요.
                   </p>
                 </div>
-              </Link>
-              <Link href="/consultation" className="service-image-item">
+              </div>
+              <div
+                onClick={handleConsultationClick}
+                className="service-image-item cursor-pointer"
+              >
                 <div className="service-image-badge premium">프리미엄</div>
                 <div className="service-image-wrapper">
                   <img
@@ -151,7 +183,7 @@ export default function Home() {
                     토리에게 상세 해석을 의뢰해보세요.
                   </p>
                 </div>
-              </Link>
+              </div>
               <div
                 onClick={handleSynergyClick}
                 className="service-image-item cursor-pointer"
@@ -243,7 +275,7 @@ export default function Home() {
       {/* Toast Notification */}
       {showToast && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300">
-          <p className="text-sm font-medium">준비중입니다</p>
+          <p className="text-sm font-medium">서비스 준비중입니다</p>
         </div>
       )}
 
