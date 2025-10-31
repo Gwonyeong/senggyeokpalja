@@ -13,6 +13,15 @@ export const metadata = {
     "MBTI와 팔자유형을 결합한 새로운 성격 분석. 토리와 함께 당신의 진짜 모습을 발견해보세요.",
   keywords: "성격팔자, MBTI, 사주팔자, 성격분석, 토리, 팔자유형",
   robots: "index, follow",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "성격팔자",
+    startupImage: [
+      "/assets/images/icon-192x192.png",
+    ],
+  },
   openGraph: {
     title: "성격팔자 - 내 인생, 합법적 스포일러",
     description:
@@ -41,6 +50,7 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({ children }) {

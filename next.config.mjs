@@ -1,3 +1,5 @@
+import withPWA from 'next-pwa';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -24,4 +26,39 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+const pwaConfig = withPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  runtimeCaching: [
+    {
+      urlPattern: /^https?.*\.(png|jpe?g|webp|svg|gif|tiff|js|css)$/,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'static-resources',
+        expiration: {
+          maxEntries: 64,
+          maxAgeSeconds: 86400,
+        },
+      },
+    },
+    {
+      urlPattern: /^https?:\/\/api\./,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'api-cache',
+        networkTimeoutSeconds: 10,
+        expiration: {
+          maxEntries: 16,
+          maxAgeSeconds: 86400,
+        },
+      },
+    },
+  ],
+  fallbacks: {
+    document: '/offline',
+  },
+  disable: process.env.NODE_ENV === 'development',
+});
+
+export default pwaConfig(nextConfig);
