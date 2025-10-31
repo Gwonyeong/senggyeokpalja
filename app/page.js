@@ -6,9 +6,9 @@ import { onAuthStateChange } from "../lib/supabase-auth";
 import MainToonSlider from "@/components/MainToonSlider";
 import CustomerStoriesSlider from "@/components/CustomerStoriesSlider";
 import LoginModal from "./components/LoginModal";
+import { toast } from "sonner";
 
 export default function Home() {
-  const [showToast, setShowToast] = useState(false);
   const [user, setUser] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -32,15 +32,10 @@ export default function Home() {
 
   const handleSynergyClick = (e) => {
     e.preventDefault();
-    if (!user) {
-      setShowLoginModal(true);
-    } else {
-      // 로그인된 사용자는 준비중 토스트 표시
-      setShowToast(true);
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-    }
+    // 인연 스포일러 보기는 아직 준비중이므로 토스트만 표시
+    toast.error("준비중입니다", {
+      duration: 3000,
+    });
   };
 
   const handleConsultationClick = (e) => {
@@ -271,13 +266,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-
-      {/* Toast Notification */}
-      {showToast && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300">
-          <p className="text-sm font-medium">서비스 준비중입니다</p>
-        </div>
-      )}
 
       {/* Login Modal */}
       <LoginModal
