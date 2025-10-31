@@ -193,42 +193,6 @@ const TossPaymentWidget = ({
           </div>
         </div>
       )}
-      <button
-        onClick={handlePayment}
-        disabled={isLoading}
-        style={{
-          width: "100%",
-          padding: "18px",
-          background: isLoading
-            ? "#666"
-            : "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
-          color: isLoading ? "#999" : "#000",
-          border: "2px solid #FCA311",
-          borderRadius: "15px",
-          fontSize: "18px",
-          fontWeight: "700",
-          cursor: isLoading ? "not-allowed" : "pointer",
-          transition: "all 0.3s ease",
-          boxShadow: "0 4px 12px rgba(252, 163, 17, 0.3)",
-          fontFamily: "'Noto Serif KR', serif",
-          letterSpacing: "1px",
-          marginTop: "20px",
-        }}
-        onMouseOver={(e) => {
-          if (!isLoading) {
-            e.target.style.transform = "translateY(-2px)";
-            e.target.style.boxShadow = "0 6px 20px rgba(252, 163, 17, 0.4)";
-          }
-        }}
-        onMouseOut={(e) => {
-          if (!isLoading) {
-            e.target.style.transform = "translateY(0)";
-            e.target.style.boxShadow = "0 4px 12px rgba(252, 163, 17, 0.3)";
-          }
-        }}
-      >
-        {isLoading ? "결제 요청중..." : "토리와 상담받기"}
-      </button>
     </>
   );
 };

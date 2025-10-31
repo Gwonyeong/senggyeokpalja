@@ -708,14 +708,6 @@ ${shareUrl}`;
                         {result.typeData.description}
                       </p>
 
-                      <p
-                        className="teaser-text"
-                        style={{ marginTop: "25px", marginBottom: "10px" }}
-                      >
-                        MBTI+사주 기반 상세 리포트, 팔자유형 심층 분석은{" "}
-                        <strong>[기능 준비중]</strong>입니다!
-                      </p>
-
                       <div className="info-card">
                         <h3>[토리가 건네는 응원]</h3>
                         <p id="result-advice">{result.typeData.advice}</p>
