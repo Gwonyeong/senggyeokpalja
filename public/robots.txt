@@ -1,0 +1,30 @@
+# Robots.txt for 성격팔자
+# https://www.robotstxt.org/robotstxt.html
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow private/admin pages
+Disallow: /api/
+Disallow: /admin/
+Disallow: /mypage/
+Disallow: /auth/
+Disallow: /payment/fail/
+Disallow: /payment/success/
+
+# Allow important pages explicitly
+Allow: /
+Allow: /consultation
+Allow: /analyze
+Allow: /synergy
+Allow: /daily-fortune
+Allow: /terms
+Allow: /privacy
+
+# Crawl delay for responsible crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://성격팔자.com/sitemap.xml
+Sitemap: https://xn--2e0b982apee4xc72w.com/sitemap.xml
