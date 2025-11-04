@@ -133,6 +133,34 @@ const TossPaymentWidget = ({
 
   return (
     <>
+      {/* 토리와 상담받기 버튼 */}
+      <button
+        onClick={handlePayment}
+        disabled={isLoading}
+        style={{
+          width: "100%",
+          padding: "18px 32px",
+          background: isLoading
+            ? "#666"
+            : "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
+          color: isLoading ? "#999" : "#000",
+          border: `2px solid ${isLoading ? "#666" : "#FCA311"}`,
+          borderRadius: "15px",
+          fontSize: "20px",
+          fontWeight: "700",
+          fontFamily: "'Noto Serif KR', serif",
+          cursor: isLoading ? "not-allowed" : "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: isLoading
+            ? "none"
+            : "0 6px 20px rgba(252, 163, 17, 0.4)",
+          marginTop: "30px",
+          letterSpacing: "2px",
+        }}
+      >
+        {isLoading ? "처리 중..." : "토리와 상담받기"}
+      </button>
+
       {showModal && (
         <div
           style={{
