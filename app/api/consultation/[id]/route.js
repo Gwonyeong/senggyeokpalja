@@ -64,6 +64,20 @@ export async function GET(request, { params }) {
       );
     }
 
+    // MBTI 정보 확인을 위한 콘솔 로그
+    console.log('=== MBTI 정보 확인 ===');
+    console.log('consultation.mbti:', consultation.mbti);
+    console.log('consultation.additionalData:', consultation.additionalData);
+    console.log('consultation.additionalData.mbti:', consultation.additionalData?.mbti);
+    console.log('consultation 전체 키들:', Object.keys(consultation));
+    console.log('consultation 데이터 샘플:', {
+      id: consultation.id,
+      mbti: consultation.mbti,
+      additionalDataMbti: consultation.additionalData?.mbti,
+      birthInfo: consultation.birthInfo,
+      dominantElement: consultation.dominantElement
+    });
+
     return NextResponse.json({
       success: true,
       consultation: consultation
