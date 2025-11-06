@@ -657,26 +657,47 @@ export default function DailyFortunePage() {
       sibsinType = iljinGanEumYang === ilganEumYang ? "편인" : "정인";
     }
 
-    // 십신별 점수 및 설명 부여
+    // 십신별 점수 및 설명 부여 (확장된 점수 범위)
     switch (sibsinType) {
       case "정인":
+        score = 25;
+        description = "최고의 조화 - 일간을 강력히 생조하여 지혜와 안정을 가져다줌";
+        break;
       case "식신":
+        score = 20;
+        description = "매우 좋은 조화 - 창조적 에너지와 재능을 발휘할 수 있는 날";
+        break;
       case "정재":
+        score = 18;
+        description = "안정적 재물운 - 계획적이고 착실한 성과를 얻을 수 있음";
+        break;
       case "정관":
-        score = 10;
-        description = "안정적, 생산적 관계 - 일간을 돕고 균형 유지";
+        score = 15;
+        description = "질서와 명예 - 사회적 인정과 책임감이 조화롭게 작용";
         break;
       case "편인":
+        score = 5;
+        description = "약간의 도움 - 특수한 재능이나 직감이 도움될 수 있음";
+        break;
       case "편재":
-      case "비견":
         score = 0;
-        description = "중립 - 긍정/부정 혼재, 명식 따라 다름";
+        description = "기회와 위험 공존 - 투자나 모험에 신중함 필요";
+        break;
+      case "비견":
+        score = -3;
+        description = "경쟁 상황 - 자립심은 강화되나 협력에 어려움";
+        break;
+      case "겁재":
+        score = -15;
+        description = "경쟁과 손실 - 과도한 야망으로 인한 충돌 가능성";
         break;
       case "상관":
+        score = -20;
+        description = "비판적 에너지 - 기존 질서에 대한 반발과 갈등";
+        break;
       case "편관":
-      case "겁재":
-        score = -10;
-        description = "충돌, 불균형 - 일간을 약화시키거나 극함";
+        score = -25;
+        description = "강한 압박 - 스트레스와 긴장감이 높은 하루";
         break;
       default:
         score = 0;
