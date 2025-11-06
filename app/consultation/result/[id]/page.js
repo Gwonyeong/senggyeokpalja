@@ -31,7 +31,16 @@ export default function ConsultationResultPage({ params }) {
   const [isMobile, setIsMobile] = useState(false);
   const [soldCount, setSoldCount] = useState(0);
   // const [showEventModal, setShowEventModal] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
   const paymentWidgetRef = useRef(null);
+
+  // 어드민 사용자 목록
+  const ADMIN_USERS = [
+    "jaehxxn7@naver.com",
+    "tnalsqkr1234@gmail.com",
+    "regend0726@gmail.com",
+    "rnjsdud980@gmail.com",
+  ];
 
   // URL 파라미터에서 섹션 번호 가져오기
   useEffect(() => {
@@ -108,6 +117,51 @@ export default function ConsultationResultPage({ params }) {
 
     loadConsultationData();
   }, [resolvedParams, router, supabase]);
+
+  // 어드민 사용자 체크
+  const isAdminUser = (userEmail) => {
+    return ADMIN_USERS.includes(userEmail);
+  };
+
+  // 어드민 결제 처리 함수
+  const handleAdminPayment = async () => {
+    try {
+      const response = await fetch(`/api/consultation/${consultation.id}/admin-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        alert('어드민 결제 처리가 완료되었습니다.');
+        setShowAdminModal(false);
+        // 페이지 새로고침하여 결제 상태 업데이트
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        alert(`결제 처리 실패: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error('어드민 결제 처리 중 오류:', error);
+      alert('결제 처리 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 결제 버튼 클릭 핸들러
+  const handlePaymentButtonClick = () => {
+    if (user && isAdminUser(user.email)) {
+      // 어드민 사용자인 경우 모달 표시
+      setShowAdminModal(true);
+    } else {
+      // 일반 사용자인 경우 기존 플로우
+      if (paymentWidgetRef.current) {
+        paymentWidgetRef.current.openPayment();
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
 
   // 섹션 제목 매핑
   const getSectionTitle = (section) => {
@@ -403,6 +457,156 @@ export default function ConsultationResultPage({ params }) {
                   </>
                 )}
 
+                {/* 어드민 결제 선택 모달 */}
+                {showAdminModal && (
+                  <div
+                    style={{
+                      position: "fixed",
+                      top: "0",
+                      left: "0",
+                      right: "0",
+                      bottom: "0",
+                      backgroundColor: "rgba(0, 0, 0, 0.8)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: "10000",
+                      padding: "20px",
+                    }}
+                    onClick={() => setShowAdminModal(false)}
+                  >
+                    <div
+                      style={{
+                        backgroundColor: "#1a1a1a",
+                        borderRadius: "12px",
+                        padding: "30px",
+                        maxWidth: "400px",
+                        width: "100%",
+                        border: "2px solid #FCA311",
+                        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.5)",
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <h3
+                        style={{
+                          color: "#FCA311",
+                          fontSize: "20px",
+                          fontFamily: "'Noto Serif KR', serif",
+                          marginBottom: "20px",
+                          textAlign: "center",
+                          letterSpacing: "1px",
+                        }}
+                      >
+                        어드민 계정입니다
+                      </h3>
+
+                      <p
+                        style={{
+                          color: "#ccc",
+                          fontSize: "14px",
+                          lineHeight: "1.6",
+                          marginBottom: "25px",
+                          textAlign: "center",
+                        }}
+                      >
+                        결제 방식을 선택해주세요.
+                      </p>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "12px",
+                        }}
+                      >
+                        {/* 결제 진행 (일반 플로우) 버튼 */}
+                        <button
+                          onClick={() => {
+                            setShowAdminModal(false);
+                            // 일반 결제 플로우 실행
+                            if (paymentWidgetRef.current) {
+                              paymentWidgetRef.current.openPayment();
+                            } else {
+                              window.scrollTo({ top: 0, behavior: "smooth" });
+                            }
+                          }}
+                          style={{
+                            padding: "14px 20px",
+                            backgroundColor: "#4a5568",
+                            color: "#fff",
+                            border: "1px solid #666",
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "500",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
+                            fontFamily: "'Noto Serif KR', serif",
+                          }}
+                          onMouseOver={(e) => {
+                            e.target.style.backgroundColor = "#5a6478";
+                          }}
+                          onMouseOut={(e) => {
+                            e.target.style.backgroundColor = "#4a5568";
+                          }}
+                        >
+                          1. 결제 진행 (일반 플로우)
+                        </button>
+
+                        {/* 임의로 결제 처리 (어드민만 가능) 버튼 */}
+                        <button
+                          onClick={handleAdminPayment}
+                          style={{
+                            padding: "14px 20px",
+                            backgroundColor: "#FCA311",
+                            color: "#000",
+                            border: "none",
+                            borderRadius: "8px",
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
+                            fontFamily: "'Noto Serif KR', serif",
+                          }}
+                          onMouseOver={(e) => {
+                            e.target.style.backgroundColor = "#e8940f";
+                          }}
+                          onMouseOut={(e) => {
+                            e.target.style.backgroundColor = "#FCA311";
+                          }}
+                        >
+                          2. 임의로 결제 처리 (어드민만 가능)
+                        </button>
+
+                        {/* 취소 버튼 */}
+                        <button
+                          onClick={() => setShowAdminModal(false)}
+                          style={{
+                            padding: "12px 20px",
+                            backgroundColor: "transparent",
+                            color: "#999",
+                            border: "1px solid #444",
+                            borderRadius: "8px",
+                            fontSize: "14px",
+                            cursor: "pointer",
+                            transition: "all 0.3s ease",
+                            marginTop: "8px",
+                          }}
+                          onMouseOver={(e) => {
+                            e.target.style.color = "#ccc";
+                            e.target.style.borderColor = "#666";
+                          }}
+                          onMouseOut={(e) => {
+                            e.target.style.color = "#999";
+                            e.target.style.borderColor = "#444";
+                          }}
+                        >
+                          취소
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* 추석 이벤트 모달 */}
                 {/* <ChuseokEventModal
                   isOpen={showEventModal}
@@ -591,15 +795,7 @@ export default function ConsultationResultPage({ params }) {
               {/* 토리와 상담받기 버튼 */}
 
               <button
-                onClick={() => {
-                  // ref를 통해 TossPaymentWidget의 openPayment 호출
-                  if (paymentWidgetRef.current) {
-                    paymentWidgetRef.current.openPayment();
-                  } else {
-                    // ref가 없는 경우 페이지 상단으로 스크롤
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }
-                }}
+                onClick={handlePaymentButtonClick}
                 style={{
                   width: "100%",
                   maxWidth: "300px",
