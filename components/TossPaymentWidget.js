@@ -1,18 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useCustomAuth } from "../app/hooks/useCustomAuth";
 
-const TossPaymentWidget = ({
+const TossPaymentWidget = forwardRef(({
   consultationId,
   amount = 9900,
   orderName = "성격팔자 상세리포트",
   onPaymentSuccess,
-}) => {
+}, ref) => {
   const { user } = useCustomAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  // 외부에서 handlePayment를 호출할 수 있도록 ref 노출
+  useImperativeHandle(ref, () => ({
+    openPayment: handlePayment
+  }));
 
   useEffect(() => {
     // SDK v2 스크립트 로드
@@ -133,6 +138,34 @@ const TossPaymentWidget = ({
 
   return (
     <>
+      {/* 토리와 상담받기 버튼 */}
+      <button
+        onClick={handlePayment}
+        disabled={isLoading}
+        style={{
+          width: "100%",
+          padding: "18px 32px",
+          background: isLoading
+            ? "#666"
+            : "linear-gradient(135deg, #FCA311 0%, #b8860b 100%)",
+          color: isLoading ? "#999" : "#000",
+          border: `2px solid ${isLoading ? "#666" : "#FCA311"}`,
+          borderRadius: "15px",
+          fontSize: "20px",
+          fontWeight: "700",
+          fontFamily: "'Noto Serif KR', serif",
+          cursor: isLoading ? "not-allowed" : "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: isLoading
+            ? "none"
+            : "0 6px 20px rgba(252, 163, 17, 0.4)",
+          marginTop: "30px",
+          letterSpacing: "2px",
+        }}
+      >
+        {isLoading ? "처리 중..." : "토리와 상담받기"}
+      </button>
+
       {showModal && (
         <div
           style={{
@@ -195,6 +228,8 @@ const TossPaymentWidget = ({
       )}
     </>
   );
-};
+});
+
+TossPaymentWidget.displayName = 'TossPaymentWidget';
 
 export default TossPaymentWidget;

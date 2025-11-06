@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../../../lib/supabase";
 import PageWrapper from "@/components/PageWrapper";
@@ -31,6 +31,7 @@ export default function ConsultationResultPage({ params }) {
   const [isMobile, setIsMobile] = useState(false);
   const [soldCount, setSoldCount] = useState(0);
   // const [showEventModal, setShowEventModal] = useState(false);
+  const paymentWidgetRef = useRef(null);
 
   // URL 파라미터에서 섹션 번호 가져오기
   useEffect(() => {
@@ -412,6 +413,7 @@ export default function ConsultationResultPage({ params }) {
                 {/* 토스 페이먼츠 결제 위젯 */}
                 {currentSection === 1 && !consultation.isPaid && (
                   <TossPaymentWidget
+                    ref={paymentWidgetRef}
                     consultationId={consultation.id}
                     amount={9900}
                     orderName="성격팔자 상세리포트"
@@ -589,18 +591,12 @@ export default function ConsultationResultPage({ params }) {
               {/* 토리와 상담받기 버튼 */}
 
               <button
-                onClick={(e) => {
-                  // TossPaymentWidget의 버튼을 찾아서 클릭
-                  const paymentButtons = document.querySelectorAll("button");
-                  const paymentButton = Array.from(paymentButtons).find(
-                    (btn) =>
-                      btn.textContent === "토리와 상담받기" &&
-                      btn !== e.currentTarget
-                  );
-                  if (paymentButton) {
-                    paymentButton.click();
+                onClick={() => {
+                  // ref를 통해 TossPaymentWidget의 openPayment 호출
+                  if (paymentWidgetRef.current) {
+                    paymentWidgetRef.current.openPayment();
                   } else {
-                    // 버튼을 찾지 못한 경우 페이지 상단의 결제 섹션으로 스크롤
+                    // ref가 없는 경우 페이지 상단으로 스크롤
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
