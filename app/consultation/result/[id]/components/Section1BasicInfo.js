@@ -277,6 +277,9 @@ export default function Section1BasicInfo({ consultation }) {
         ))}
       </div>
 
+      {/* 새로운 오행 분포 컴포넌트 */}
+      <FiveElementsDistribution consultation={consultation} />
+
       <FiveElementsChart consultation={consultation} />
 
       {/* MBTI와 오행 결합 분석 섹션 */}
@@ -334,6 +337,292 @@ export default function Section1BasicInfo({ consultation }) {
     </div>
   );
 }
+
+// 새로운 오행 분포 컴포넌트
+const FiveElementsDistribution = ({ consultation }) => {
+  // 오행 데이터 추출
+  const elements = {
+    木: consultation?.woodCount || 0,
+    火: consultation?.fireCount || 0,
+    土: consultation?.earthCount || 0,
+    金: consultation?.metalCount || 0,
+    水: consultation?.waterCount || 0,
+  };
+
+  // 오행별 색상 정의
+  const elementColors = {
+    木: "#22c55e",
+    火: "#ef4444",
+    土: "#eab308",
+    金: "#94a3b8",
+    水: "#3b82f6"
+  };
+
+  // 오행별 한글 이름
+  const elementKoreanNames = {
+    木: "목",
+    火: "화",
+    土: "토",
+    金: "금",
+    水: "수"
+  };
+
+  // 총합 계산
+  const total = Object.values(elements).reduce((sum, val) => sum + val, 0);
+  const percentages = {};
+  Object.entries(elements).forEach(([key, value]) => {
+    percentages[key] = total > 0 ? Math.round((value / total) * 100) : 0;
+  });
+
+  // 원형 배치를 위한 좌표 계산
+  const centerX = 200;
+  const centerY = 200;
+  const radius = 120;
+
+  // 오행 위치 (원형 배치 - 목을 상단에서 시작)
+  const elementPositions = {
+    木: { angle: -90, x: centerX, y: centerY - radius }, // 상단
+    火: { angle: -18, x: centerX + radius * Math.cos(-18 * Math.PI / 180), y: centerY + radius * Math.sin(-18 * Math.PI / 180) }, // 우상단
+    土: { angle: 54, x: centerX + radius * Math.cos(54 * Math.PI / 180), y: centerY + radius * Math.sin(54 * Math.PI / 180) }, // 우하단
+    金: { angle: 126, x: centerX + radius * Math.cos(126 * Math.PI / 180), y: centerY + radius * Math.sin(126 * Math.PI / 180) }, // 좌하단
+    水: { angle: 198, x: centerX + radius * Math.cos(198 * Math.PI / 180), y: centerY + radius * Math.sin(198 * Math.PI / 180) }, // 좌상단
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        marginBottom: "30px",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        borderRadius: "12px",
+        padding: "20px",
+        border: "1px solid rgba(212, 175, 55, 0.2)",
+      }}
+    >
+      <h4
+        style={{
+          color: "#d4af37",
+          fontSize: "24px",
+          fontWeight: "bold",
+          marginBottom: "20px",
+          textAlign: "center",
+          fontFamily: "Noto Serif KR",
+        }}
+      >
+        당신의 오행 분포
+      </h4>
+
+      {/* 오행 다이어그램 */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "30px" }}>
+        <svg
+          width="400"
+          height="400"
+          viewBox="0 0 400 400"
+          style={{ maxWidth: "100%", height: "auto" }}
+        >
+          {/* 상생 관계 (실선 화살표) */}
+          <defs>
+            <marker
+              id="arrowhead"
+              markerWidth="10"
+              markerHeight="7"
+              refX="9"
+              refY="3.5"
+              orient="auto"
+            >
+              <polygon points="0 0, 10 3.5, 0 7" fill="#888" />
+            </marker>
+            <marker
+              id="arrowhead-red"
+              markerWidth="10"
+              markerHeight="7"
+              refX="9"
+              refY="3.5"
+              orient="auto"
+            >
+              <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" />
+            </marker>
+          </defs>
+
+          {/* 상생 관계 선 그리기 (원형) */}
+          <path
+            d={`M ${elementPositions.木.x} ${elementPositions.木.y}
+                Q ${centerX + radius * 0.7} ${centerY - radius * 0.7}, ${elementPositions.火.x} ${elementPositions.火.y}
+                Q ${centerX + radius * 0.9} ${centerY + radius * 0.2}, ${elementPositions.土.x} ${elementPositions.土.y}
+                Q ${centerX} ${centerY + radius * 0.9}, ${elementPositions.金.x} ${elementPositions.金.y}
+                Q ${centerX - radius * 0.7} ${centerY}, ${elementPositions.水.x} ${elementPositions.水.y}
+                Q ${centerX - radius * 0.2} ${centerY - radius * 0.7}, ${elementPositions.木.x} ${elementPositions.木.y}`}
+            stroke="#888"
+            strokeWidth="2"
+            fill="none"
+            markerEnd="url(#arrowhead)"
+            strokeDasharray="0"
+          />
+
+          {/* 상극 관계 (점선 빨간색 - 별 모양) */}
+          <g stroke="#ef4444" strokeWidth="1.5" fill="none" strokeDasharray="5,5" opacity="0.7">
+            <line x1={elementPositions.木.x} y1={elementPositions.木.y}
+                  x2={elementPositions.土.x} y2={elementPositions.土.y} />
+            <line x1={elementPositions.火.x} y1={elementPositions.火.y}
+                  x2={elementPositions.金.x} y2={elementPositions.金.y} />
+            <line x1={elementPositions.土.x} y1={elementPositions.土.y}
+                  x2={elementPositions.水.x} y2={elementPositions.水.y} />
+            <line x1={elementPositions.金.x} y1={elementPositions.金.y}
+                  x2={elementPositions.木.x} y2={elementPositions.木.y} />
+            <line x1={elementPositions.水.x} y1={elementPositions.水.y}
+                  x2={elementPositions.火.x} y2={elementPositions.火.y} />
+          </g>
+
+          {/* 오행 원형 요소 */}
+          {Object.entries(elementPositions).map(([element, pos]) => (
+            <g key={element}>
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r="35"
+                fill={elementColors[element]}
+                stroke="#fff"
+                strokeWidth="2"
+                opacity="0.9"
+              />
+              <text
+                x={pos.x}
+                y={pos.y + 5}
+                textAnchor="middle"
+                fontSize="24"
+                fontWeight="bold"
+                fill="#fff"
+                fontFamily="Noto Serif KR"
+              >
+                {element}
+              </text>
+              <text
+                x={pos.x}
+                y={pos.y + 55}
+                textAnchor="middle"
+                fontSize="12"
+                fill="#d4af37"
+                fontWeight="600"
+              >
+                n개
+              </text>
+            </g>
+          ))}
+
+          {/* 범례 */}
+          <g transform="translate(20, 360)">
+            <line x1="0" y1="0" x2="30" y2="0" stroke="#888" strokeWidth="2" />
+            <text x="35" y="5" fontSize="12" fill="#888">상생</text>
+            <line x1="80" y1="0" x2="110" y2="0" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="5,5" />
+            <text x="115" y="5" fontSize="12" fill="#ef4444">상극</text>
+          </g>
+        </svg>
+      </div>
+
+      {/* 대표 오행 표시 */}
+      {consultation?.dominantElement && (
+        <div
+          style={{
+            marginBottom: "30px",
+            padding: "20px",
+            backgroundColor: "rgba(212, 175, 55, 0.05)",
+            borderRadius: "12px",
+            border: "2px solid rgba(212, 175, 55, 0.3)",
+            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+          }}
+        >
+          <h5
+            style={{
+              color: elementColors[consultation.dominantElement] || "#d4af37",
+              fontSize: "18px",
+              fontWeight: "700",
+              marginBottom: "15px",
+              textAlign: "center",
+              fontFamily: "Noto Serif KR",
+            }}
+          >
+            {consultation.userName || "OO"}님의 대표오행: {elementKoreanNames[consultation.dominantElement]}{consultation.dominantElement}
+          </h5>
+          <div style={{ textAlign: "center", color: "rgba(255, 255, 255, 0.8)" }}>
+            <p style={{ marginBottom: "8px" }}>
+              <span style={{ color: "#d4af37", fontWeight: "600" }}>특성:</span>{" "}
+              {getFiveElementBasicInfo(consultation.dominantElement)?.characteristic}
+            </p>
+            <p>
+              <span style={{ color: "#d4af37", fontWeight: "600" }}>성향:</span>{" "}
+              {getFiveElementBasicInfo(consultation.dominantElement)?.personality}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 오행 분포 막대 차트 */}
+      <div
+        style={{
+          marginTop: "20px",
+          padding: "20px",
+          backgroundColor: "rgba(212, 175, 55, 0.05)",
+          borderRadius: "8px",
+          border: "1px solid rgba(212, 175, 55, 0.1)",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+          {["木", "火", "水", "金", "土"].map((element) => {
+            const isDominant = consultation?.dominantElement === element;
+            const percentage = percentages[element];
+            const elementName = elementKoreanNames[element];
+            const isHighlighted = isDominant;
+
+            return (
+              <div key={element} style={{ width: "100%" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
+                  <span style={{
+                    color: isDominant ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
+                    fontWeight: isDominant ? "600" : "normal",
+                    fontSize: "14px"
+                  }}>
+                    {elementName} {element}
+                  </span>
+                  <span style={{
+                    color: isDominant ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
+                    fontWeight: isDominant ? "600" : "normal",
+                    fontSize: "14px"
+                  }}>
+                    {percentage}%
+                  </span>
+                </div>
+                <div style={{
+                  width: "100%",
+                  height: isHighlighted ? "35px" : "25px",
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  borderRadius: isHighlighted ? "20px" : "12px",
+                  overflow: "hidden",
+                  border: isHighlighted
+                    ? `2px solid ${elementColors[element]}`
+                    : "1px solid rgba(255, 255, 255, 0.1)",
+                  boxShadow: isHighlighted
+                    ? `0 0 15px ${elementColors[element]}40`
+                    : "none",
+                }}>
+                  <div style={{
+                    width: `${percentage}%`,
+                    height: "100%",
+                    backgroundColor: elementColors[element],
+                    opacity: isHighlighted ? 1 : 0.8,
+                    transition: "width 0.5s ease",
+                    background: isHighlighted
+                      ? `linear-gradient(90deg, ${elementColors[element]} 0%, ${elementColors[element]}dd 100%)`
+                      : elementColors[element],
+                  }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // MBTI 타입을 그룹으로 매핑하는 함수
 const getMBTIGroup = (mbti) => {
