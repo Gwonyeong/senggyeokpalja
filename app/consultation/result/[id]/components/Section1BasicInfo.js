@@ -5,6 +5,7 @@ import SajuChart from "../../../../../components/consultation/SajuChart";
 import { generateSectionContent } from "../../../../../lib/consultation-content-generator";
 import { useState, useEffect } from "react";
 import { getFiveElementBasicInfo } from "../../../../../lib/five-elements-utils";
+import Image from "next/image";
 
 export default function Section1BasicInfo({ consultation }) {
   // 섹션 1에서 사용할 이미지 목록
@@ -280,58 +281,80 @@ export default function Section1BasicInfo({ consultation }) {
       {/* 새로운 오행 분포 컴포넌트 */}
       <FiveElementsDistribution consultation={consultation} />
 
-      {/* MBTI와 오행 결합 분석 섹션 */}
-      {consultation?.dominantElement && consultation?.additionalData?.mbti && (
-        <MBTIWithFiveElementsSection
-          mbti={consultation.additionalData.mbti}
-          dominantElement={consultation.dominantElement}
-          isPaid={consultation?.isPaid}
-        />
+      {/* 결제 상태에 따른 조건부 렌더링 */}
+      {consultation?.isPaid ? (
+        <>
+          {/* MBTI와 오행 결합 분석 섹션 */}
+          {consultation?.dominantElement && consultation?.additionalData?.mbti && (
+            <MBTIWithFiveElementsSection
+              mbti={consultation.additionalData.mbti}
+              dominantElement={consultation.dominantElement}
+              isPaid={consultation?.isPaid}
+            />
+          )}
+
+          {/* 오행 해석 후 추가 웹툰 패널 */}
+          <div style={{ marginTop: "120px", marginBottom: "120px" }}>
+            <WebtoonPanel
+              key="section1-final-panel"
+              sectionNumber={1}
+              consultation={consultation}
+              {...generateSectionContent(consultation, 1, {
+                backgroundImage: "/assets/images/results/2-1장/8.png",
+                imageStyle: {
+                  objectFit: "cover",
+                  objectPosition: "center center",
+                  width: "100%",
+                  height: "100%",
+                  aspectRatio: "1 / 1",
+                },
+                speechBubbles: [
+                  {
+                    text: "이제 그대의 오행이 어떤 의미를 갖는지 알았겠지?",
+                    position: { top: "10%", left: "30%" },
+                    size: "medium",
+                    direction: "bottom-right",
+                    maxWidth: "300px",
+                  },
+                  {
+                    text: "다음장은 십성에 대하여 알려주겠네.",
+                    position: { top: "90%", right: "30%" },
+                    size: "medium",
+                    direction: "bottom-right",
+                    maxWidth: "300px",
+                  },
+                ],
+              })}
+              panelStyle={{
+                height: "500px",
+                background: "transparent",
+                border: "none",
+                borderRadius: "0",
+                marginBottom: "0",
+              }}
+            />
+          </div>
+        </>
+      ) : (
+        /* 무료 사용자용 프로모션 이미지 */
+        <div style={{ marginTop: "60px", marginBottom: "60px", textAlign: "center" }}>
+          <div style={{ position: "relative", maxWidth: "600px", margin: "0 auto" }}>
+            <Image
+              src="/assets/images/promotion.jpg"
+              alt="프로모션 이미지"
+              width={600}
+              height={400}
+              style={{
+                width: "100%",
+                height: "auto",
+                borderRadius: "12px",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+              }}
+              priority
+            />
+          </div>
+        </div>
       )}
-
-      {/* 오행 해석 후 추가 웹툰 패널 */}
-      <div style={{ marginTop: "120px", marginBottom: "120px" }}>
-        <WebtoonPanel
-          key="section1-final-panel"
-          sectionNumber={1}
-          consultation={consultation}
-          {...generateSectionContent(consultation, 1, {
-            backgroundImage: "/assets/images/results/2-1장/8.png",
-            imageStyle: {
-              objectFit: "cover",
-              objectPosition: "center center",
-              width: "100%",
-              height: "100%",
-              aspectRatio: "1 / 1",
-            },
-            speechBubbles: [
-              {
-                text: "이제 그대의 오행이 어떤 의미를 갖는지 알았겠지?",
-                position: { top: "10%", left: "30%" },
-                size: "medium",
-                direction: "bottom-right",
-
-                maxWidth: "300px",
-              },
-              {
-                text: "다음장은 십성에 대하여 알려주겠네.",
-                position: { top: "90%", right: "30%" },
-                size: "medium",
-                direction: "bottom-right",
-
-                maxWidth: "300px",
-              },
-            ],
-          })}
-          panelStyle={{
-            height: "500px",
-            background: "transparent",
-            border: "none",
-            borderRadius: "0",
-            marginBottom: "0",
-          }}
-        />
-      </div>
     </div>
   );
 }

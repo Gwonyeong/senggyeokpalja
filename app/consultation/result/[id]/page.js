@@ -126,15 +126,18 @@ export default function ConsultationResultPage({ params }) {
   // 어드민 결제 처리 함수
   const handleAdminPayment = async () => {
     try {
-      const response = await fetch(`/api/consultation/${consultation.id}/admin-payment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `/api/consultation/${consultation.id}/admin-payment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
-        alert('어드민 결제 처리가 완료되었습니다.');
+        alert("어드민 결제 처리가 완료되었습니다.");
         setShowAdminModal(false);
         // 페이지 새로고침하여 결제 상태 업데이트
         window.location.reload();
@@ -143,8 +146,8 @@ export default function ConsultationResultPage({ params }) {
         alert(`결제 처리 실패: ${errorData.error}`);
       }
     } catch (error) {
-      console.error('어드민 결제 처리 중 오류:', error);
-      alert('결제 처리 중 오류가 발생했습니다.');
+      console.error("어드민 결제 처리 중 오류:", error);
+      alert("결제 처리 중 오류가 발생했습니다.");
     }
   };
 
@@ -307,153 +310,6 @@ export default function ConsultationResultPage({ params }) {
                     {/* 웹툰 퍼널 */}
 
                     {/* 결제 박스 */}
-                    <div
-                      style={{
-                        padding: "30px",
-                        background: "rgba(212, 175, 55, 0.05)",
-                        border: "2px solid #FCA311",
-                        borderRadius: "20px",
-                        marginBottom: "30px",
-                        boxShadow: "0 8px 24px rgba(252, 163, 17, 0.2)",
-                        position: "relative",
-                        overflow: "hidden",
-                        marginTop: "100px",
-                      }}
-                    >
-                      {/* 오행 장식 효과 */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: "-5px",
-                          left: "-5px",
-                          right: "-5px",
-                          bottom: "-5px",
-                          // background: "linear-gradient(45deg, #22c55e, #ef4444, #3b82f6, #e5e7eb, #eab308)",
-                          opacity: "0.1",
-                          borderRadius: "20px",
-                          zIndex: "0",
-                        }}
-                      ></div>
-
-                      <div style={{ position: "relative", zIndex: "1" }}>
-                        <h3
-                          style={{
-                            marginBottom: "20px",
-                            color: "#FCA311",
-                            fontSize: "24px",
-                            fontFamily: "'Noto Serif KR', serif",
-                            textAlign: "center",
-                            letterSpacing: "2px",
-                          }}
-                        >
-                          토리와 상담
-                        </h3>
-
-                        <p
-                          style={{
-                            marginBottom: "15px",
-                            color: "#fff",
-                            fontSize: "16px",
-                            lineHeight: "1.8",
-                            textAlign: "center",
-                            fontFamily: "'Noto Serif KR', serif",
-                          }}
-                        >
-                          &ldquo;그대의 운명이 담긴 두루마리,
-                          <br />
-                          다음 장을 펼치려면 약간의{" "}
-                          <span
-                            style={{ color: "#FCA311", fontWeight: "bold" }}
-                          >
-                            복채
-                          </span>
-                          가 필요하다네.&rdquo;
-                        </p>
-
-                        <p
-                          style={{
-                            marginBottom: "15px",
-                            fontSize: "14px",
-                            color: "#999",
-                            textAlign: "center",
-                          }}
-                        >
-                          운명의 오행이 그대를 기다리고 있다네
-                        </p>
-
-                        {/* 성격팔자 이미지 */}
-                        <div
-                          style={{
-                            maxWidth: "300px",
-                            margin: "0 auto 25px auto",
-                            borderRadius: "10px",
-                            overflow: "hidden",
-                            boxShadow: "0 6px 16px rgba(252, 163, 17, 0.3)",
-                            border: "2px solid rgba(212, 175, 55, 0.4)",
-                          }}
-                        >
-                          <Image
-                            src="/assets/images/성격팔자.png"
-                            alt="인생 스포일러 목차"
-                            width={300}
-                            height={450}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              display: "block",
-                            }}
-                            priority
-                          />
-                        </div>
-                        {/* 리포트 구매 안내 문구 */}
-                        <p
-                          style={{
-                            marginTop: "15px",
-                            fontSize: "14px",
-                            color: "#999",
-                            textAlign: "center",
-                            fontFamily: "'Noto Serif KR', serif",
-                          }}
-                        >
-                          리포트를 구매하면 모든 내용을 확인할 수 있습니다.
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* for_purchase 이미지들 표시 */}
-                    <div
-                      style={{
-                        marginTop: "20px",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0",
-                        alignItems: "center",
-                      }}
-                    >
-                      {[1, 2, 3, 4, 5, 6].map((num) => (
-                        <div
-                          key={num}
-                          style={{
-                            width: "100%",
-                            maxWidth: "400px",
-                            margin: "0",
-                          }}
-                        >
-                          <Image
-                            src={`/assets/images/consultation/for_purchase/${num}.png`}
-                            alt={`구매 안내 이미지 ${num}`}
-                            width={400}
-                            height={600}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              display: "block",
-                            }}
-                            priority={num <= 2}
-                          />
-                        </div>
-                      ))}
-                    </div>
                   </>
                 )}
 
