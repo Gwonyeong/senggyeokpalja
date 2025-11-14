@@ -445,67 +445,72 @@ const FiveElementsDistribution = ({ consultation }) => {
           <defs>
             <marker
               id="arrowhead"
-              markerWidth="6"
-              markerHeight="4"
-              refX="5"
-              refY="2"
+              markerWidth="4"
+              markerHeight="3"
+              refX="3.5"
+              refY="1.5"
               orient="auto"
             >
-              <polygon points="0 0, 6 2, 0 4" fill="#888" />
+              <polygon points="0 0, 4 1.5, 0 3" fill="#888" />
             </marker>
             <marker
               id="arrowhead-red"
-              markerWidth="6"
-              markerHeight="4"
-              refX="5"
-              refY="2"
+              markerWidth="4"
+              markerHeight="3"
+              refX="3.5"
+              refY="1.5"
               orient="auto"
             >
-              <polygon points="0 0, 6 2, 0 4" fill="#ef4444" />
+              <polygon points="0 0, 4 1.5, 0 3" fill="#ef4444" />
             </marker>
           </defs>
 
           {/* 상생 관계 (실선 화살표 - 직선 연결) - 木→火→土→金→水→木 */}
           <g
             stroke="#888"
-            strokeWidth="2"
+            strokeWidth="1.5"
             fill="none"
             markerEnd="url(#arrowhead)"
           >
             {/* 木 → 火 */}
-            <line
-              x1={elementPositions.木.x + 35}
-              y1={elementPositions.木.y + 15}
-              x2={elementPositions.火.x - 25}
-              y2={elementPositions.火.y - 25}
+            <path
+              d={`M ${elementPositions.木.x + 55} ${
+                elementPositions.木.y + 0
+              } Q ${elementPositions.木.x + 90} ${elementPositions.木.y + 10} ${
+                elementPositions.火.x - 15
+              } ${elementPositions.火.y - 45}`}
             />
             {/* 火 → 土 */}
-            <line
-              x1={elementPositions.火.x - 0}
-              y1={elementPositions.火.y + 60}
-              x2={elementPositions.土.x + 20}
-              y2={elementPositions.土.y - 40}
+            <path
+              d={`M ${elementPositions.火.x + 5} ${
+                elementPositions.火.y + 70
+              } Q ${elementPositions.火.x + 0} ${elementPositions.火.y + 100} ${
+                elementPositions.土.x + 30
+              } ${elementPositions.土.y - 30}`}
             />
             {/* 土 → 金 */}
-            <line
-              x1={elementPositions.土.x - 35}
-              y1={elementPositions.土.y + 15}
-              x2={elementPositions.金.x + 35}
-              y2={elementPositions.金.y + 15}
+            <path
+              d={`M ${elementPositions.土.x - 45} ${
+                elementPositions.土.y + 20
+              } Q ${elementPositions.土.x - 90} ${elementPositions.土.y + 40} ${
+                elementPositions.金.x + 45
+              } ${elementPositions.金.y + 15}`}
             />
             {/* 金 → 水 */}
-            <line
-              x1={elementPositions.金.x - 25}
-              y1={elementPositions.金.y - 30}
-              x2={elementPositions.水.x + 0}
-              y2={elementPositions.水.y + 60}
+            <path
+              d={`M ${elementPositions.金.x - 35} ${
+                elementPositions.金.y - 30
+              } Q ${elementPositions.金.x - 60} ${elementPositions.金.y - 60} ${
+                elementPositions.水.x - 5
+              } ${elementPositions.水.y + 70}`}
             />
             {/* 水 → 木 */}
-            <line
-              x1={elementPositions.水.x + 25}
-              y1={elementPositions.水.y - 35}
-              x2={elementPositions.木.x - 45}
-              y2={elementPositions.木.y + 15}
+            <path
+              d={`M ${elementPositions.水.x + 15} ${
+                elementPositions.水.y - 45
+              } Q ${elementPositions.水.x + 40} ${elementPositions.水.y - 80} ${
+                elementPositions.木.x - 55
+              } ${elementPositions.木.y + 0}`}
             />
           </g>
 
