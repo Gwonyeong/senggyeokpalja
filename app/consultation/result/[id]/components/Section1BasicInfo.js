@@ -280,8 +280,6 @@ export default function Section1BasicInfo({ consultation }) {
       {/* 새로운 오행 분포 컴포넌트 */}
       <FiveElementsDistribution consultation={consultation} />
 
-      <FiveElementsChart consultation={consultation} />
-
       {/* MBTI와 오행 결합 분석 섹션 */}
       {consultation?.dominantElement && consultation?.additionalData?.mbti && (
         <MBTIWithFiveElementsSection
@@ -355,7 +353,7 @@ const FiveElementsDistribution = ({ consultation }) => {
     火: "#ef4444",
     土: "#eab308",
     金: "#94a3b8",
-    水: "#3b82f6"
+    水: "#3b82f6",
   };
 
   // 오행별 한글 이름
@@ -364,7 +362,7 @@ const FiveElementsDistribution = ({ consultation }) => {
     火: "화",
     土: "토",
     金: "금",
-    水: "수"
+    水: "수",
   };
 
   // 총합 계산
@@ -377,15 +375,31 @@ const FiveElementsDistribution = ({ consultation }) => {
   // 원형 배치를 위한 좌표 계산
   const centerX = 200;
   const centerY = 200;
-  const radius = 120;
+  const radius = 150;
 
   // 오행 위치 (원형 배치 - 목을 상단에서 시작)
   const elementPositions = {
     木: { angle: -90, x: centerX, y: centerY - radius }, // 상단
-    火: { angle: -18, x: centerX + radius * Math.cos(-18 * Math.PI / 180), y: centerY + radius * Math.sin(-18 * Math.PI / 180) }, // 우상단
-    土: { angle: 54, x: centerX + radius * Math.cos(54 * Math.PI / 180), y: centerY + radius * Math.sin(54 * Math.PI / 180) }, // 우하단
-    金: { angle: 126, x: centerX + radius * Math.cos(126 * Math.PI / 180), y: centerY + radius * Math.sin(126 * Math.PI / 180) }, // 좌하단
-    水: { angle: 198, x: centerX + radius * Math.cos(198 * Math.PI / 180), y: centerY + radius * Math.sin(198 * Math.PI / 180) }, // 좌상단
+    火: {
+      angle: -18,
+      x: centerX + radius * Math.cos((-18 * Math.PI) / 180),
+      y: centerY + radius * Math.sin((-18 * Math.PI) / 180),
+    }, // 우상단
+    土: {
+      angle: 54,
+      x: centerX + radius * Math.cos((54 * Math.PI) / 180),
+      y: centerY + radius * Math.sin((54 * Math.PI) / 180),
+    }, // 우하단
+    金: {
+      angle: 126,
+      x: centerX + radius * Math.cos((126 * Math.PI) / 180),
+      y: centerY + radius * Math.sin((126 * Math.PI) / 180),
+    }, // 좌하단
+    水: {
+      angle: 198,
+      x: centerX + radius * Math.cos((198 * Math.PI) / 180),
+      y: centerY + radius * Math.sin((198 * Math.PI) / 180),
+    }, // 좌상단
   };
 
   return (
@@ -393,15 +407,16 @@ const FiveElementsDistribution = ({ consultation }) => {
       style={{
         width: "100%",
         marginBottom: "30px",
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        backgroundColor: "#f8f8f6",
         borderRadius: "12px",
         padding: "20px",
-        border: "1px solid rgba(212, 175, 55, 0.2)",
+        border: "1px solid rgba(212, 175, 55, 0.3)",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
       <h4
         style={{
-          color: "#d4af37",
+          color: "#2d2d30",
           fontSize: "24px",
           fontWeight: "bold",
           marginBottom: "20px",
@@ -413,7 +428,13 @@ const FiveElementsDistribution = ({ consultation }) => {
       </h4>
 
       {/* 오행 다이어그램 */}
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "30px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "30px",
+        }}
+      >
         <svg
           width="400"
           height="400"
@@ -424,53 +445,108 @@ const FiveElementsDistribution = ({ consultation }) => {
           <defs>
             <marker
               id="arrowhead"
-              markerWidth="10"
-              markerHeight="7"
-              refX="9"
-              refY="3.5"
+              markerWidth="6"
+              markerHeight="4"
+              refX="5"
+              refY="2"
               orient="auto"
             >
-              <polygon points="0 0, 10 3.5, 0 7" fill="#888" />
+              <polygon points="0 0, 6 2, 0 4" fill="#888" />
             </marker>
             <marker
               id="arrowhead-red"
-              markerWidth="10"
-              markerHeight="7"
-              refX="9"
-              refY="3.5"
+              markerWidth="6"
+              markerHeight="4"
+              refX="5"
+              refY="2"
               orient="auto"
             >
-              <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" />
+              <polygon points="0 0, 6 2, 0 4" fill="#ef4444" />
             </marker>
           </defs>
 
-          {/* 상생 관계 선 그리기 (원형) */}
-          <path
-            d={`M ${elementPositions.木.x} ${elementPositions.木.y}
-                Q ${centerX + radius * 0.7} ${centerY - radius * 0.7}, ${elementPositions.火.x} ${elementPositions.火.y}
-                Q ${centerX + radius * 0.9} ${centerY + radius * 0.2}, ${elementPositions.土.x} ${elementPositions.土.y}
-                Q ${centerX} ${centerY + radius * 0.9}, ${elementPositions.金.x} ${elementPositions.金.y}
-                Q ${centerX - radius * 0.7} ${centerY}, ${elementPositions.水.x} ${elementPositions.水.y}
-                Q ${centerX - radius * 0.2} ${centerY - radius * 0.7}, ${elementPositions.木.x} ${elementPositions.木.y}`}
+          {/* 상생 관계 (실선 화살표 - 직선 연결) - 木→火→土→金→水→木 */}
+          <g
             stroke="#888"
             strokeWidth="2"
             fill="none"
             markerEnd="url(#arrowhead)"
-            strokeDasharray="0"
-          />
+          >
+            {/* 木 → 火 */}
+            <line
+              x1={elementPositions.木.x + 35}
+              y1={elementPositions.木.y + 15}
+              x2={elementPositions.火.x - 25}
+              y2={elementPositions.火.y - 25}
+            />
+            {/* 火 → 土 */}
+            <line
+              x1={elementPositions.火.x - 0}
+              y1={elementPositions.火.y + 60}
+              x2={elementPositions.土.x + 20}
+              y2={elementPositions.土.y - 40}
+            />
+            {/* 土 → 金 */}
+            <line
+              x1={elementPositions.土.x - 35}
+              y1={elementPositions.土.y + 15}
+              x2={elementPositions.金.x + 35}
+              y2={elementPositions.金.y + 15}
+            />
+            {/* 金 → 水 */}
+            <line
+              x1={elementPositions.金.x - 25}
+              y1={elementPositions.金.y - 30}
+              x2={elementPositions.水.x + 0}
+              y2={elementPositions.水.y + 60}
+            />
+            {/* 水 → 木 */}
+            <line
+              x1={elementPositions.水.x + 25}
+              y1={elementPositions.水.y - 35}
+              x2={elementPositions.木.x - 45}
+              y2={elementPositions.木.y + 15}
+            />
+          </g>
 
           {/* 상극 관계 (점선 빨간색 - 별 모양) */}
-          <g stroke="#ef4444" strokeWidth="1.5" fill="none" strokeDasharray="5,5" opacity="0.7">
-            <line x1={elementPositions.木.x} y1={elementPositions.木.y}
-                  x2={elementPositions.土.x} y2={elementPositions.土.y} />
-            <line x1={elementPositions.火.x} y1={elementPositions.火.y}
-                  x2={elementPositions.金.x} y2={elementPositions.金.y} />
-            <line x1={elementPositions.土.x} y1={elementPositions.土.y}
-                  x2={elementPositions.水.x} y2={elementPositions.水.y} />
-            <line x1={elementPositions.金.x} y1={elementPositions.金.y}
-                  x2={elementPositions.木.x} y2={elementPositions.木.y} />
-            <line x1={elementPositions.水.x} y1={elementPositions.水.y}
-                  x2={elementPositions.火.x} y2={elementPositions.火.y} />
+          <g
+            stroke="#ef4444"
+            strokeWidth="1.5"
+            fill="none"
+            strokeDasharray="5,5"
+            opacity="0.7"
+          >
+            <line
+              x1={elementPositions.木.x}
+              y1={elementPositions.木.y}
+              x2={elementPositions.土.x}
+              y2={elementPositions.土.y}
+            />
+            <line
+              x1={elementPositions.火.x}
+              y1={elementPositions.火.y}
+              x2={elementPositions.金.x}
+              y2={elementPositions.金.y}
+            />
+            <line
+              x1={elementPositions.土.x}
+              y1={elementPositions.土.y}
+              x2={elementPositions.水.x}
+              y2={elementPositions.水.y}
+            />
+            <line
+              x1={elementPositions.金.x}
+              y1={elementPositions.金.y}
+              x2={elementPositions.木.x}
+              y2={elementPositions.木.y}
+            />
+            <line
+              x1={elementPositions.水.x}
+              y1={elementPositions.水.y}
+              x2={elementPositions.火.x}
+              y2={elementPositions.火.y}
+            />
           </g>
 
           {/* 오행 원형 요소 */}
@@ -512,9 +588,21 @@ const FiveElementsDistribution = ({ consultation }) => {
           {/* 범례 */}
           <g transform="translate(20, 360)">
             <line x1="0" y1="0" x2="30" y2="0" stroke="#888" strokeWidth="2" />
-            <text x="35" y="5" fontSize="12" fill="#888">상생</text>
-            <line x1="80" y1="0" x2="110" y2="0" stroke="#ef4444" strokeWidth="1.5" strokeDasharray="5,5" />
-            <text x="115" y="5" fontSize="12" fill="#ef4444">상극</text>
+            <text x="35" y="5" fontSize="12" fill="#888">
+              상생
+            </text>
+            <line
+              x1="80"
+              y1="0"
+              x2="110"
+              y2="0"
+              stroke="#ef4444"
+              strokeWidth="1.5"
+              strokeDasharray="5,5"
+            />
+            <text x="115" y="5" fontSize="12" fill="#ef4444">
+              상극
+            </text>
           </g>
         </svg>
       </div>
@@ -541,16 +629,24 @@ const FiveElementsDistribution = ({ consultation }) => {
               fontFamily: "Noto Serif KR",
             }}
           >
-            {consultation.userName || "OO"}님의 대표오행: {elementKoreanNames[consultation.dominantElement]}{consultation.dominantElement}
+            {consultation.userName || "OO"}님의 대표오행:{" "}
+            {elementKoreanNames[consultation.dominantElement]}
+            {consultation.dominantElement}
           </h5>
-          <div style={{ textAlign: "center", color: "rgba(255, 255, 255, 0.8)" }}>
+          <div style={{ textAlign: "center", color: "#2d2d30" }}>
             <p style={{ marginBottom: "8px" }}>
               <span style={{ color: "#d4af37", fontWeight: "600" }}>특성:</span>{" "}
-              {getFiveElementBasicInfo(consultation.dominantElement)?.characteristic}
+              {
+                getFiveElementBasicInfo(consultation.dominantElement)
+                  ?.characteristic
+              }
             </p>
             <p>
               <span style={{ color: "#d4af37", fontWeight: "600" }}>성향:</span>{" "}
-              {getFiveElementBasicInfo(consultation.dominantElement)?.personality}
+              {
+                getFiveElementBasicInfo(consultation.dominantElement)
+                  ?.personality
+              }
             </p>
           </div>
         </div>
@@ -575,45 +671,59 @@ const FiveElementsDistribution = ({ consultation }) => {
 
             return (
               <div key={element} style={{ width: "100%" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
-                  <span style={{
-                    color: isDominant ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
-                    fontWeight: isDominant ? "600" : "normal",
-                    fontSize: "14px"
-                  }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: isDominant ? "#d4af37" : "#2d2d30",
+                      fontWeight: isDominant ? "600" : "normal",
+                      fontSize: "14px",
+                    }}
+                  >
                     {elementName} {element}
                   </span>
-                  <span style={{
-                    color: isDominant ? "#d4af37" : "rgba(255, 255, 255, 0.7)",
-                    fontWeight: isDominant ? "600" : "normal",
-                    fontSize: "14px"
-                  }}>
+                  <span
+                    style={{
+                      color: isDominant ? "#d4af37" : "#2d2d30",
+                      fontWeight: isDominant ? "600" : "normal",
+                      fontSize: "14px",
+                    }}
+                  >
                     {percentage}%
                   </span>
                 </div>
-                <div style={{
-                  width: "100%",
-                  height: isHighlighted ? "35px" : "25px",
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  borderRadius: isHighlighted ? "20px" : "12px",
-                  overflow: "hidden",
-                  border: isHighlighted
-                    ? `2px solid ${elementColors[element]}`
-                    : "1px solid rgba(255, 255, 255, 0.1)",
-                  boxShadow: isHighlighted
-                    ? `0 0 15px ${elementColors[element]}40`
-                    : "none",
-                }}>
-                  <div style={{
-                    width: `${percentage}%`,
-                    height: "100%",
-                    backgroundColor: elementColors[element],
-                    opacity: isHighlighted ? 1 : 0.8,
-                    transition: "width 0.5s ease",
-                    background: isHighlighted
-                      ? `linear-gradient(90deg, ${elementColors[element]} 0%, ${elementColors[element]}dd 100%)`
-                      : elementColors[element],
-                  }} />
+                <div
+                  style={{
+                    width: "100%",
+                    height: isHighlighted ? "35px" : "25px",
+                    backgroundColor: "rgba(0, 0, 0, 0.05)",
+                    borderRadius: isHighlighted ? "20px" : "12px",
+                    overflow: "hidden",
+                    border: isHighlighted
+                      ? `2px solid ${elementColors[element]}`
+                      : "1px solid rgba(0, 0, 0, 0.1)",
+                    boxShadow: isHighlighted
+                      ? `0 0 15px ${elementColors[element]}40`
+                      : "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${percentage}%`,
+                      height: "100%",
+                      backgroundColor: elementColors[element],
+                      opacity: isHighlighted ? 1 : 0.8,
+                      transition: "width 0.5s ease",
+                      background: isHighlighted
+                        ? `linear-gradient(90deg, ${elementColors[element]} 0%, ${elementColors[element]}dd 100%)`
+                        : elementColors[element],
+                    }}
+                  />
                 </div>
               </div>
             );
@@ -630,12 +740,12 @@ const getMBTIGroup = (mbti) => {
 
   // MBTI의 두 번째와 세 번째 글자로 그룹 결정
   const secondChar = mbti[1]; // S 또는 N
-  const thirdChar = mbti[2];  // T 또는 F
+  const thirdChar = mbti[2]; // T 또는 F
 
-  if (secondChar === 'S' && thirdChar === 'T') return 'ST';
-  if (secondChar === 'S' && thirdChar === 'F') return 'SF';
-  if (secondChar === 'N' && thirdChar === 'T') return 'NT';
-  if (secondChar === 'N' && thirdChar === 'F') return 'NF';
+  if (secondChar === "S" && thirdChar === "T") return "ST";
+  if (secondChar === "S" && thirdChar === "F") return "SF";
+  if (secondChar === "N" && thirdChar === "T") return "NT";
+  if (secondChar === "N" && thirdChar === "F") return "NF";
 
   return null;
 };
@@ -660,7 +770,7 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
           setMbtiData(data);
         }
       } catch (error) {
-        console.error('MBTI 데이터 로딩 실패:', error);
+        console.error("MBTI 데이터 로딩 실패:", error);
       } finally {
         setLoading(false);
       }
@@ -697,11 +807,11 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
 
   // 한자 오행을 한글로 변환하는 매핑
   const elementMapping = {
-    '金': '금',
-    '木': '목',
-    '水': '수',
-    '火': '화',
-    '土': '토'
+    金: "금",
+    木: "목",
+    水: "수",
+    火: "화",
+    土: "토",
   };
 
   // 대표 오행에 따른 키 매핑 (JSON 파일의 키와 일치하도록)
@@ -709,14 +819,16 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
 
   const analysisText = elementKey ? mbtiData[elementKey] : null;
 
-  console.log('MBTI 분석 디버그:', {
+  console.log("MBTI 분석 디버그:", {
     mbti,
     mbtiGroup,
     dominantElement: `${dominantElement} (한자)`,
     elementKey: `${elementKey} (한글)`,
     hasAnalysisText: !!analysisText,
     mbtiDataKeys: Object.keys(mbtiData || {}),
-    analysisTextPreview: analysisText ? analysisText.substring(0, 100) + '...' : 'null'
+    analysisTextPreview: analysisText
+      ? analysisText.substring(0, 100) + "..."
+      : "null",
   });
 
   return (
@@ -788,7 +900,9 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
             lineHeight: "1.5",
           }}
         >
-          <span style={{ color: "#6a5acd", fontWeight: "600" }}>대표 오행:</span>{" "}
+          <span style={{ color: "#6a5acd", fontWeight: "600" }}>
+            대표 오행:
+          </span>{" "}
           {getFiveElementBasicInfo(dominantElement)?.name}
         </p>
         {mbtiData.point && (
@@ -800,7 +914,9 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
               lineHeight: "1.6",
             }}
           >
-            <span style={{ color: "#6a5acd", fontWeight: "600" }}>{mbtiGroup} 특성:</span>
+            <span style={{ color: "#6a5acd", fontWeight: "600" }}>
+              {mbtiGroup} 특성:
+            </span>
             <div style={{ marginTop: "4px", paddingLeft: "8px" }}>
               {mbtiData.point.map((point, index) => (
                 <div key={index} style={{ marginBottom: "2px" }}>
@@ -846,11 +962,11 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
                   <span>{visibleText}</span>
                   <span
                     style={{
-                      filter: 'blur(4px)',
-                      WebkitFilter: 'blur(4px)',
-                      userSelect: 'none',
-                      pointerEvents: 'none',
-                      color: 'rgba(255, 255, 255, 0.5)'
+                      filter: "blur(4px)",
+                      WebkitFilter: "blur(4px)",
+                      userSelect: "none",
+                      pointerEvents: "none",
+                      color: "rgba(255, 255, 255, 0.5)",
                     }}
                   >
                     {blurredText}
@@ -873,8 +989,10 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
           }}
         >
           디버그: analysisText가 없습니다.
-          <br />대표 오행: {dominantElement} (한자) → {elementKey} (한글 키)
-          <br />mbtiData 키들: {Object.keys(mbtiData || {}).join(', ')}
+          <br />
+          대표 오행: {dominantElement} (한자) → {elementKey} (한글 키)
+          <br />
+          mbtiData 키들: {Object.keys(mbtiData || {}).join(", ")}
         </div>
       )}
 
