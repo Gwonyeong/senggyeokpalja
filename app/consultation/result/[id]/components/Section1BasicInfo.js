@@ -731,6 +731,9 @@ const FiveElementsDistribution = ({ consultation }) => {
           })}
         </div>
       </div>
+
+      {/* 상세 운세 해석 박스 */}
+      <DetailedFortuneInterpretation consultation={consultation} />
     </div>
   );
 };
@@ -835,12 +838,12 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
   return (
     <div
       style={{
-        marginTop: "24px",
+        marginTop: "30px",
         padding: "20px",
-        backgroundColor: "rgba(106, 90, 205, 0.05)",
+        backgroundColor: "#f8f8f6",
         borderRadius: "12px",
-        border: "2px solid rgba(106, 90, 205, 0.3)",
-        boxShadow: "0 4px 20px rgba(106, 90, 205, 0.1)",
+        border: "1px solid rgba(212, 175, 55, 0.3)",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
       <div
@@ -877,14 +880,14 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
         style={{
           marginBottom: "16px",
           padding: "12px 16px",
-          backgroundColor: "rgba(0, 0, 0, 0.2)",
+          backgroundColor: "rgba(212, 175, 55, 0.05)",
           borderRadius: "8px",
-          border: "1px solid rgba(106, 90, 205, 0.2)",
+          border: "1px solid rgba(212, 175, 55, 0.1)",
         }}
       >
         <p
           style={{
-            color: "rgba(255, 255, 255, 0.8)",
+            color: "#000000",
             fontSize: "14px",
             margin: 0,
             lineHeight: "1.5",
@@ -895,7 +898,7 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
         </p>
         <p
           style={{
-            color: "rgba(255, 255, 255, 0.8)",
+            color: "#000000",
             fontSize: "14px",
             margin: "8px 0 0 0",
             lineHeight: "1.5",
@@ -909,7 +912,7 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
         {mbtiData.point && (
           <div
             style={{
-              color: "rgba(255, 255, 255, 0.8)",
+              color: "#000000",
               fontSize: "14px",
               margin: "8px 0 0 0",
               lineHeight: "1.6",
@@ -944,7 +947,7 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
       {analysisText ? (
         <div
           style={{
-            color: "rgba(255, 255, 255, 0.8)",
+            color: "#000000",
             fontSize: "14px",
             lineHeight: "1.7",
             whiteSpace: "pre-line",
@@ -967,7 +970,7 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
                       WebkitFilter: "blur(4px)",
                       userSelect: "none",
                       pointerEvents: "none",
-                      color: "rgba(255, 255, 255, 0.5)",
+                      color: "rgba(0, 0, 0, 0.5)",
                     }}
                   >
                     {blurredText}
@@ -981,11 +984,11 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
       ) : (
         <div
           style={{
-            color: "rgba(255, 255, 255, 0.6)",
+            color: "rgba(0, 0, 0, 0.6)",
             fontSize: "14px",
             fontStyle: "italic",
             padding: "12px",
-            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            backgroundColor: "rgba(0, 0, 0, 0.05)",
             borderRadius: "8px",
           }}
         >
@@ -1002,20 +1005,201 @@ const MBTIWithFiveElementsSection = ({ mbti, dominantElement, isPaid }) => {
           style={{
             marginTop: "16px",
             padding: "12px",
-            backgroundColor: "rgba(106, 90, 205, 0.1)",
+            backgroundColor: "rgba(212, 175, 55, 0.1)",
             borderRadius: "8px",
             textAlign: "center",
           }}
         >
           <p
             style={{
-              color: "#6a5acd",
+              color: "#d4af37",
               fontSize: "13px",
               margin: 0,
               fontWeight: "600",
             }}
           >
             💎 전체 MBTI×오행 맞춤 분석을 보시려면 결제가 필요합니다
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// 상세 운세 해석 컴포넌트
+const DetailedFortuneInterpretation = ({ consultation }) => {
+  const [fortuneData, setFortuneData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // 오행별 색상 정의
+  const elementColors = {
+    木: "#22c55e",
+    火: "#ef4444",
+    土: "#eab308",
+    金: "#94a3b8",
+    水: "#3b82f6",
+  };
+
+  useEffect(() => {
+    const loadFortuneData = async () => {
+      try {
+        if (!consultation?.dominantElement) {
+          setLoading(false);
+          return;
+        }
+
+        // 한자 오행을 한글로 변환하는 매핑
+        const elementMapping = {
+          金: "금",
+          木: "목",
+          水: "수",
+          火: "화",
+          土: "토",
+        };
+
+        const elementKey = elementMapping[consultation.dominantElement];
+        if (!elementKey) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch(`/documents/오행/${elementKey}_description.json`);
+        if (response.ok) {
+          const data = await response.json();
+          setFortuneData(data);
+        }
+      } catch (error) {
+        console.error("상세 운세 데이터 로딩 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFortuneData();
+  }, [consultation?.dominantElement]);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          marginTop: "30px",
+          padding: "20px",
+          backgroundColor: "#f8f8f6",
+          borderRadius: "12px",
+          border: "1px solid rgba(212, 175, 55, 0.3)",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+          textAlign: "center",
+        }}
+      >
+        <div style={{ color: "rgba(45, 45, 48, 0.6)", fontSize: "14px" }}>
+          상세 운세 해석을 불러오는 중...
+        </div>
+      </div>
+    );
+  }
+
+  if (!fortuneData || !consultation?.dominantElement) {
+    return null;
+  }
+
+  const fortuneContent = fortuneData.chapters?.["스토리형_리포트"];
+
+  if (!fortuneContent) {
+    return null;
+  }
+
+  return (
+    <div
+      style={{
+        marginTop: "30px",
+        padding: "20px",
+        backgroundColor: "#f8f8f6",
+        borderRadius: "12px",
+        border: "1px solid rgba(212, 175, 55, 0.3)",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <h4
+        style={{
+          fontSize: "20px",
+          fontWeight: "bold",
+          marginBottom: "20px",
+          textAlign: "left",
+          fontFamily: "Noto Serif KR",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
+        <span style={{ color: "#2d2d30" }}>상세 운세 해석</span>
+        <span
+          style={{
+            color: elementColors[consultation.dominantElement] || "#d4af37",
+            fontSize: "18px"
+          }}
+        >
+          ({consultation.dominantElement})
+        </span>
+      </h4>
+
+      <div
+        style={{
+          color: "#2d2d30",
+          fontSize: "15px",
+          lineHeight: "1.8",
+          whiteSpace: "pre-line",
+          fontFamily: "Pretendard",
+        }}
+      >
+        {(() => {
+          if (!consultation?.isPaid) {
+            // 무료 사용자를 위한 일부 블러 처리
+            const textLength = fortuneContent.length;
+            const showLength = Math.floor(textLength * 0.3); // 30%만 보여줌
+            const visibleText = fortuneContent.substring(0, showLength);
+            const blurredText = fortuneContent.substring(showLength);
+
+            return (
+              <>
+                <span>{visibleText}</span>
+                <span
+                  style={{
+                    filter: "blur(4px)",
+                    WebkitFilter: "blur(4px)",
+                    userSelect: "none",
+                    pointerEvents: "none",
+                    color: "rgba(45, 45, 48, 0.5)",
+                  }}
+                >
+                  {blurredText}
+                </span>
+              </>
+            );
+          }
+          return fortuneContent;
+        })()}
+      </div>
+
+      {!consultation?.isPaid && (
+        <div
+          style={{
+            marginTop: "20px",
+            padding: "16px",
+            backgroundColor: "rgba(212, 175, 55, 0.1)",
+            borderRadius: "8px",
+            border: "1px solid rgba(212, 175, 55, 0.3)",
+            textAlign: "center",
+          }}
+        >
+          <p
+            style={{
+              color: "#d4af37",
+              fontSize: "14px",
+              margin: 0,
+              fontWeight: "600",
+            }}
+          >
+            💎 전체 상세 운세 해석을 보시려면 결제가 필요합니다
           </p>
         </div>
       )}
