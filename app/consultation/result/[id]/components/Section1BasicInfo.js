@@ -582,30 +582,32 @@ const FiveElementsDistribution = ({ consultation }) => {
                 y={pos.y + 55}
                 textAnchor="middle"
                 fontSize="12"
-                fill="#d4af37"
+                fill="#000000"
                 fontWeight="600"
               >
-                n개
+                {elements[element]}개
               </text>
             </g>
           ))}
 
-          {/* 범례 */}
-          <g transform="translate(20, 360)">
+          {/* 범례 - 그래프 상단으로 이동, 줄바꿈으로 분리 */}
+          <g transform="translate(20, 20)">
+            {/* 상생 설명 (첫 번째 줄) */}
             <line x1="0" y1="0" x2="30" y2="0" stroke="#888" strokeWidth="2" />
             <text x="35" y="5" fontSize="12" fill="#888">
               상생
             </text>
+            {/* 상극 설명 (두 번째 줄) */}
             <line
-              x1="80"
-              y1="0"
-              x2="110"
-              y2="0"
+              x1="0"
+              y1="18"
+              x2="30"
+              y2="18"
               stroke="#ef4444"
               strokeWidth="1.5"
               strokeDasharray="5,5"
             />
-            <text x="115" y="5" fontSize="12" fill="#ef4444">
+            <text x="35" y="23" fontSize="12" fill="#ef4444">
               상극
             </text>
           </g>
@@ -614,31 +616,25 @@ const FiveElementsDistribution = ({ consultation }) => {
 
       {/* 대표 오행 표시 */}
       {consultation?.dominantElement && (
-        <div
-          style={{
-            marginBottom: "30px",
-            padding: "20px",
-            backgroundColor: "rgba(212, 175, 55, 0.05)",
-            borderRadius: "12px",
-            border: "2px solid rgba(212, 175, 55, 0.3)",
-            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
-          }}
-        >
+        <div style={{ marginBottom: "30px" }}>
           <h5
             style={{
-              color: elementColors[consultation.dominantElement] || "#d4af37",
               fontSize: "18px",
               fontWeight: "700",
               marginBottom: "15px",
-              textAlign: "center",
+              textAlign: "left",
               fontFamily: "Noto Serif KR",
             }}
           >
-            {consultation.userName || "OO"}님의 대표오행:{" "}
-            {elementKoreanNames[consultation.dominantElement]}
-            {consultation.dominantElement}
+            <span style={{ color: "#000000" }}>
+              {consultation.user?.displayName || consultation.additionalData?.name || "사용자"}님의 대표오행:{" "}
+            </span>
+            <span style={{ color: elementColors[consultation.dominantElement] || "#d4af37" }}>
+              {elementKoreanNames[consultation.dominantElement]}
+              {consultation.dominantElement}
+            </span>
           </h5>
-          <div style={{ textAlign: "center", color: "#2d2d30" }}>
+          <div style={{ textAlign: "left", color: "#2d2d30" }}>
             <p style={{ marginBottom: "8px" }}>
               <span style={{ color: "#d4af37", fontWeight: "600" }}>특성:</span>{" "}
               {
@@ -685,7 +681,7 @@ const FiveElementsDistribution = ({ consultation }) => {
                 >
                   <span
                     style={{
-                      color: isDominant ? "#d4af37" : "#2d2d30",
+                      color: elementColors[element],
                       fontWeight: isDominant ? "600" : "normal",
                       fontSize: "14px",
                     }}
@@ -694,7 +690,7 @@ const FiveElementsDistribution = ({ consultation }) => {
                   </span>
                   <span
                     style={{
-                      color: isDominant ? "#d4af37" : "#2d2d30",
+                      color: elementColors[element],
                       fontWeight: isDominant ? "600" : "normal",
                       fontSize: "14px",
                     }}
