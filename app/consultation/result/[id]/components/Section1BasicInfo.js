@@ -4,14 +4,18 @@ import IntroWebtoonPanel from "../../../../../components/consultation/IntroWebto
 import SajuChart from "../../../../../components/consultation/SajuChart";
 import SpeechBubble from "../../../../../components/consultation/SpeechBubble";
 import PromotionBubble from "../../../../../components/consultation/PromotionBubble";
+import TossPaymentWidget from "../../../../../components/TossPaymentWidget";
 import { generateSectionContent } from "../../../../../lib/consultation-content-generator";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getFiveElementBasicInfo } from "../../../../../lib/five-elements-utils";
 import Image from "next/image";
 
 export default function Section1BasicInfo({ consultation }) {
   // 세운 데이터 상태
   const [sewunData, setSewunData] = useState(null);
+
+  // TossPaymentWidget ref
+  const paymentWidgetRef = useRef(null);
 
   // 가장 강한 십신 계산 (Section5와 동일한 로직)
   const getDominantTenGod = (consultation) => {
@@ -314,7 +318,7 @@ export default function Section1BasicInfo({ consultation }) {
             width: "100%",
             height: "auto",
             display: "block",
-            borderRadius: "12px",
+            // borderRadius: "12px",
           }}
         />
       </div>
@@ -448,8 +452,8 @@ export default function Section1BasicInfo({ consultation }) {
               style={{
                 width: "auto",
                 maxWidth: "100%",
-                height: "auto",
-                maxHeight: "80px",
+                height: "30px",
+                maxHeight: "40px",
                 objectFit: "contain",
               }}
             />
@@ -466,8 +470,8 @@ export default function Section1BasicInfo({ consultation }) {
             }}
           >
             {sewunData
-              ? `🔮 ${sewunData.title}`
-              : "🌟 더 많은 이야기가 기다리고 있어요"}
+              ? `${sewunData.title}`
+              : "더 많은 이야기가 기다리고 있어요"}
           </h4>
 
           {sewunData ? (
@@ -569,7 +573,7 @@ export default function Section1BasicInfo({ consultation }) {
                     fontWeight: "600",
                   }}
                 >
-                  💎 전체 세운 분석과 대운, 성격 분석 등을 보시려면 결제가
+                  전체 세운 분석과 대운, 성격 분석 등을 보시려면 결제가
                   필요합니다
                 </p>
               </div>
@@ -655,7 +659,11 @@ export default function Section1BasicInfo({ consultation }) {
           textAlign: "center",
         }}
       >
-        <PromotionBubble />
+        <PromotionBubble
+          consultationId={consultation?.id}
+          isPaid={consultation?.isPaid}
+          userName={consultation?.additionalData?.name}
+        />
       </div>
 
       {/* 결제 상태에 따른 조건부 렌더링 */}
@@ -753,17 +761,9 @@ export default function Section1BasicInfo({ consultation }) {
             >
               <button
                 onClick={() => {
-                  // 페이지 하단의 결제 섹션으로 스크롤
-                  const paymentSection =
-                    document.querySelector(".payment-section");
-                  if (paymentSection) {
-                    paymentSection.scrollIntoView({ behavior: "smooth" });
-                  } else {
-                    // 또는 결제 액션 바를 표시
-                    window.scrollTo({
-                      top: document.body.scrollHeight,
-                      behavior: "smooth",
-                    });
+                  // TossPaymentWidget 열기
+                  if (paymentWidgetRef.current) {
+                    paymentWidgetRef.current.openPayment();
                   }
                 }}
                 style={{
@@ -789,6 +789,20 @@ export default function Section1BasicInfo({ consultation }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* TossPaymentWidget 추가 */}
+      {!consultation?.isPaid && (
+        <TossPaymentWidget
+          ref={paymentWidgetRef}
+          consultationId={consultation?.id}
+          amount={9900}
+          orderName="성격팔자 상세리포트"
+          onPaymentSuccess={() => {
+            // 결제 성공 시 페이지 새로고침
+            window.location.reload();
+          }}
+        />
       )}
     </div>
   );
@@ -1020,17 +1034,18 @@ const FiveElementsDistribution = ({ consultation }) => {
                 cy={pos.y}
                 r="35"
                 fill={elementColors[element]}
-                stroke="#fff"
+                stroke={elementColors[element]}
                 strokeWidth="2"
-                opacity="0.9"
+                opacity="0.3"
               />
               <text
                 x={pos.x}
-                y={pos.y + 5}
+                y={pos.y}
                 textAnchor="middle"
+                dominantBaseline="middle"
                 fontSize="24"
                 fontWeight="bold"
-                fill="#fff"
+                fill={elementColors[element]}
                 fontFamily="Noto Serif KR"
               >
                 {element}
@@ -1040,7 +1055,7 @@ const FiveElementsDistribution = ({ consultation }) => {
                 y={pos.y + 55}
                 textAnchor="middle"
                 fontSize="12"
-                fill="#000000"
+                fill={elementColors[element]}
                 fontWeight="600"
               >
                 {elements[element]}개
@@ -1619,6 +1634,35 @@ const DetailedFortuneInterpretation = ({ consultation }) => {
         }}
       >
         {(() => {
+          const formatTextWithHeaders = (text) => {
+            // [소제목] 형태를 찾아서 스타일 적용
+            const parts = text.split(/(\[[^\]]+\])/g);
+
+            return parts.map((part, index) => {
+              // [소제목] 형태인지 확인
+              if (part.match(/^\[[^\]]+\]$/)) {
+                return (
+                  <span
+                    key={index}
+                    style={{
+                      fontSize: "17px",
+                      fontWeight: "700",
+                      color: "#d4af37",
+                      display: "block",
+                      marginTop: index > 0 ? "20px" : "0px",
+                      marginBottom: "8px",
+                      fontFamily: "Noto Serif KR",
+                    }}
+                  >
+                    {part}
+                  </span>
+                );
+              }
+              // 일반 텍스트
+              return <span key={index}>{part}</span>;
+            });
+          };
+
           if (!consultation?.isPaid) {
             // 무료 사용자를 위한 일부 블러 처리
             const textLength = fortuneContent.length;
@@ -1628,7 +1672,7 @@ const DetailedFortuneInterpretation = ({ consultation }) => {
 
             return (
               <>
-                <span>{visibleText}</span>
+                {formatTextWithHeaders(visibleText)}
                 <span
                   style={{
                     filter: "blur(4px)",
@@ -1643,7 +1687,7 @@ const DetailedFortuneInterpretation = ({ consultation }) => {
               </>
             );
           }
-          return fortuneContent;
+          return formatTextWithHeaders(fortuneContent);
         })()}
       </div>
 

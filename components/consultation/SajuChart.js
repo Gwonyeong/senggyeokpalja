@@ -393,10 +393,10 @@ export default function SajuChart({ consultation }) {
         .saju-chart-container {
           margin: 20px 0;
           padding: 20px;
-          background: rgba(212, 175, 55, 0.05);
+          background: #f8f8f6;
           border-radius: 12px;
-          border: 1px solid rgba(212, 175, 55, 0.1);
-          box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .chart-header {
@@ -407,7 +407,7 @@ export default function SajuChart({ consultation }) {
         }
 
         .chart-title {
-          color: #d4af37;
+          color: #2d2d30;
           font-size: 1.2rem;
           font-weight: 700;
           margin: 0 0 8px 0;
@@ -415,7 +415,7 @@ export default function SajuChart({ consultation }) {
         }
 
         .birth-date {
-          color: rgba(255, 255, 255, 0.7);
+          color: #666666;
           font-size: 0.9rem;
           margin: 0;
           font-weight: 500;
@@ -428,23 +428,23 @@ export default function SajuChart({ consultation }) {
         .saju-table {
           width: 100%;
           border-collapse: collapse;
-          background: #131316;
+          background: #ffffff;
           border-radius: 8px;
           overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
         .saju-table th,
         .saju-table td {
           padding: 12px 8px;
           text-align: center;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(212, 175, 55, 0.15);
           font-weight: 500;
         }
 
         .saju-table th {
-          background: linear-gradient(135deg, #2a2a2e 0%, #1a1a1e 100%);
+          background: linear-gradient(135deg, #f5f5f0 0%, #ebe9e3 100%);
           color: #d4af37;
           font-weight: 700;
           font-size: 0.9rem;
@@ -456,7 +456,7 @@ export default function SajuChart({ consultation }) {
         }
 
         .row-label {
-          background: linear-gradient(135deg, #2a2a2e 0%, #1a1a1e 100%);
+          background: linear-gradient(135deg, #f5f5f0 0%, #ebe9e3 100%);
           color: #d4af37;
           font-weight: 600;
           font-size: 0.9rem;
@@ -465,34 +465,34 @@ export default function SajuChart({ consultation }) {
         }
 
         .sipseong-cell {
-          background: rgba(255, 255, 255, 0.03);
-          color: rgba(255, 255, 255, 0.8);
+          background: #fafaf8;
+          color: #5a5a5a;
           font-weight: 600;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(212, 175, 55, 0.1);
         }
 
         .cheongan-cell {
           background: rgba(212, 175, 55, 0.08);
-          color: #d4af37;
+          color: #b8941f;
           font-weight: 700;
           font-size: 1.1rem;
           border: 1px solid rgba(212, 175, 55, 0.15);
         }
 
         .jiji-cell {
-          background: rgba(255, 255, 255, 0.05);
-          color: rgba(255, 255, 255, 0.9);
+          background: #fcfcfa;
+          color: #4a4a4a;
           font-weight: 700;
           font-size: 1.1rem;
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(212, 175, 55, 0.12);
         }
 
         .sinsal-cell {
-          background: rgba(255, 255, 255, 0.02);
-          color: rgba(255, 255, 255, 0.7);
+          background: #fdfdfb;
+          color: #7a7a7a;
           font-weight: 500;
           font-size: 0.85rem;
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(212, 175, 55, 0.08);
         }
 
         @media (max-width: 768px) {
