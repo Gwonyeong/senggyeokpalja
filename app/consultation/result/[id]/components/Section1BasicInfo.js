@@ -538,7 +538,8 @@ export default function Section1BasicInfo({ consultation }) {
                           0,
                           showLength
                         );
-                        const blurredText = sewunData.content.substring(showLength);
+                        const blurredText =
+                          sewunData.content.substring(showLength);
 
                         return (
                           <>
@@ -591,8 +592,9 @@ export default function Section1BasicInfo({ consultation }) {
                     margin: 0,
                   }}
                 >
-                  {consultation.additionalData?.name || "고객"}님의 십신 분석, 성격
-                  해석, 운세 전망 등 7개 챕터의 상세한 분석이 준비되어 있습니다.
+                  {consultation.additionalData?.name || "고객"}님의 십신 분석,
+                  성격 해석, 운세 전망 등 7개 챕터의 상세한 분석이 준비되어
+                  있습니다.
                 </p>
               )}
 
@@ -700,14 +702,14 @@ export default function Section1BasicInfo({ consultation }) {
                 },
                 speechBubbles: [
                   {
-                    text: "이제 그대의 오행이 어떤 의미를 갖는지 알았겠지?",
+                    text: "이제 오행이 어떤 의미를 가지는지 아셨나요?",
                     position: { top: "10%", left: "30%" },
                     size: "medium",
                     direction: "bottom-right",
                     maxWidth: "300px",
                   },
                   {
-                    text: "다음장은 십성에 대하여 알려주겠네.",
+                    text: "이제 십성에 대해 소개해드릴게요.",
                     position: { top: "90%", right: "30%" },
                     size: "medium",
                     direction: "bottom-right",
