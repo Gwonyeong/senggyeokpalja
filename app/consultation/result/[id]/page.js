@@ -294,7 +294,7 @@ export default function ConsultationResultPage({ params }) {
         className="analyze-page"
         style={{
           paddingBottom:
-            currentSection === 1 && !consultation.isPaid ? "200px" : "0",
+            currentSection === 1 && !consultation.isPaid ? "0" : "0",
         }}
       >
         <main>
@@ -570,10 +570,13 @@ export default function ConsultationResultPage({ params }) {
             style={{
               position: "fixed",
               bottom: "0",
-              left: "0",
-              right: "0",
+              left: "50%",
+              transform: "translateX(-50%)",
+              maxWidth: "600px",
+              width: "100%",
               background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
               borderTop: "2px solid #FCA311",
+
               padding: "10px",
               zIndex: "1000",
               boxShadow: "0 -8px 32px rgba(0, 0, 0, 0.8)",
@@ -581,8 +584,6 @@ export default function ConsultationResultPage({ params }) {
           >
             <div
               style={{
-                maxWidth: "600px",
-                margin: "0 auto",
                 display: "flex",
                 flexDirection: "column",
                 gap: "15px",
@@ -598,19 +599,6 @@ export default function ConsultationResultPage({ params }) {
                   gap: "8px",
                 }}
               >
-                {/* 남은 수량 */}
-                <p
-                  style={{
-                    fontSize: "14px",
-                    color: "#FF6B35",
-                    fontFamily: "'Noto Serif KR', serif",
-                    margin: "0",
-                    fontWeight: "500",
-                  }}
-                >
-                  남은 수량: {Math.max(0, 100 - soldCount)}개
-                </p>
-
                 {/* 가격 정보 */}
                 <div
                   style={{
@@ -627,7 +615,7 @@ export default function ConsultationResultPage({ params }) {
                       fontFamily: "'Noto Serif KR', serif",
                     }}
                   >
-                    정가 29,000원
+                    29,000
                   </span>
                   <span
                     style={{
@@ -645,7 +633,7 @@ export default function ConsultationResultPage({ params }) {
                       fontFamily: "'Noto Serif KR', serif",
                     }}
                   >
-                    특가 9,900원
+                    9,900원
                   </span>
                 </div>
               </div>
@@ -657,7 +645,7 @@ export default function ConsultationResultPage({ params }) {
                 style={{
                   width: "100%",
                   maxWidth: "300px",
-                  padding: "16px 24px",
+                  padding: "12px 18px",
                   backgroundColor: "#FCA311",
                   color: "#000",
                   border: "none",
@@ -670,16 +658,8 @@ export default function ConsultationResultPage({ params }) {
                   boxShadow: "0 4px 16px rgba(252, 163, 17, 0.4)",
                   letterSpacing: "1px",
                 }}
-                onMouseOver={(e) => {
-                  e.target.style.backgroundColor = "#e8940f";
-                  e.target.style.transform = "translateY(-2px)";
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.backgroundColor = "#FCA311";
-                  e.target.style.transform = "translateY(0)";
-                }}
               >
-                토리와 상담받기
+                지금 정통사주 받아보기
               </button>
             </div>
           </div>
