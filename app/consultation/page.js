@@ -394,7 +394,7 @@ export default function ConsultationPage() {
                           </div>
                         </div>
                         <div className="input-group">
-                          <label htmlFor="mbti">MBTI 성격유형</label>
+                          <label htmlFor="mbti">성격유형</label>
                           <select
                             id="mbti"
                             name="mbti"

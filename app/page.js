@@ -139,7 +139,7 @@ export default function Home() {
                 <div className="service-image-content">
                   <h3 className="service-image-title">팔자유형 알아보기</h3>
                   <p className="service-image-description">
-                    사주판 mbti를 알아보세요.
+                    사주판 성격유형을 알아보세요.
                   </p>
                 </div>
               </div>
@@ -157,7 +157,7 @@ export default function Home() {
                 <div className="service-image-content">
                   <h3 className="service-image-title">나와의 궁합 보기</h3>
                   <p className="service-image-description">
-                    mbti와 팔자유형의 궁합 점수를 알아보세요.
+                    성격유형과 팔자유형의 궁합 점수를 알아보세요.
                   </p>
                 </div>
               </div>
@@ -221,12 +221,6 @@ export default function Home() {
               className="story-info-box"
               style={{ border: "1px solid #FCA311" }}
             >
-              <p className="story-info-header">
-                이미 수많은 나그네들이 <br />
-                토리의 찻집에서{" "}
-                <span style={{ color: "#FCA311" }}>자신의 길</span>을
-                찾았습니다.
-              </p>
               <p className="story-info-title">이제, 당신의 차례입니다.</p>
               <Link href="/consultation" className="story-cta-button">
                 의뢰하기

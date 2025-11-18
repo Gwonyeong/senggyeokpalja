@@ -177,15 +177,26 @@ export default function MyPage() {
 
   const fetchConsultationHistory = async () => {
     try {
-      const response = await fetch("/api/consultation/history");
+      // 모든 데이터를 가져오기 위해 큰 limit 값 설정
+      const response = await fetch("/api/consultation/history?limit=1000");
       if (response.ok) {
         const data = await response.json();
         // API 응답이 { data: [], pagination: {} } 형태인 경우와
         // 배열 형태인 경우 모두 처리
         if (Array.isArray(data)) {
-          setConsultationResults(data);
+          // 최신순으로 정렬
+          const sortedData = data.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          setConsultationResults(sortedData);
         } else if (data && data.data && Array.isArray(data.data)) {
-          setConsultationResults(data.data);
+          // 최신순으로 정렬 (이미 정렬되어 있을 수도 있지만 확실하게)
+          const sortedData = data.data.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+          setConsultationResults(sortedData);
         } else {
           console.error("Unexpected consultation history format:", data);
           setConsultationResults([]);
@@ -1173,6 +1184,20 @@ export default function MyPage() {
                         </button>
                       </div>
                     )}
+
+                    {/* 전체 데이터 개수 표시 */}
+                    {consultationResults && consultationResults.length > 0 && (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          marginTop: "10px",
+                          fontSize: "11px",
+                          color: "var(--text-muted-color)",
+                        }}
+                      >
+                        총 {consultationResults.length}개의 상담 기록
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -1386,13 +1411,6 @@ export default function MyPage() {
                   gap: "12px",
                 }}
               >
-                <button
-                  className="secondary-btn"
-                  style={{ width: "100%" }}
-                  onClick={handleLogout}
-                >
-                  🚪 로그아웃
-                </button>
                 <button
                   className="btn btn-danger"
                   style={{
@@ -1833,7 +1851,7 @@ export default function MyPage() {
                       marginBottom: "8px",
                     }}
                   >
-                    MBTI 성격유형
+                    성격유형
                   </label>
                   <select
                     value={editFormData.mbti}
