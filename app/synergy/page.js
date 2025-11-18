@@ -366,7 +366,7 @@ export default function SynergyPage() {
                         </span>
                       </h2>
                       <p className="sage-description">
-                        그대의 성격(MBTI)과 운명(팔자유형)이 만나 어떤 이야기를
+                        그대의 성격유형과 운명(팔자유형)이 만나 어떤 이야기를
                         만드는지 살펴보자.
                       </p>
                     </div>
@@ -374,7 +374,7 @@ export default function SynergyPage() {
                     <form className="analyzer-form">
                       <div className="form-section">
                         <div className="input-group">
-                          <label htmlFor="mbti-select">성격 (MBTI)</label>
+                          <label htmlFor="mbti-select">성격유형</label>
                           <select
                             id="mbti-select"
                             value={selectedMBTI}
