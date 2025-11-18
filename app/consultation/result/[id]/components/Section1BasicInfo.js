@@ -360,311 +360,315 @@ export default function Section1BasicInfo({ consultation }) {
       {/* 새로운 오행 분포 컴포넌트 */}
       <FiveElementsDistribution consultation={consultation} />
 
-      {/* 오행 분포 후 추가 웹툰 패널 */}
-      <div
-        style={{
-          marginTop: "40px",
-          marginBottom: "40px",
-          position: "relative",
-        }}
-      >
-        <WebtoonPanel
-          key="section1-after-elements-panel"
-          sectionNumber={1}
-          consultation={consultation}
-          {...generateSectionContent(consultation, 1, {
-            backgroundImage: "/assets/images/results/2-2장/2.png",
-            imageStyle: {
-              objectFit: "contain",
-              objectPosition: "center center",
-              width: "100%",
-              height: "100%",
-              aspectRatio: "1 / 1",
-            },
-            speechBubbles: [
-              {
-                text:
-                  "이외에도  " +
-                  consultation.additionalData.name +
-                  "님을 위한 많은 이야기들이 준비되어 있어요!",
-                position: { top: "15%", left: "35%" },
-                size: "middle",
-                direction: "bottom-right",
-                maxWidth: "260px",
-              },
-            ],
-          })}
-          panelStyle={{
-            height: "500px",
-            background: "transparent",
-            border: "none",
-            borderRadius: "0",
-            marginBottom: "0",
-            position: "relative",
-          }}
-        />
-
-        {/* 웹툰 패널 하단 그라데이션 오버레이 */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0",
-            left: "0",
-            right: "0",
-            height: "250px", // 그라데이션 높이 증가
-            background:
-              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 20%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.95) 80%, rgba(255,255,255,1) 100%)",
-            pointerEvents: "none", // 클릭 이벤트 통과
-            zIndex: 5,
-          }}
-        />
-
-        {/* 오행 분포와 같은 배경색 오버레이 박스 */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-480px", // 웹툰 패널에서 60px 위로 올림
-            left: "50%",
-            transform: "translateX(-50%)", // 간단히 중앙 정렬만
-            width: "90%",
-            maxWidth: "600px",
-            padding: "30px",
-            backgroundColor: "#F2F1EE", // 새로운 배경색
-            borderRadius: "12px",
-            border: "1px solid rgba(212, 175, 55, 0.3)",
-            boxShadow:
-              "0 8px 32px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(212, 175, 55, 0.1)",
-            zIndex: 10,
-          }}
-        >
-          {/* 상세운세해석 이미지 */}
+      {/* 결제 상태에 따른 조건부 렌더링 - 무료 사용자용 프로모션 콘텐츠 */}
+      {!consultation?.isPaid && (
+        <>
+          {/* 오행 분포 후 추가 웹툰 패널 */}
           <div
             style={{
-              width: "100%",
-              marginBottom: "20px",
-              display: "flex",
-              justifyContent: "center",
+              marginTop: "40px",
+              marginBottom: "40px",
+              position: "relative",
             }}
           >
-            <img
-              src="/assets/images/results/1장/상세운세해석.jpg"
-              alt="상세운세해석"
-              style={{
-                width: "auto",
-                maxWidth: "100%",
-                height: "30px",
-                maxHeight: "40px",
-                objectFit: "contain",
+            <WebtoonPanel
+              key="section1-after-elements-panel"
+              sectionNumber={1}
+              consultation={consultation}
+              {...generateSectionContent(consultation, 1, {
+                backgroundImage: "/assets/images/results/2-2장/2.png",
+                imageStyle: {
+                  objectFit: "contain",
+                  objectPosition: "center center",
+                  width: "100%",
+                  height: "100%",
+                  aspectRatio: "1 / 1",
+                },
+                speechBubbles: [
+                  {
+                    text:
+                      "이외에도  " +
+                      consultation.additionalData.name +
+                      "님을 위한 많은 이야기들이 준비되어 있어요!",
+                    position: { top: "15%", left: "35%" },
+                    size: "middle",
+                    direction: "bottom-right",
+                    maxWidth: "260px",
+                  },
+                ],
+              })}
+              panelStyle={{
+                height: "500px",
+                background: "transparent",
+                border: "none",
+                borderRadius: "0",
+                marginBottom: "0",
+                position: "relative",
               }}
             />
-          </div>
 
-          <h4
-            style={{
-              color: "#2d2d30",
-              fontSize: "18px",
-              fontWeight: "bold",
-              marginBottom: "15px",
-              textAlign: "center",
-              fontFamily: "Noto Serif KR",
-            }}
-          >
-            {sewunData
-              ? `${sewunData.title}`
-              : "더 많은 이야기가 기다리고 있어요"}
-          </h4>
-
-          {sewunData ? (
-            <>
-              {sewunData.year && (
-                <div
-                  style={{
-                    color: "#888",
-                    fontSize: "12px",
-                    textAlign: "center",
-                    marginBottom: "16px",
-                    fontStyle: "italic",
-                  }}
-                >
-                  {sewunData.year}년 세운
-                </div>
-              )}
-              <div
-                style={{
-                  color: "#2d2d30",
-                  fontSize: "14px",
-                  lineHeight: "1.7",
-                  whiteSpace: "pre-line",
-                  textAlign: "left",
-                }}
-              >
-                {(() => {
-                  // 텍스트를 문단 단위로 분리
-                  const paragraphs = sewunData.content
-                    .split("\n\n")
-                    .filter((p) => p.trim());
-
-                  if (paragraphs.length >= 2) {
-                    // 처음 2개 문단은 완전히 표시
-                    const visibleParagraphs = paragraphs.slice(0, 2);
-                    const hiddenParagraphs = paragraphs.slice(2);
-
-                    return (
-                      <>
-                        <span>{visibleParagraphs.join("\n\n")}</span>
-                        {hiddenParagraphs.length > 0 && (
-                          <span
-                            style={{
-                              filter: "blur(4px)",
-                              WebkitFilter: "blur(4px)",
-                              userSelect: "none",
-                              pointerEvents: "none",
-                              color: "rgba(45, 45, 48, 0.5)",
-                            }}
-                          >
-                            {"\n\n" + hiddenParagraphs.join("\n\n")}
-                          </span>
-                        )}
-                      </>
-                    );
-                  } else {
-                    // 문단이 2개 미만인 경우 전체 텍스트의 40%만 표시
-                    const textLength = sewunData.content.length;
-                    const showLength = Math.floor(textLength * 0.4);
-                    const visibleText = sewunData.content.substring(
-                      0,
-                      showLength
-                    );
-                    const blurredText = sewunData.content.substring(showLength);
-
-                    return (
-                      <>
-                        <span>{visibleText}</span>
-                        <span
-                          style={{
-                            filter: "blur(4px)",
-                            WebkitFilter: "blur(4px)",
-                            userSelect: "none",
-                            pointerEvents: "none",
-                            color: "rgba(45, 45, 48, 0.5)",
-                          }}
-                        >
-                          {blurredText}
-                        </span>
-                      </>
-                    );
-                  }
-                })()}
-              </div>
-              <div
-                style={{
-                  marginTop: "16px",
-                  padding: "12px",
-                  backgroundColor: "rgba(212, 175, 55, 0.1)",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                }}
-              >
-                <p
-                  style={{
-                    color: "#d4af37",
-                    fontSize: "13px",
-                    margin: 0,
-                    fontWeight: "600",
-                  }}
-                >
-                  전체 세운 분석과 대운, 성격 분석 등을 보시려면 결제가
-                  필요합니다
-                </p>
-              </div>
-            </>
-          ) : (
-            <p
-              style={{
-                color: "#5a5a5a",
-                fontSize: "14px",
-                lineHeight: "1.6",
-                textAlign: "center",
-                margin: 0,
-              }}
-            >
-              {consultation.additionalData?.name || "고객"}님의 십신 분석, 성격
-              해석, 운세 전망 등 7개 챕터의 상세한 분석이 준비되어 있습니다.
-            </p>
-          )}
-
-          {/* 박스 하단 말풍선 */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-20px",
-              right: "30%",
-              zIndex: 15,
-              pointerEvents: "none",
-            }}
-          >
-            {/* 말풍선 위에 표시될 이미지 */}
+            {/* 웹툰 패널 하단 그라데이션 오버레이 */}
             <div
               style={{
                 position: "absolute",
-                bottom: "-70px", // 원래 위치로 복원
-                left: "-80px",
-                width: "50px",
-                height: "50px",
-                zIndex: 70, // SpeechBubble의 zIndex(60)보다 높게 설정
-              }}
-            >
-              <img
-                src="/assets/images/results/1장/tory_face.png" // 토리 캐릭터 이미지 (경로는 실제 이미지에 맞게 조정)
-                alt="토리 캐릭터"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-
-                  border: "2px solid #856404",
-                }}
-              />
-            </div>
-
-            <SpeechBubble
-              text={"앗! 여기부터는 복채가 필요해요"}
-              position={{ top: "0%", left: "0%" }}
-              size="large"
-              direction="top-left"
-              backgroundColor="#ffffff"
-              borderColor="#000000"
-              textColor="#000000"
-              maxWidth="600px"
-              customStyle={{
-                minWidth: "200px",
-                height: "auto",
-                aspectRatio: "auto", // 기본 비율 무시
-                padding: "16px 24px",
-                fontWeight: "700", // 전체 텍스트를 볼드로
+                bottom: "0",
+                left: "0",
+                right: "0",
+                height: "250px", // 그라데이션 높이 증가
+                background:
+                  "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 20%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.95) 80%, rgba(255,255,255,1) 100%)",
+                pointerEvents: "none", // 클릭 이벤트 통과
+                zIndex: 5,
               }}
             />
+
+            {/* 오행 분포와 같은 배경색 오버레이 박스 */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-480px", // 웹툰 패널에서 60px 위로 올림
+                left: "50%",
+                transform: "translateX(-50%)", // 간단히 중앙 정렬만
+                width: "90%",
+                maxWidth: "600px",
+                padding: "30px",
+                backgroundColor: "#F2F1EE", // 새로운 배경색
+                borderRadius: "12px",
+                border: "1px solid rgba(212, 175, 55, 0.3)",
+                boxShadow:
+                  "0 8px 32px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(212, 175, 55, 0.1)",
+                zIndex: 10,
+              }}
+            >
+              {/* 상세운세해석 이미지 */}
+              <div
+                style={{
+                  width: "100%",
+                  marginBottom: "20px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src="/assets/images/results/1장/상세운세해석.jpg"
+                  alt="상세운세해석"
+                  style={{
+                    width: "auto",
+                    maxWidth: "100%",
+                    height: "30px",
+                    maxHeight: "40px",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+
+              <h4
+                style={{
+                  color: "#2d2d30",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  marginBottom: "15px",
+                  textAlign: "center",
+                  fontFamily: "Noto Serif KR",
+                }}
+              >
+                {sewunData
+                  ? `${sewunData.title}`
+                  : "더 많은 이야기가 기다리고 있어요"}
+              </h4>
+
+              {sewunData ? (
+                <>
+                  {sewunData.year && (
+                    <div
+                      style={{
+                        color: "#888",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        marginBottom: "16px",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {sewunData.year}년 세운
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      color: "#2d2d30",
+                      fontSize: "14px",
+                      lineHeight: "1.7",
+                      whiteSpace: "pre-line",
+                      textAlign: "left",
+                    }}
+                  >
+                    {(() => {
+                      // 텍스트를 문단 단위로 분리
+                      const paragraphs = sewunData.content
+                        .split("\n\n")
+                        .filter((p) => p.trim());
+
+                      if (paragraphs.length >= 2) {
+                        // 처음 2개 문단은 완전히 표시
+                        const visibleParagraphs = paragraphs.slice(0, 2);
+                        const hiddenParagraphs = paragraphs.slice(2);
+
+                        return (
+                          <>
+                            <span>{visibleParagraphs.join("\n\n")}</span>
+                            {hiddenParagraphs.length > 0 && (
+                              <span
+                                style={{
+                                  filter: "blur(4px)",
+                                  WebkitFilter: "blur(4px)",
+                                  userSelect: "none",
+                                  pointerEvents: "none",
+                                  color: "rgba(45, 45, 48, 0.5)",
+                                }}
+                              >
+                                {"\n\n" + hiddenParagraphs.join("\n\n")}
+                              </span>
+                            )}
+                          </>
+                        );
+                      } else {
+                        // 문단이 2개 미만인 경우 전체 텍스트의 40%만 표시
+                        const textLength = sewunData.content.length;
+                        const showLength = Math.floor(textLength * 0.4);
+                        const visibleText = sewunData.content.substring(
+                          0,
+                          showLength
+                        );
+                        const blurredText = sewunData.content.substring(showLength);
+
+                        return (
+                          <>
+                            <span>{visibleText}</span>
+                            <span
+                              style={{
+                                filter: "blur(4px)",
+                                WebkitFilter: "blur(4px)",
+                                userSelect: "none",
+                                pointerEvents: "none",
+                                color: "rgba(45, 45, 48, 0.5)",
+                              }}
+                            >
+                              {blurredText}
+                            </span>
+                          </>
+                        );
+                      }
+                    })()}
+                  </div>
+                  <div
+                    style={{
+                      marginTop: "16px",
+                      padding: "12px",
+                      backgroundColor: "rgba(212, 175, 55, 0.1)",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <p
+                      style={{
+                        color: "#d4af37",
+                        fontSize: "13px",
+                        margin: 0,
+                        fontWeight: "600",
+                      }}
+                    >
+                      전체 세운 분석과 대운, 성격 분석 등을 보시려면 결제가
+                      필요합니다
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <p
+                  style={{
+                    color: "#5a5a5a",
+                    fontSize: "14px",
+                    lineHeight: "1.6",
+                    textAlign: "center",
+                    margin: 0,
+                  }}
+                >
+                  {consultation.additionalData?.name || "고객"}님의 십신 분석, 성격
+                  해석, 운세 전망 등 7개 챕터의 상세한 분석이 준비되어 있습니다.
+                </p>
+              )}
+
+              {/* 박스 하단 말풍선 */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-20px",
+                  right: "30%",
+                  zIndex: 15,
+                  pointerEvents: "none",
+                }}
+              >
+                {/* 말풍선 위에 표시될 이미지 */}
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: "-70px", // 원래 위치로 복원
+                    left: "-80px",
+                    width: "50px",
+                    height: "50px",
+                    zIndex: 70, // SpeechBubble의 zIndex(60)보다 높게 설정
+                  }}
+                >
+                  <img
+                    src="/assets/images/results/1장/tory_face.png" // 토리 캐릭터 이미지 (경로는 실제 이미지에 맞게 조정)
+                    alt="토리 캐릭터"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+
+                      border: "2px solid #856404",
+                    }}
+                  />
+                </div>
+
+                <SpeechBubble
+                  text={"앗! 여기부터는 복채가 필요해요"}
+                  position={{ top: "0%", left: "0%" }}
+                  size="large"
+                  direction="top-left"
+                  backgroundColor="#ffffff"
+                  borderColor="#000000"
+                  textColor="#000000"
+                  maxWidth="600px"
+                  customStyle={{
+                    minWidth: "200px",
+                    height: "auto",
+                    aspectRatio: "auto", // 기본 비율 무시
+                    padding: "16px 24px",
+                    fontWeight: "700", // 전체 텍스트를 볼드로
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* 말풍선 영역을 위한 추가 공간 */}
+            <div style={{ height: "60px" }}></div>
           </div>
-        </div>
 
-        {/* 말풍선 영역을 위한 추가 공간 */}
-        <div style={{ height: "60px" }}></div>
-      </div>
-
-      {/* 프로모션 이미지 */}
-      <div
-        style={{
-          marginTop: "840px",
-
-          textAlign: "center",
-        }}
-      >
-        <PromotionBubble
-          consultationId={consultation?.id}
-          isPaid={consultation?.isPaid}
-          userName={consultation?.additionalData?.name}
-        />
-      </div>
+          {/* 프로모션 이미지 */}
+          <div
+            style={{
+              marginTop: "840px",
+              textAlign: "center",
+            }}
+          >
+            <PromotionBubble
+              consultationId={consultation?.id}
+              isPaid={consultation?.isPaid}
+              userName={consultation?.additionalData?.name}
+            />
+          </div>
+        </>
+      )}
 
       {/* 결제 상태에 따른 조건부 렌더링 */}
       {consultation?.isPaid ? (
@@ -1710,7 +1714,7 @@ const DetailedFortuneInterpretation = ({ consultation }) => {
               fontWeight: "600",
             }}
           >
-            💎 전체 상세 운세 해석을 보시려면 결제가 필요합니다
+            결제후 모든 내용을 볼 수 있어요!
           </p>
         </div>
       )}
