@@ -457,7 +457,7 @@ header {
 
 .title-main {
   font-size: 20px;
-  color: var(--starlight-orange);
+  color: #2d2d30;
   font-weight: 700;
   font-family: var(--heading-font);
 }
@@ -506,8 +506,8 @@ header {
 }
 
 .slide-btn-signup {
-  background: var(--starlight-orange);
-  color: var(--ink-black);
+  background: #2d2d30;
+  color: #ffffff;
   border: none;
 }
 
@@ -520,7 +520,7 @@ header {
 .slide-auth-note {
   text-align: center;
   font-size: 11px;
-  color: var(--text-muted-color);
+  color: #6c757d;
   margin-top: 8px;
 }
 
@@ -578,15 +578,16 @@ header {
 
 /* 서비스 카드 */
 .slide-service-card {
-  background: rgba(13, 13, 16, 0.1);
-  border: 1px solid var(--starlight-orange);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .service-card-title {
-  color: var(--starlight-orange);
+  color: #2d2d30;
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 10px 0;
@@ -1813,7 +1814,7 @@ section {
 /* ============================================= */
 .services-section {
   padding: 80px 0;
-  background: #1a1a1d;
+  background: #f7f7f7;
   text-align: center;
 }
 
@@ -1905,7 +1906,7 @@ section {
 
 .service-image-title {
   font-size: 12px;
-  color: #fca311;
+  color: #2d2d30;
   font-weight: 600;
   margin-bottom: 6px;
   line-height: 1.2;
@@ -1914,7 +1915,7 @@ section {
 
 .service-image-description {
   font-size: 12px;
-  color: #eaeaea;
+  color: #6c757d;
   line-height: 1.4;
   max-height: 2.8em; /* 2 lines max */
   overflow: hidden;
@@ -2077,7 +2078,7 @@ section {
 /* ============================================= */
 .customer-stories-section {
   padding: 60px 0;
-  background: #1a1a1d;
+  background: #f7f7f7;
 }
 
 .customer-stories-container {
@@ -2122,12 +2123,12 @@ section {
 
 /* Story Info Box Styling */
 .story-info-box {
-  background: var(--ink-black);
+  background: #ffffff;
   border-radius: 16px;
   padding: 30px 25px;
   margin-top: 30px;
   text-align: center;
-  color: var(--text-color);
+  color: #2d2d30;
 }
 
 .story-info-header {
@@ -2139,7 +2140,7 @@ section {
 
 .story-info-title {
   font-size: 24px;
-  color: #fca311;
+  color: #2d2d30;
   font-weight: 600;
   margin-bottom: 20px;
   line-height: 1.2;
@@ -2361,7 +2362,7 @@ section {
 /* 13. CTA 섹션                                */
 /* ============================================= */
 .cta-section {
-  background: #1a1a1d;
+  background: #f7f7f7;
   text-align: center;
 }
 
@@ -2383,8 +2384,8 @@ section {
 /* 14. Footer */
 /* ============================================= */
 .site-footer {
-  background: var(--charcoal-gray);
-  border-top: 1px solid var(--border-color);
+  background: #ffffff;
+  border-top: 1px solid #e0e0e0;
   padding: 40px 0 20px;
 }
 
@@ -2411,17 +2412,17 @@ section {
   text-align: left;
   padding-top: 20px;
   margin-top: 20px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #e0e0e0;
 }
 
 .brand-name {
   font-family: var(--heading-font);
-  color: var(--starlight-orange);
+  color: #2d2d30;
   font-size: 1.5rem;
 }
 
 .footer-info {
-  color: var(--text-muted-color);
+  color: #6c757d;
 }
 
 @media (max-width: 768px) {
@@ -3302,7 +3303,7 @@ input[type="text"]::placeholder {
 
 .toon-slider-section {
   padding: 80px 0;
-  background: #1a1a1d;
+  background: #f7f7f7;
   position: relative;
   overflow: hidden;
 }

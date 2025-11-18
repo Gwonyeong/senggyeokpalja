@@ -169,14 +169,15 @@ export default function Navigation() {
             <div
               className="slide-auth-buttons"
               style={{
-                border: "1px solid #FCA311",
-                backgroundColor: "#131316",
+                border: "1px solid #e0e0e0",
+                backgroundColor: "#ffffff",
                 borderRadius: "8px",
                 padding: "16px",
                 margin: "16px 0",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
               }}
             >
               <button
@@ -195,8 +196,8 @@ export default function Navigation() {
             <div
               className="slide-profile-section"
               style={{
-                border: "1px solid #FCA311",
-                backgroundColor: "#131316",
+                border: "1px solid #e0e0e0",
+                backgroundColor: "#ffffff",
                 borderRadius: "8px",
                 padding: "16px",
                 margin: "16px 0",
@@ -204,6 +205,7 @@ export default function Navigation() {
                 flexDirection: "column",
                 alignItems: "center",
                 gap: "12px",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
               }}
             >
               <div
@@ -248,12 +250,12 @@ export default function Navigation() {
                     style={{
                       fontSize: "14px",
                       fontWeight: "600",
-                      color: "#FCA311",
+                      color: "#2d2d30",
                     }}
                   >
                     {userProfile.name}
                   </div>
-                  <div style={{ fontSize: "12px", color: "#888" }}>
+                  <div style={{ fontSize: "12px", color: "#6c757d" }}>
                     {userProfile.email}
                   </div>
                 </div>
@@ -264,8 +266,8 @@ export default function Navigation() {
                 style={{
                   width: "100%",
                   padding: "8px 16px",
-                  backgroundColor: "#FCA311",
-                  color: "#000",
+                  backgroundColor: "#2d2d30",
+                  color: "#ffffff",
                   border: "none",
                   borderRadius: "6px",
                   fontSize: "14px",

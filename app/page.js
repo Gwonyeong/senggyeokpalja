@@ -119,7 +119,7 @@ export default function Home() {
         <section className="services-section">
           <div className="container">
             <div className="ml-[15px]">
-              <h2 className="text-[24px] text-[#FCA311] text-left">
+              <h2 className="text-[24px] text-[#2d2d30] text-left">
                 토리의 서비스 안내
               </h2>
             </div>
@@ -208,7 +208,7 @@ export default function Home() {
         {/* Customer Stories Section */}
         <section className="customer-stories-section">
           <div className="container">
-            <h2 className="ml-[15px] text-[24px] text-[#FCA311] text-left">
+            <h2 className="ml-[15px] text-[24px] text-[#2d2d30] text-left">
               먼저 다녀간 손님들의 이야기
             </h2>
             <div className="flex flex-col items-center mb-[20px] mt-[12px]">
