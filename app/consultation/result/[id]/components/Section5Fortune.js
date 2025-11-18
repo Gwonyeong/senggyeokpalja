@@ -167,7 +167,7 @@ export default function Section5Fortune({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "대운은 크게 10년 주기로 찾아온다네",
+          text: "대운은 크게 10년 주기로 찾아와요",
           position: { top: "90%", right: "30%" },
           size: "large",
           direction: "bottom-right",
@@ -185,7 +185,7 @@ export default function Section5Fortune({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "다음은 세운이라네.\n 세운은 해마다 바뀌는 신년운세로, 절기 입춘을 기준으로 매년 달라진다네.",
+          text: "다음은 세운이에요.\n 세운은 해마다 바뀌는 신년운세로, 절기 입춘을 기준으로 매년 달라져요.",
           position: { top: "90%" },
           size: "extraLarge",
           direction: "bottom-right",
@@ -203,7 +203,7 @@ export default function Section5Fortune({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "다음장은 그대의 운에 대해 알려주겠네.",
+          text: "다음장은 당신의 운에 대해 알려드릴게요.",
           position: { top: "10%", left: "30%" },
           size: "medium",
           direction: "bottom-right",

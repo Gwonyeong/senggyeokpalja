@@ -22,14 +22,14 @@ export default function Section2TenGods({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "이번엔 십성을 분석하겠네.",
+          text: "이번엔 십성을 분석하겠어요.",
           position: { top: "10%", left: "30%" },
           size: "medium",
           direction: "bottom-right",
           maxWidth: "320px",
         },
         {
-          text: "그대의 '운명의 항해사'가 어떤 역할을 맡고 있는지 아는가?",
+          text: "당신의 '운명의 항해사'가 어떤 역할을 맡고 있는지 알고 있나요?",
           position: { top: "90%", right: "30%" },
           size: "medium",
           direction: "bottom-right",
@@ -105,7 +105,7 @@ export default function Section2TenGods({ consultation }) {
             },
             speechBubbles: [
               {
-                text: "이제 그대의 십성이 어떤 의미를 갖는지 알았겠지?",
+                text: "이제 당신의 십성이 어떤 의미를 갖는지 알았나요?",
                 position: { top: "5%", left: "30%" },
                 size: "medium",
                 direction: "bottom-right",
@@ -113,7 +113,7 @@ export default function Section2TenGods({ consultation }) {
                 maxWidth: "300px",
               },
               {
-                text: "십성은 그대의 인생에서 만나는 다양한 관계와 역할을 의미한다네.",
+                text: "십성은 당신의 인생에서 만나는 다양한 관계와 역할을 의미해요.",
                 position: { top: "95%", right: "30%" },
                 size: "medium",
                 direction: "bottom-right",

@@ -56,7 +56,7 @@ export default function Section7Conclusion({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "그대에게 해줄 수 있는 나의 조언들이라네.",
+          text: "당신에게 해드릴 수 있는 조언들이에요.",
           position: { top: "95%" },
           size: "extraLarge",
           direction: "bottom-right",
@@ -75,13 +75,13 @@ export default function Section7Conclusion({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "성격팔자에 찾아와줘서 정말 고맙네",
+          text: "성격팔자에 찾아와주셔서 정말 고마워요",
           position: { top: "5%", left: "30%" },
           size: "medium",
           direction: "bottom-right",
         },
         {
-          text: "그대와의 긴 이야기가 끝났네. 이 지도가 그대의 항해에 등불이 되기를 바라네.",
+          text: "당신과의 긴 이야기가 끝났어요. 이 지도가 당신의 항해에 등불이 되기를 바라요.",
           position: { top: "95%", right: "35%" },
           size: "medium",
           direction: "bottom-right",

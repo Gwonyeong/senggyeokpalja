@@ -54,14 +54,14 @@ export default function Section3FiveElements({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "이번엔 신살을 분석하겠네.",
+          text: "이번엔 신살을 분석하겠어요.",
           position: { top: "10%", left: "30%" },
           size: "medium",
           direction: "bottom-right",
           maxWidth: "320px",
         },
         {
-          text: "그대의 '운명의 별자리'가 어떤 의미를 담고 있는지 아는가?",
+          text: "당신의 '운명의 별자리'가 어떤 의미를 담고 있는지 알고 있나요?",
           position: { top: "90%", right: "30%" },
           size: "medium",
           direction: "bottom-right",
@@ -86,7 +86,7 @@ export default function Section3FiveElements({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "신살은 그대의 고난과 시련을 주는 운석이 될 수도 있다네",
+          text: "신살은 당신의 고난과 시련을 주는 운석이 될 수도 있어요",
           position: { top: "25%", left: "30%" },
           size: "small",
           direction: "bottom-right",
@@ -94,7 +94,7 @@ export default function Section3FiveElements({ consultation }) {
           maxWidth: "250px",
         },
         {
-          text: "고통을 이겨내고 성장할 에너지가 될 수도 있지. 그대의 무기로 만드는게 중요하다네.",
+          text: "고통을 이겨내고 성장할 에너지가 될 수도 있어요. 당신의 무기로 만드는게 중요해요.",
           position: { top: "75%", right: "30%" },
           size: "small",
           direction: "bottom-left",
@@ -116,7 +116,7 @@ export default function Section3FiveElements({ consultation }) {
     },
     speechBubbles: [
       {
-        text: "이제 그대의 신살이 어떤 의미를 갖는지 알았겠지?",
+        text: "이제 당신의 신살이 어떤 의미를 갖는지 알았나요?",
         position: { top: "10%", left: "30%" },
         size: "medium",
         direction: "bottom-right",
@@ -124,7 +124,7 @@ export default function Section3FiveElements({ consultation }) {
         maxWidth: "250px",
       },
       {
-        text: "다음장은 팔자유형에 대해 설명하곘네.",
+        text: "다음장은 팔자유형에 대해 설명하겠어요.",
         position: { top: "90%", right: "30%" },
         size: "medium",
         direction: "bottom-right",

@@ -118,13 +118,13 @@ export default function Section6Advice({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "이번장엔 그대의 올해 운을 알려주겠네.",
+          text: "이번장에는 당신의 올해 운을 알려드릴게요.",
           position: { top: "10%", left: "30%" },
           size: "large",
           direction: "bottom-right",
         },
         {
-          text: "직업,재물,연애,건강,가족,하나씩 분석해보겠네.",
+          text: "직업,재물,연애,건강,가족,하나씩 분석해볼게요.",
           position: { top: "90%", right: "30%" },
           size: "large",
           direction: "bottom-right",
@@ -142,7 +142,7 @@ export default function Section6Advice({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "이제 이야기가 끝나가네. \n 다음장은 마지막으로 조언을 해주겠네.",
+          text: "이제 이야기가 끝나가요. \n 다음장은 마지막으로 조언을 해드릴게요.",
           position: { top: "10%", left: "30%" },
           size: "extraLarge",
           direction: "bottom-right",

@@ -32,7 +32,10 @@ export default function ConsultationResultPage({ params }) {
   const [soldCount, setSoldCount] = useState(0);
   // const [showEventModal, setShowEventModal] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [isNavVisible, setIsNavVisible] = useState(true);
   const paymentWidgetRef = useRef(null);
+  const lastScrollY = useRef(0);
+  const hideTimeout = useRef(null);
 
   // 어드민 사용자 목록
   const ADMIN_USERS = [
@@ -60,6 +63,75 @@ export default function ConsultationResultPage({ params }) {
     window.addEventListener("resize", checkIsMobile);
 
     return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
+  // 네비게이션 숨김/표시 제어
+  useEffect(() => {
+    const controlNavigation = () => {
+      const currentScrollY = window.scrollY;
+      const documentHeight = document.documentElement.scrollHeight;
+      const windowHeight = window.innerHeight;
+      const scrollPercentage = (currentScrollY + windowHeight) / documentHeight;
+      const scrollDifference = currentScrollY - lastScrollY.current;
+
+      // 하단 10% 이내에 도달했는지 확인
+      const isNearBottom = scrollPercentage >= 0.9;
+
+      // 스크롤 임계값 설정 (10px 이상 움직일 때만 반응)
+      if (Math.abs(scrollDifference) < 10 && !isNearBottom) {
+        return;
+      }
+
+      if (isNearBottom) {
+        // 하단 10% 이내에 도달하면 항상 네비게이션 표시
+        setIsNavVisible(true);
+      } else if (scrollDifference > 0 && currentScrollY > 100) {
+        // 아래로 스크롤하고 있고, 100px 이상 스크롤했을 때 숨김
+        setIsNavVisible(false);
+      } else if (scrollDifference < 0) {
+        // 위로 스크롤할 때 보임
+        setIsNavVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    const showNavigationTemporarily = () => {
+      setIsNavVisible(true);
+
+      // 기존 타이머가 있으면 제거
+      if (hideTimeout.current) {
+        clearTimeout(hideTimeout.current);
+      }
+
+      // 3초 후에 다시 숨김 (스크롤 위치에 따라)
+      hideTimeout.current = setTimeout(() => {
+        const currentScrollY = window.scrollY;
+        const documentHeight = document.documentElement.scrollHeight;
+        const windowHeight = window.innerHeight;
+        const scrollPercentage = (currentScrollY + windowHeight) / documentHeight;
+        const isNearBottom = scrollPercentage >= 0.9;
+
+        // 하단 10% 이내가 아니고 100px 이상 스크롤한 경우만 숨김
+        if (currentScrollY > 100 && !isNearBottom) {
+          setIsNavVisible(false);
+        }
+      }, 3000);
+    };
+
+    // 이벤트 리스너 등록
+    window.addEventListener("scroll", controlNavigation, { passive: true });
+    window.addEventListener("click", showNavigationTemporarily);
+    window.addEventListener("touchstart", showNavigationTemporarily);
+
+    return () => {
+      window.removeEventListener("scroll", controlNavigation);
+      window.removeEventListener("click", showNavigationTemporarily);
+      window.removeEventListener("touchstart", showNavigationTemporarily);
+      if (hideTimeout.current) {
+        clearTimeout(hideTimeout.current);
+      }
+    };
   }, []);
 
   // 인증 및 데이터 로드
@@ -311,7 +383,7 @@ export default function ConsultationResultPage({ params }) {
         className="analyze-page"
         style={{
           paddingBottom:
-            currentSection === 1 && !consultation.isPaid ? "0" : "0",
+            currentSection === 1 && !consultation.isPaid ? "0" : "100px",
         }}
       >
         <main>
@@ -505,35 +577,45 @@ export default function ConsultationResultPage({ params }) {
                 {!(currentSection === 1 && !consultation.isPaid) && (
                   <div
                     style={{
+                      position: "fixed",
+                      bottom: "0",
+                      left: "50%",
+                      transform: `translateX(-50%) translateY(${isNavVisible ? "0" : "100%"})`,
+                      maxWidth: "600px",
+                      width: "100%",
                       display: "flex",
                       justifyContent: "space-between",
-                      marginTop: "30px",
-                      padding: "20px 0",
-                      gap: "10px",
-                      flexWrap: "wrap",
-                      maxWidth: "100%",
+                      padding: "15px 20px",
+                      gap: "15px",
+                      backgroundColor: "#ffffff",
+                      borderTop: "1px solid rgba(212, 175, 55, 0.3)",
+                      boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.1)",
+                      zIndex: "1000",
+                      boxSizing: "border-box",
+                      transition: "transform 0.3s ease-in-out",
                     }}
                   >
                     <button
                       onClick={handlePreviousClick}
                       style={{
-                        padding: "12px 24px",
+                        padding: "14px 28px",
                         backgroundColor:
-                          currentSection === 1 ? "#666" : "#d4af37",
-                        color: currentSection === 1 ? "#999" : "#000",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontSize: "14px",
+                          currentSection === 1 ? "#f0f0f0" : "#d4af37",
+                        color: currentSection === 1 ? "#666666" : "#000000",
+                        border: currentSection === 1 ? "1px solid #e0e0e0" : "none",
+                        borderRadius: "12px",
+                        fontSize: "16px",
                         fontWeight: "600",
                         cursor: "pointer",
                         transition: "all 0.3s ease",
                         flex: "1",
                         minWidth: "0",
-                        maxWidth: "calc(50% - 5px)",
+                        maxWidth: "calc(50% - 7.5px)",
                         boxSizing: "border-box",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                       }}
                     >
                       {currentSection === 1 ? "맨 위로" : "이전 섹션"}
@@ -542,30 +624,33 @@ export default function ConsultationResultPage({ params }) {
                     <button
                       onClick={handleNextClick}
                       style={{
-                        padding: "12px 24px",
+                        padding: "14px 28px",
                         backgroundColor:
                           currentSection === 7 ||
                           (currentSection === 1 && !consultation.isPaid)
-                            ? "#666"
+                            ? "#f0f0f0"
                             : "#d4af37",
                         color:
                           currentSection === 7 ||
                           (currentSection === 1 && !consultation.isPaid)
-                            ? "#999"
-                            : "#000",
-                        border: "none",
-                        borderRadius: "6px",
-                        fontSize: "14px",
+                            ? "#666666"
+                            : "#000000",
+                        border: (currentSection === 7 ||
+                          (currentSection === 1 && !consultation.isPaid))
+                            ? "1px solid #e0e0e0" : "none",
+                        borderRadius: "12px",
+                        fontSize: "16px",
                         fontWeight: "600",
                         cursor: "pointer",
                         transition: "all 0.3s ease",
                         flex: "1",
                         minWidth: "0",
-                        maxWidth: "calc(50% - 5px)",
+                        maxWidth: "calc(50% - 7.5px)",
                         boxSizing: "border-box",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                       }}
                     >
                       {currentSection === 1 && !consultation.isPaid

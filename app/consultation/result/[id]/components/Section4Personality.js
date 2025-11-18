@@ -206,7 +206,7 @@ export default function Section4Personality({ consultation }) {
       },
       speechBubbles: [
         {
-          text: "그대의 팔자유형은...",
+          text: "당신의 팔자유형은...",
           position: { top: "100%", left: "50%" },
           size: "large",
           direction: "bottom-right",
@@ -241,7 +241,7 @@ export default function Section4Personality({ consultation }) {
     },
     speechBubbles: [
       {
-        text: "이 특별한 팔자유형이 그대의 인생을 어떻게 이끌어 나갈지 기대되는군.",
+        text: "이 특별한 팔자유형이 당신의 인생을 어떻게 이끌어 나갈지 기대돼요.",
         position: { top: "10%", left: "30%" },
         size: "medium",
         direction: "bottom-right",
@@ -249,7 +249,7 @@ export default function Section4Personality({ consultation }) {
         maxWidth: "250px",
       },
       {
-        text: "그대의 팔자유형을 봤으니 이제 대운을 보여주겠네.",
+        text: "당신의 팔자유형을 봤으니 이제 대운을 보여드릴게요.",
         position: { top: "90%", right: "30%" },
         size: "medium",
         direction: "bottom-right",
