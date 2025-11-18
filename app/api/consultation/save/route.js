@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/custom-auth-server";
 import { calculateSajuForServer } from "@/lib/saju-utils-server";
+import { determinePaljaType } from "@/lib/saju-utils";
 import { DEFAULT_TRANSACTION_OPTIONS } from "@/lib/db-config";
 
 export async function POST(request) {
@@ -57,6 +58,16 @@ export async function POST(request) {
       // 사주팔자 데이터 추출
       const { palja, ohaeng, ilgan, sibsin, cheonganSibsin, primarySibsin } =
         sajuData;
+
+      // 팔자 유형 계산 (analyze와 동일한 알고리즘 사용)
+      const convertedData = {
+        palja: palja,
+        ilgan: ilgan,
+        wolji: palja.wolju?.ji,
+        ohaeng: ohaeng,
+        sibsin: sibsin
+      };
+      const personalityType = determinePaljaType(convertedData);
 
       // 4. 시간 정보 저장 (UTC 변환 문제 방지를 위해 문자열로 저장)
       let birthTime = null;
@@ -121,7 +132,7 @@ export async function POST(request) {
           // 십신 및 분석 데이터
           tenGods: sibsin, // 지지 기반 십신
           heavenlyStemGods: cheonganSibsin, // 천간 기반 십신
-          personalityType: null, // 필요시 MBTI x 팔자 유형 계산 후 저장
+          personalityType: personalityType, // analyze와 동일한 팔자 유형
           fortuneData: {
             primarySibsin: primarySibsin,
             birthInfo: birthInfo,
