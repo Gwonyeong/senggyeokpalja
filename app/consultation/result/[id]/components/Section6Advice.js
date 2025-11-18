@@ -217,7 +217,7 @@ export default function Section6Advice({ consultation }) {
               style={{
                 marginBottom: "20px",
                 padding: "clamp(16px, 4vw, 24px)",
-                backgroundColor: "#131316",
+                backgroundColor: "#f8f8f6",
                 borderRadius: "12px",
                 border: `2px solid ${fortune.borderColor}`,
                 boxShadow: `0 4px 20px ${fortune.shadowColor}`,
@@ -242,7 +242,7 @@ export default function Section6Advice({ consultation }) {
               </h5>
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "14px",
                   lineHeight: "1.7",
                 }}

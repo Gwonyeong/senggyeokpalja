@@ -181,16 +181,17 @@ export default function Section3FiveElements({ consultation }) {
         style={{
           width: "100%",
           marginBottom: "30px",
-          backgroundColor: "rgba(0, 0, 0, 0.3)",
+          backgroundColor: "#f8f8f6",
           borderRadius: "12px",
           padding: "20px",
-          border: "1px solid rgba(212, 175, 55, 0.2)",
+          border: "1px solid rgba(212, 175, 55, 0.3)",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
         }}
       >
         <h4
           style={{
-            color: "#d4af37",
-            fontSize: "20px",
+            color: "#2d2d30",
+            fontSize: "24px",
             fontWeight: "bold",
             marginBottom: "20px",
             textAlign: "center",
@@ -214,10 +215,11 @@ export default function Section3FiveElements({ consultation }) {
             >
               <h4
                 style={{
-                  color: "#d4af37",
-                  fontSize: "14px",
+                  color: "#2d2d30",
+                  fontSize: "18px",
                   fontWeight: "600",
                   marginBottom: "10px",
+                  fontFamily: "Noto Serif KR",
                 }}
               >
                 보유 신살
@@ -228,7 +230,7 @@ export default function Section3FiveElements({ consultation }) {
                   flexDirection: "column",
                   gap: "8px",
                   fontSize: "12px",
-                  color: "rgba(255, 255, 255, 0.7)",
+                  color: "#2d2d30",
                 }}
               >
                 {Object.entries(sinsalData).map(([sinsalName, data]) => (
@@ -237,7 +239,7 @@ export default function Section3FiveElements({ consultation }) {
                     style={{
                       padding: "10px 14px",
                       borderRadius: "8px",
-                      backgroundColor: "#131316",
+                      backgroundColor: "rgba(212, 175, 55, 0.1)",
                       border: "2px solid #d4af37",
                       boxShadow: "0 0 12px rgba(212, 175, 55, 0.3)",
                       transition: "all 0.3s ease",
@@ -247,7 +249,7 @@ export default function Section3FiveElements({ consultation }) {
                       width: "100%",
                       position: "relative",
                       background:
-                        "linear-gradient(135deg, #131316 0%, rgba(212, 175, 55, 0.1) 100%)",
+                        "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%)",
                     }}
                   >
                     <div
@@ -289,16 +291,16 @@ export default function Section3FiveElements({ consultation }) {
             </div>
 
             {/* 신살 상세 설명 */}
-            {Object.entries(sinsalData).map(([sinsalName, data], index) => (
+            {Object.entries(sinsalData).map(([sinsalName, data]) => (
               <div
                 key={`detail-${sinsalName}`}
                 style={{
                   marginTop: "20px",
                   padding: "20px",
-                  backgroundColor: "rgba(212, 175, 55, 0.05)",
+                  backgroundColor: "rgba(212, 175, 55, 0.08)",
                   borderRadius: "12px",
                   border: "2px solid rgba(212, 175, 55, 0.3)",
-                  boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+                  boxShadow: "0 4px 20px rgba(212, 175, 55, 0.15)",
                 }}
               >
                 <div
@@ -337,7 +339,7 @@ export default function Section3FiveElements({ consultation }) {
                   style={{
                     marginBottom: "16px",
                     padding: "12px 16px",
-                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    backgroundColor: "rgba(212, 175, 55, 0.1)",
                     borderRadius: "8px",
                     border: "1px solid rgba(212, 175, 55, 0.2)",
                   }}
@@ -390,11 +392,11 @@ export default function Section3FiveElements({ consultation }) {
                     fontFamily: "Noto Serif KR",
                   }}
                 >
-                  🔮 상세 해석
+                  상세 해석
                 </h5>
                 <div
                   style={{
-                    color: "rgba(255, 255, 255, 0.8)",
+                    color: "#2d2d30",
                     fontSize: "14px",
                     lineHeight: "1.7",
                     whiteSpace: "pre-line",
@@ -411,7 +413,7 @@ export default function Section3FiveElements({ consultation }) {
             style={{
               padding: "20px",
               textAlign: "center",
-              color: "rgba(255, 255, 255, 0.5)",
+              color: "#666666",
               fontSize: "14px",
             }}
           >
@@ -456,7 +458,7 @@ export default function Section3FiveElements({ consultation }) {
             >
               <p
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "14px",
                   lineHeight: "1.7",
                   margin: "8px 0",
@@ -501,7 +503,7 @@ export default function Section3FiveElements({ consultation }) {
           </h4>
           <div
             style={{
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "#2d2d30",
               fontSize: "12px",
               lineHeight: "1.6",
             }}

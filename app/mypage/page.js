@@ -318,10 +318,7 @@ export default function MyPage() {
 
   // 프로필 데이터를 기반으로 팔자유형 계산
   const calculatePersonalityType = async (profileData) => {
-    if (
-      !profileData?.birthDate ||
-      !profileData?.gender
-    ) {
+    if (!profileData?.birthDate || !profileData?.gender) {
       return null;
     }
 
@@ -930,7 +927,7 @@ export default function MyPage() {
                     marginBottom: "8px",
                   }}
                 >
-                  🔮 인생 스포일러
+                  인생 스포일러
                 </h3>
               </div>
               <div id="consultation-history">

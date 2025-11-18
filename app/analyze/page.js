@@ -673,7 +673,7 @@ ${shareUrl}`;
                             className="cta-button ink-brush-effect"
                             disabled={loading}
                           >
-                            {loading ? "🔮 해석 중..." : "나의 길, 묻기"}
+                            {loading ? "해석 중..." : "나의 길, 묻기"}
                           </button>
                         </div>
                       </form>
@@ -816,7 +816,7 @@ ${shareUrl}`;
                       {/* 저장 상태 알림 */}
 
                       <div className="synergy-card" ref={invitationRef}>
-                        <h3>🔮 MBTI × 팔자 시너지 분석</h3>
+                        <h3>MBTI × 팔자 시너지 분석</h3>
                         <p>
                           당신의 MBTI와 팔자유형이 만나면
                           <br />

@@ -20,9 +20,9 @@ export default function IntroWebtoonPanel({ consultation }) {
         {
           text: "안녕하세요! 당신의 사주팔자 이야기를 들려드릴 토리라고 해요.",
           position: { top: "20%", left: "30%" },
-          size: "large",
+          size: "midium",
           direction: "bottom-left",
-          maxWidth: "350px",
+          maxWidth: "250px",
         },
       ],
     },

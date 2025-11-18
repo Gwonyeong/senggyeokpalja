@@ -261,10 +261,11 @@ export default function Section5Fortune({ consultation }) {
             width: "100%",
             maxWidth: "100%",
             marginBottom: "30px",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            backgroundColor: "#f8f8f6",
             borderRadius: "12px",
             padding: "clamp(12px, 4vw, 20px)",
-            border: "1px solid rgba(212, 175, 55, 0.2)",
+            border: "1px solid rgba(212, 175, 55, 0.3)",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
             boxSizing: "border-box",
             overflow: "hidden",
             wordBreak: "break-word",
@@ -272,7 +273,7 @@ export default function Section5Fortune({ consultation }) {
         >
           <h4
             style={{
-              color: "#d4af37",
+              color: "#2d2d30",
               fontSize: "clamp(18px, 5vw, 24px)",
               fontWeight: "bold",
               marginBottom: "8px",
@@ -285,7 +286,7 @@ export default function Section5Fortune({ consultation }) {
           {fortuneData.daeun.age && (
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.6)",
+                color: "#666666",
                 fontSize: "12px",
                 textAlign: "center",
                 marginBottom: "20px",
@@ -309,12 +310,12 @@ export default function Section5Fortune({ consultation }) {
                     marginBottom: "24px",
                     padding: "16px",
                     backgroundColor: isCurrentPeriod
-                      ? "rgba(212, 175, 55, 0.1)"
-                      : "rgba(255, 255, 255, 0.02)",
+                      ? "rgba(212, 175, 55, 0.15)"
+                      : "rgba(212, 175, 55, 0.05)",
                     borderRadius: "8px",
                     border: isCurrentPeriod
                       ? "2px solid rgba(212, 175, 55, 0.4)"
-                      : "1px solid rgba(255, 255, 255, 0.1)",
+                      : "1px solid rgba(212, 175, 55, 0.2)",
                     boxShadow: isCurrentPeriod
                       ? "0 0 15px rgba(212, 175, 55, 0.2)"
                       : "none",
@@ -324,7 +325,7 @@ export default function Section5Fortune({ consultation }) {
                     style={{
                       color: isCurrentPeriod
                         ? "#d4af37"
-                        : "rgba(255, 255, 255, 0.9)",
+                        : "#2d2d30",
                       fontSize: "16px",
                       fontWeight: "600",
                       marginBottom: "12px",
@@ -353,7 +354,7 @@ export default function Section5Fortune({ consultation }) {
                   </h5>
                   <div
                     style={{
-                      color: "rgba(255, 255, 255, 0.8)",
+                      color: "#2d2d30",
                       fontSize: "14px",
                       lineHeight: "1.7",
                       whiteSpace: "pre-line",
@@ -369,7 +370,7 @@ export default function Section5Fortune({ consultation }) {
           {Object.keys(fortuneData.daeun.allPeriods || {}).length === 0 && (
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.6)",
+                color: "#666666",
                 fontSize: "14px",
                 textAlign: "center",
                 padding: "20px",
@@ -408,10 +409,11 @@ export default function Section5Fortune({ consultation }) {
             maxWidth: "100%",
             marginTop: "100px",
             marginBottom: "30px",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            backgroundColor: "#f8f8f6",
             borderRadius: "12px",
             padding: "clamp(12px, 4vw, 20px)",
-            border: "1px solid rgba(212, 175, 55, 0.2)",
+            border: "1px solid rgba(212, 175, 55, 0.3)",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
             boxSizing: "border-box",
             overflow: "hidden",
             wordBreak: "break-word",
@@ -419,7 +421,7 @@ export default function Section5Fortune({ consultation }) {
         >
           <h4
             style={{
-              color: "#d4af37",
+              color: "#2d2d30",
               fontSize: "clamp(18px, 5vw, 24px)",
               fontWeight: "bold",
               marginBottom: "8px",
@@ -432,7 +434,7 @@ export default function Section5Fortune({ consultation }) {
           {fortuneData.sewun.year && (
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.6)",
+                color: "#666666",
                 fontSize: "12px",
                 textAlign: "center",
                 marginBottom: "16px",
@@ -444,7 +446,7 @@ export default function Section5Fortune({ consultation }) {
           )}
           <div
             style={{
-              color: "rgba(255, 255, 255, 0.8)",
+              color: "#2d2d30",
               fontSize: "14px",
               lineHeight: "1.7",
             }}

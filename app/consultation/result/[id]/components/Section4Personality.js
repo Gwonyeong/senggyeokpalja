@@ -308,10 +308,11 @@ export default function Section4Personality({ consultation }) {
             width: "100%",
             maxWidth: "100%",
             marginBottom: "30px",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            backgroundColor: "#f8f8f6",
             borderRadius: "12px",
             padding: "clamp(12px, 4vw, 20px)",
-            border: "1px solid rgba(212, 175, 55, 0.2)",
+            border: "1px solid rgba(212, 175, 55, 0.3)",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
             boxSizing: "border-box",
             overflow: "hidden",
             wordBreak: "break-word",
@@ -361,7 +362,7 @@ export default function Section4Personality({ consultation }) {
               style={{
                 fontSize: "clamp(18px, 5vw, 24px)",
                 fontWeight: "bold",
-                // color: "#d4af37",
+                color: "#2d2d30",
                 marginBottom: "8px",
                 fontFamily: "monospace",
                 letterSpacing: "1px",
@@ -394,10 +395,10 @@ export default function Section4Personality({ consultation }) {
             style={{
               marginBottom: "20px",
               padding: "clamp(12px, 4vw, 20px)",
-              backgroundColor: "#131316",
+              backgroundColor: "rgba(212, 175, 55, 0.08)",
               borderRadius: "12px",
               border: "2px solid rgba(212, 175, 55, 0.3)",
-              boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+              boxShadow: "0 4px 20px rgba(212, 175, 55, 0.15)",
               boxSizing: "border-box",
               width: "100%",
               maxWidth: "100%",
@@ -407,7 +408,7 @@ export default function Section4Personality({ consultation }) {
           >
             <h5
               style={{
-                color: "#d4af37",
+                color: "#2d2d30",
                 fontSize: "15px",
                 fontWeight: "600",
                 marginBottom: "16px",
@@ -419,7 +420,7 @@ export default function Section4Personality({ consultation }) {
             </h5>
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.8)",
+                color: "#2d2d30",
                 fontSize: "12px",
                 lineHeight: "1.7",
                 whiteSpace: "pre-line",
@@ -434,10 +435,10 @@ export default function Section4Personality({ consultation }) {
             style={{
               marginBottom: "20px",
               padding: "clamp(12px, 4vw, 20px)",
-              backgroundColor: "#131316",
+              backgroundColor: "rgba(255, 215, 0, 0.08)",
               borderRadius: "12px",
               border: "2px solid rgba(255, 215, 0, 0.3)",
-              boxShadow: "0 4px 20px rgba(255, 215, 0, 0.1)",
+              boxShadow: "0 4px 20px rgba(255, 215, 0, 0.15)",
               boxSizing: "border-box",
               width: "100%",
               maxWidth: "100%",
@@ -447,7 +448,7 @@ export default function Section4Personality({ consultation }) {
           >
             <h5
               style={{
-                color: "#FFD700",
+                color: "#2d2d30",
                 fontSize: "15px",
                 fontWeight: "600",
                 marginBottom: "16px",
@@ -462,7 +463,7 @@ export default function Section4Personality({ consultation }) {
             <div style={{ marginBottom: "16px" }}>
               <h6
                 style={{
-                  color: "#FFD700",
+                  color: "#d4af37",
                   fontSize: "12px",
                   fontWeight: "600",
                   marginBottom: "8px",
@@ -473,7 +474,7 @@ export default function Section4Personality({ consultation }) {
               </h6>
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "12px",
                   lineHeight: "1.6",
                   marginBottom: "12px",
@@ -487,7 +488,7 @@ export default function Section4Personality({ consultation }) {
             <div style={{ marginBottom: "16px" }}>
               <h6
                 style={{
-                  color: "#FFD700",
+                  color: "#d4af37",
                   fontSize: "12px",
                   fontWeight: "600",
                   marginBottom: "8px",
@@ -498,7 +499,7 @@ export default function Section4Personality({ consultation }) {
               </h6>
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "12px",
                   lineHeight: "1.6",
                   marginBottom: "12px",
@@ -512,7 +513,7 @@ export default function Section4Personality({ consultation }) {
             <div>
               <h6
                 style={{
-                  color: "#FFD700",
+                  color: "#d4af37",
                   fontSize: "12px",
                   fontWeight: "600",
                   marginBottom: "8px",
@@ -523,7 +524,7 @@ export default function Section4Personality({ consultation }) {
               </h6>
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "12px",
                   lineHeight: "1.6",
                 }}
@@ -538,10 +539,10 @@ export default function Section4Personality({ consultation }) {
             style={{
               marginBottom: "20px",
               padding: "clamp(12px, 4vw, 20px)",
-              backgroundColor: "#131316",
+              backgroundColor: "rgba(138, 43, 226, 0.08)",
               borderRadius: "12px",
               border: "2px solid rgba(138, 43, 226, 0.3)",
-              boxShadow: "0 4px 20px rgba(138, 43, 226, 0.1)",
+              boxShadow: "0 4px 20px rgba(138, 43, 226, 0.15)",
               boxSizing: "border-box",
               width: "100%",
               maxWidth: "100%",
@@ -551,7 +552,7 @@ export default function Section4Personality({ consultation }) {
           >
             <h5
               style={{
-                color: "#8A2BE2",
+                color: "#2d2d30",
                 fontSize: "15px",
                 fontWeight: "600",
                 marginBottom: "16px",
@@ -577,7 +578,7 @@ export default function Section4Personality({ consultation }) {
               </h6>
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "12px",
                   lineHeight: "1.6",
                   marginBottom: "12px",
@@ -602,7 +603,7 @@ export default function Section4Personality({ consultation }) {
               </h6>
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "12px",
                   lineHeight: "1.6",
                   marginBottom: "12px",
@@ -625,10 +626,10 @@ export default function Section4Personality({ consultation }) {
             style={{
               marginBottom: "20px",
               padding: "clamp(12px, 4vw, 20px)",
-              backgroundColor: "#131316",
+              backgroundColor: "rgba(212, 175, 55, 0.08)",
               borderRadius: "12px",
               border: "2px solid rgba(212, 175, 55, 0.3)",
-              boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+              boxShadow: "0 4px 20px rgba(212, 175, 55, 0.15)",
               boxSizing: "border-box",
               width: "100%",
               maxWidth: "100%",
@@ -638,7 +639,7 @@ export default function Section4Personality({ consultation }) {
           >
             <h5
               style={{
-                color: "#d4af37",
+                color: "#2d2d30",
                 fontSize: "15px",
                 fontWeight: "600",
                 marginBottom: "16px",
@@ -650,14 +651,14 @@ export default function Section4Personality({ consultation }) {
             </h5>
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.8)",
+                color: "#2d2d30",
                 fontSize: "12px",
                 lineHeight: "1.8",
                 fontStyle: "italic",
                 padding: "12px",
                 backgroundColor: "rgba(212, 175, 55, 0.1)",
                 borderRadius: "8px",
-                border: "1px solid rgba(212, 175, 55, 0.2)",
+                border: "1px solid rgba(212, 175, 55, 0.3)",
               }}
             >
               {(() => {
@@ -684,11 +685,12 @@ export default function Section4Personality({ consultation }) {
           style={{
             padding: "20px",
             textAlign: "center",
-            color: "rgba(255, 255, 255, 0.5)",
+            color: "#666666",
             fontSize: "14px",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
+            backgroundColor: "#f8f8f6",
             borderRadius: "12px",
-            border: "1px solid rgba(212, 175, 55, 0.2)",
+            border: "1px solid rgba(212, 175, 55, 0.3)",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
           }}
         >
           <div
@@ -709,7 +711,7 @@ export default function Section4Personality({ consultation }) {
             ></span>
             <h4
               style={{
-                color: "#d4af37",
+                color: "#2d2d30",
                 fontSize: "18px",
                 fontWeight: "700",
                 margin: 0,
@@ -721,7 +723,7 @@ export default function Section4Personality({ consultation }) {
           </div>
           <p
             style={{
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "#2d2d30",
               fontSize: "14px",
               lineHeight: "1.7",
               margin: "8px 0",

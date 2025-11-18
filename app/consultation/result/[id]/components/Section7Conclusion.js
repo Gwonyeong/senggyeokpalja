@@ -120,10 +120,10 @@ export default function Section7Conclusion({ consultation }) {
             marginTop: "150px",
             marginBottom: "30px",
             padding: "25px",
-            backgroundColor: "rgba(212, 175, 55, 0.05)",
+            backgroundColor: "#f8f8f6",
             borderRadius: "12px",
             border: "2px solid rgba(212, 175, 55, 0.3)",
-            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.15)",
           }}
         >
           <div
@@ -137,7 +137,7 @@ export default function Section7Conclusion({ consultation }) {
           >
             <h4
               style={{
-                color: "#d4af37",
+                color: "#2d2d30",
                 fontSize: "20px",
                 fontWeight: "700",
                 margin: 0,
@@ -154,7 +154,7 @@ export default function Section7Conclusion({ consultation }) {
               style={{
                 padding: "30px",
                 textAlign: "center",
-                color: "rgba(255, 255, 255, 0.6)",
+                color: "#666666",
                 fontSize: "14px",
               }}
             >
@@ -164,14 +164,14 @@ export default function Section7Conclusion({ consultation }) {
             <div
               style={{
                 padding: "20px",
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                backgroundColor: "rgba(212, 175, 55, 0.1)",
                 borderRadius: "10px",
-                border: "1px solid rgba(212, 175, 55, 0.2)",
+                border: "1px solid rgba(212, 175, 55, 0.3)",
               }}
             >
               <div
                 style={{
-                  color: "rgba(255, 255, 255, 0.85)",
+                  color: "#2d2d30",
                   fontSize: "15px",
                   lineHeight: "1.8",
                   whiteSpace: "pre-line",
@@ -186,7 +186,7 @@ export default function Section7Conclusion({ consultation }) {
               style={{
                 padding: "30px",
                 textAlign: "center",
-                color: "rgba(255, 255, 255, 0.5)",
+                color: "#666666",
                 fontSize: "14px",
               }}
             >
@@ -229,7 +229,7 @@ export default function Section7Conclusion({ consultation }) {
             marginBottom: "25px",
             fontSize: "16px",
             lineHeight: "1.7",
-            color: "rgba(255, 255, 255, 0.9)",
+            color: "#2d2d30",
             fontFamily: "Noto Serif KR",
           }}
         >

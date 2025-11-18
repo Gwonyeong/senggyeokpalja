@@ -26,15 +26,15 @@ export default function AuthCallback() {
 
         if (data.session) {
           // 자체 인증 시스템으로 마이그레이션
-          const response = await fetch('/api/auth/migrate', {
-            method: 'POST',
+          const response = await fetch("/api/auth/migrate", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              supabaseUser: data.session.user
+              supabaseUser: data.session.user,
             }),
-            credentials: 'include'
+            credentials: "include",
           });
 
           const result = await response.json();
@@ -43,15 +43,19 @@ export default function AuthCallback() {
             // 서버에서 쿠키 설정이 안된 경우를 대비해 클라이언트에서도 설정
             if (result.token) {
               const maxAge = 7 * 24 * 60 * 60; // 7일
-              const secure = window.location.protocol === 'https:';
-              document.cookie = `plaja_auth=${result.token}; max-age=${maxAge}; path=/; samesite=lax${secure ? '; secure' : ''}`;
+              const secure = window.location.protocol === "https:";
+              document.cookie = `plaja_auth=${
+                result.token
+              }; max-age=${maxAge}; path=/; samesite=lax${
+                secure ? "; secure" : ""
+              }`;
             }
 
             toast.success("로그인이 완료되었습니다!");
             // 페이지 강제 새로고침으로 쿠키 적용
             window.location.href = "/";
           } else {
-            throw new Error(result.error || 'Migration failed');
+            throw new Error(result.error || "Migration failed");
           }
         } else {
           toast.error("인증 세션을 찾을 수 없습니다.");
@@ -79,7 +83,6 @@ export default function AuthCallback() {
           gap: "20px",
         }}
       >
-        <div>🔮</div>
         <p>로그인 처리 중...</p>
       </div>
     </PageWrapper>

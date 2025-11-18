@@ -161,7 +161,7 @@ export default function ConsultationResultPage({ params }) {
       if (paymentWidgetRef.current) {
         paymentWidgetRef.current.openPayment();
       } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo(0, 0);
       }
     }
   };
@@ -182,7 +182,24 @@ export default function ConsultationResultPage({ params }) {
 
   // 스크롤을 최상단으로 이동하는 함수
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // 진행 중인 스크롤 애니메이션 강제 정지
+    window.stop();
+
+    // CSS smooth scroll을 완전히 비활성화
+    const originalBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.body.style.scrollBehavior = 'auto';
+
+    // 즉시 상단으로 이동
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    // 다음 프레임에서 원래 설정 복원
+    requestAnimationFrame(() => {
+      document.documentElement.style.scrollBehavior = originalBehavior;
+      document.body.style.scrollBehavior = '';
+    });
   };
 
   // 섹션 변경 함수
@@ -194,12 +211,12 @@ export default function ConsultationResultPage({ params }) {
     }
 
     if (newSection >= 1 && newSection <= 7) {
+      // 먼저 즉시 스크롤 이동
+      scrollToTop();
+
       setCurrentSection(newSection);
       const newUrl = `/consultation/result/${resolvedParams.id}?section=${newSection}`;
       router.push(newUrl, { scroll: false });
-
-      // 스크롤을 최상단으로 이동
-      scrollToTop();
     }
   };
 
@@ -383,7 +400,7 @@ export default function ConsultationResultPage({ params }) {
                             if (paymentWidgetRef.current) {
                               paymentWidgetRef.current.openPayment();
                             } else {
-                              window.scrollTo({ top: 0, behavior: "smooth" });
+                              window.scrollTo(0, 0);
                             }
                           }}
                           style={{

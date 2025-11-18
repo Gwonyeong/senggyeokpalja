@@ -151,7 +151,7 @@ export default function TenGodsChart({ consultation }) {
     const radius = Math.min(width, height) / 2.5;
 
     // 배경
-    ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
+    ctx.fillStyle = "#f8f8f6";
     ctx.fillRect(0, 0, width, height);
 
     // 총합 계산
@@ -211,7 +211,7 @@ export default function TenGodsChart({ consultation }) {
       // 레이블 그리기
       if (value / total > 0.05) {
         // 5% 이상일 때만 레이블 표시
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#2d2d30";
         ctx.font = "bold 42px Pretendard";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -230,7 +230,7 @@ export default function TenGodsChart({ consultation }) {
     // 중앙 원 (도넛 효과)
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius * 0.3, 0, 2 * Math.PI);
-    ctx.fillStyle = "#0a0a0a";
+    ctx.fillStyle = "#f8f8f6";
     ctx.fill();
     ctx.strokeStyle = "#d4af37";
     ctx.lineWidth = 4;
@@ -265,10 +265,11 @@ export default function TenGodsChart({ consultation }) {
       style={{
         width: "100%",
         marginBottom: "30px",
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        backgroundColor: "#f8f8f6",
         borderRadius: "12px",
         padding: "20px",
-        border: "1px solid rgba(212, 175, 55, 0.2)",
+        border: "1px solid rgba(212, 175, 55, 0.3)",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
       <canvas
@@ -296,10 +297,12 @@ export default function TenGodsChart({ consultation }) {
       >
         <h4
           style={{
-            color: "#d4af37",
-            fontSize: "14px",
-            fontWeight: "600",
-            marginBottom: "10px",
+            color: "#2d2d30",
+            fontSize: "20px",
+            fontWeight: "bold",
+            marginBottom: "20px",
+            textAlign: "center",
+            fontFamily: "Noto Serif KR",
           }}
         >
           십성 해석
@@ -310,7 +313,7 @@ export default function TenGodsChart({ consultation }) {
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: "8px",
             fontSize: "12px",
-            color: "rgba(255, 255, 255, 0.7)",
+            color: "#2d2d30",
           }}
         >
           {Object.entries(tenGods).map(([god, count]) => {
@@ -328,17 +331,17 @@ export default function TenGodsChart({ consultation }) {
                 style={{
                   padding: "10px 14px",
                   borderRadius: "8px",
-                  backgroundColor: isDominant ? "#131316" : "transparent",
+                  backgroundColor: isDominant ? "rgba(212, 175, 55, 0.1)" : "transparent",
                   border: isDominant
                     ? "2px solid #d4af37"
-                    : "1px solid rgba(255, 255, 255, 0.1)",
+                    : "1px solid rgba(212, 175, 55, 0.2)",
                   boxShadow: isDominant
                     ? "0 0 12px rgba(212, 175, 55, 0.3)"
                     : "none",
                   transition: "all 0.3s ease",
                   ...(isDominant && {
                     background:
-                      "linear-gradient(135deg, #131316 0%, rgba(212, 175, 55, 0.1) 100%)",
+                      "linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(212, 175, 55, 0.05) 100%)",
                   }),
                 }}
               >
@@ -364,7 +367,7 @@ export default function TenGodsChart({ consultation }) {
                       style={{
                         color: isDominant
                           ? "#d4af37"
-                          : "rgba(255, 255, 255, 0.7)",
+                          : "#2d2d30",
                         fontWeight: isDominant ? "600" : "normal",
                       }}
                     >
@@ -376,7 +379,7 @@ export default function TenGodsChart({ consultation }) {
                       fontSize: "11px",
                       color: isDominant
                         ? "#d4af37"
-                        : "rgba(255, 255, 255, 0.5)",
+                        : "#666666",
                       fontWeight: isDominant ? "600" : "normal",
                     }}
                   >
@@ -386,7 +389,7 @@ export default function TenGodsChart({ consultation }) {
                 <div
                   style={{
                     fontSize: "10px",
-                    color: "rgba(255, 255, 255, 0.5)",
+                    color: "#666666",
                     marginTop: "4px",
                   }}
                 >
@@ -404,10 +407,10 @@ export default function TenGodsChart({ consultation }) {
           style={{
             marginTop: "20px",
             padding: "20px",
-            backgroundColor: "rgba(212, 175, 55, 0.05)",
+            backgroundColor: "rgba(212, 175, 55, 0.08)",
             borderRadius: "12px",
             border: "2px solid rgba(212, 175, 55, 0.3)",
-            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.1)",
+            boxShadow: "0 4px 20px rgba(212, 175, 55, 0.15)",
           }}
         >
           <div
@@ -427,14 +430,14 @@ export default function TenGodsChart({ consultation }) {
             ></span>
             <h4
               style={{
-                color: "#d4af37",
+                color: "#2d2d30",
                 fontSize: "18px",
                 fontWeight: "700",
                 margin: 0,
                 fontFamily: "Noto Serif KR",
               }}
             >
-              당신의 대표 십성: {dominantGod.god}
+              당신의 대표 십성: <span style={{ color: "#d4af37" }}>{dominantGod.god}</span>
             </h4>
           </div>
 
@@ -452,14 +455,14 @@ export default function TenGodsChart({ consultation }) {
               style={{
                 marginBottom: "16px",
                 padding: "12px 16px",
-                backgroundColor: "rgba(0, 0, 0, 0.2)",
+                backgroundColor: "rgba(212, 175, 55, 0.1)",
                 borderRadius: "8px",
-                border: "1px solid rgba(212, 175, 55, 0.2)",
+                border: "1px solid rgba(212, 175, 55, 0.3)",
               }}
             >
               <p
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "14px",
                   margin: 0,
                   lineHeight: "1.5",
@@ -472,7 +475,7 @@ export default function TenGodsChart({ consultation }) {
               </p>
               <p
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "14px",
                   margin: "8px 0 0 0",
                   lineHeight: "1.5",
@@ -485,7 +488,7 @@ export default function TenGodsChart({ consultation }) {
               </p>
               <p
                 style={{
-                  color: "rgba(255, 255, 255, 0.8)",
+                  color: "#2d2d30",
                   fontSize: "14px",
                   margin: "8px 0 0 0",
                   lineHeight: "1.5",
@@ -503,7 +506,7 @@ export default function TenGodsChart({ consultation }) {
                 style={{
                   padding: "20px",
                   textAlign: "center",
-                  color: "rgba(255, 255, 255, 0.6)",
+                  color: "#666666",
                   fontSize: "14px",
                 }}
               >
@@ -515,14 +518,14 @@ export default function TenGodsChart({ consultation }) {
                   style={{
                     marginBottom: "16px",
                     padding: "12px 16px",
-                    backgroundColor: "rgba(0, 0, 0, 0.2)",
+                    backgroundColor: "rgba(212, 175, 55, 0.1)",
                     borderRadius: "8px",
-                    border: "1px solid rgba(212, 175, 55, 0.2)",
+                    border: "1px solid rgba(212, 175, 55, 0.3)",
                   }}
                 >
                   <h5
                     style={{
-                      color: "#d4af37",
+                      color: "#2d2d30",
                       fontSize: "16px",
                       fontWeight: "600",
                       marginBottom: "16px",
@@ -533,7 +536,7 @@ export default function TenGodsChart({ consultation }) {
                   </h5>
                   <div
                     style={{
-                      color: "rgba(255, 255, 255, 0.8)",
+                      color: "#2d2d30",
                       fontSize: "14px",
                       lineHeight: "1.7",
                       whiteSpace: "pre-line",
@@ -547,7 +550,7 @@ export default function TenGodsChart({ consultation }) {
                         <span
                           key={index}
                           style={{
-                            color: part.isSpecial ? part.color : "rgba(255, 255, 255, 0.8)",
+                            color: part.isSpecial ? part.color : "#2d2d30",
                             fontWeight: part.isSpecial ? "600" : "normal",
                             fontSize: part.isSubtitle ? "16px" : "14px",
                             ...(part.isSubtitle && {
@@ -569,7 +572,7 @@ export default function TenGodsChart({ consultation }) {
                 style={{
                   padding: "20px",
                   textAlign: "center",
-                  color: "rgba(255, 255, 255, 0.5)",
+                  color: "#666666",
                   fontSize: "14px",
                 }}
               >

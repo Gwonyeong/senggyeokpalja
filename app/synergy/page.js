@@ -422,7 +422,7 @@ export default function SynergyPage() {
                           onClick={handleAnalyze}
                           disabled={!selectedMBTI || !selectedPalja || loading}
                         >
-                          {loading ? "🔮 분석 중..." : "이야기 듣기"}
+                          {loading ? "분석 중..." : "이야기 듣기"}
                         </button>
                       </div>
                     </form>

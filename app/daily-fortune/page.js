@@ -10,7 +10,8 @@ import LoginModal from "../components/LoginModal";
 
 export default function DailyFortunePage() {
   const router = useRouter();
-  const { user, checkAuth, showLoginModal, setShowLoginModal } = useCustomAuth();
+  const { user, checkAuth, showLoginModal, setShowLoginModal } =
+    useCustomAuth();
   const [isFlipped, setIsFlipped] = useState(false);
   const [showGif, setShowGif] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -661,11 +662,13 @@ export default function DailyFortunePage() {
     switch (sibsinType) {
       case "정인":
         score = 25;
-        description = "최고의 조화 - 일간을 강력히 생조하여 지혜와 안정을 가져다줌";
+        description =
+          "최고의 조화 - 일간을 강력히 생조하여 지혜와 안정을 가져다줌";
         break;
       case "식신":
         score = 20;
-        description = "매우 좋은 조화 - 창조적 에너지와 재능을 발휘할 수 있는 날";
+        description =
+          "매우 좋은 조화 - 창조적 에너지와 재능을 발휘할 수 있는 날";
         break;
       case "정재":
         score = 18;
@@ -933,16 +936,8 @@ export default function DailyFortunePage() {
         );
 
         if (primarySibsin) {
-          console.log("🔮 사용자의 주된 십신:", primarySibsin);
-
-          // 오행 정보 출력
-          console.log("🌟 오행 분석 결과:");
-          console.log("├─ 주된 오행:", ohaengAnalysis.dominantOhaeng);
-          console.log("├─ 전체 분포:", ohaengAnalysis.distribution);
-          console.log("└─ 총 개수:", ohaengAnalysis.total);
-
           // 각 오행별 상세 정보
-          console.log("📊 오행별 상세:");
+
           Object.entries(ohaengAnalysis.distribution).forEach(
             ([element, info]) => {
               if (info.count > 0) {
@@ -1201,7 +1196,9 @@ export default function DailyFortunePage() {
       if (data.fortuneByScore && data.fortuneByScore[sibsinName]) {
         const fortuneArray = data.fortuneByScore[sibsinName];
         if (Array.isArray(fortuneArray)) {
-          fortuneData = fortuneArray.find(item => item.score === closestScore);
+          fortuneData = fortuneArray.find(
+            (item) => item.score === closestScore
+          );
         }
       }
       // 구조 2: {sibsinName: {score: {categories}}} (나머지 십신들)
@@ -1263,7 +1260,11 @@ export default function DailyFortunePage() {
         원점수: finalScore,
         MBTI: userMbti,
         MBTI메시지: mbtiMessage ? "포함됨" : "없음",
-        MBTI데이터키: data.mbtiModifier ? "mbtiModifier" : data["MBTI보정"] ? "MBTI보정" : "없음",
+        MBTI데이터키: data.mbtiModifier
+          ? "mbtiModifier"
+          : data["MBTI보정"]
+          ? "MBTI보정"
+          : "없음",
         실제MBTI메시지: mbtiMessage,
       });
 
@@ -1316,13 +1317,17 @@ export default function DailyFortunePage() {
             sibsinName: fortuneData.sibsinName, // 십신 이름 추가
             score: fortuneData.score, // 점수 추가
             mbtiMessage: fortuneData.mbtiMessage, // MBTI 메시지 추가
-            mbtiCorrection: fortuneData.mbtiMessage ? `MBTI보정: ${fortuneData.mbtiMessage}` : null, // DB 저장용
+            mbtiCorrection: fortuneData.mbtiMessage
+              ? `MBTI보정: ${fortuneData.mbtiMessage}`
+              : null, // DB 저장용
             randomElements: fortuneData.randomElements, // 랜덤요소 추가
             // 기존 랜덤 요소는 새로운 랜덤요소로 대체
             luckyNumber: Math.floor(Math.random() * 9) + 1,
             luckyColor: fortuneData.randomElements?.포인트컬러 || "골드",
-            luckyDirection: fortuneData.randomElements?.포인트행동 || "동쪽으로 향하기",
-            luckyItem: fortuneData.randomElements?.포인트사물 || "행운의 아이템",
+            luckyDirection:
+              fortuneData.randomElements?.포인트행동 || "동쪽으로 향하기",
+            luckyItem:
+              fortuneData.randomElements?.포인트사물 || "행운의 아이템",
           };
 
           setFortune(finalFortuneData);
@@ -1424,12 +1429,12 @@ export default function DailyFortunePage() {
                     <div
                       className={`card ${styles["daily-fortune-card"]}`}
                       style={{
-                        transition: 'none !important',
-                        transform: 'none !important',
-                        animation: 'none !important',
-                        WebkitTransition: 'none !important',
-                        WebkitTransform: 'none !important',
-                        WebkitTapHighlightColor: 'transparent !important'
+                        transition: "none !important",
+                        transform: "none !important",
+                        animation: "none !important",
+                        WebkitTransition: "none !important",
+                        WebkitTransform: "none !important",
+                        WebkitTapHighlightColor: "transparent !important",
                       }}
                     >
                       <div className={styles["card-header"]}></div>
@@ -1440,7 +1445,8 @@ export default function DailyFortunePage() {
                         {/* 십신과 점수 표시 영역 */}
                         <div className={styles["sibsin-score-simple"]}>
                           <span className={styles["sibsin-score-text"]}>
-                            {fortune?.sibsinName || "알 수 없음"} - {fortune?.score || 0}점
+                            {fortune?.sibsinName || "알 수 없음"} -{" "}
+                            {fortune?.score || 0}점
                           </span>
                         </div>
 
@@ -1501,12 +1507,12 @@ export default function DailyFortunePage() {
                     <div
                       className={`card ${styles["daily-fortune-card"]}`}
                       style={{
-                        transition: 'none !important',
-                        transform: 'none !important',
-                        animation: 'none !important',
-                        WebkitTransition: 'none !important',
-                        WebkitTransform: 'none !important',
-                        WebkitTapHighlightColor: 'transparent !important'
+                        transition: "none !important",
+                        transform: "none !important",
+                        animation: "none !important",
+                        WebkitTransition: "none !important",
+                        WebkitTransform: "none !important",
+                        WebkitTapHighlightColor: "transparent !important",
                       }}
                     >
                       {/* 두 번째 카드: 랜덤 요소 */}
