@@ -484,79 +484,81 @@ export default function ConsultationResultPage({ params }) {
                   />
                 )}
 
-                {/* 네비게이션 버튼 */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: "30px",
-                    padding: "20px 0",
-                    gap: "10px",
-                    flexWrap: "wrap",
-                    maxWidth: "100%",
-                  }}
-                >
-                  <button
-                    onClick={handlePreviousClick}
+                {/* 네비게이션 버튼 - 구매하지 않은 섹션 1에서는 숨김 */}
+                {!(currentSection === 1 && !consultation.isPaid) && (
+                  <div
                     style={{
-                      padding: "12px 24px",
-                      backgroundColor:
-                        currentSection === 1 ? "#666" : "#d4af37",
-                      color: currentSection === 1 ? "#999" : "#000",
-                      border: "none",
-                      borderRadius: "6px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
-                      flex: "1",
-                      minWidth: "0",
-                      maxWidth: "calc(50% - 5px)",
-                      boxSizing: "border-box",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginTop: "30px",
+                      padding: "20px 0",
+                      gap: "10px",
+                      flexWrap: "wrap",
+                      maxWidth: "100%",
                     }}
                   >
-                    {currentSection === 1 ? "맨 위로" : "이전 섹션"}
-                  </button>
+                    <button
+                      onClick={handlePreviousClick}
+                      style={{
+                        padding: "12px 24px",
+                        backgroundColor:
+                          currentSection === 1 ? "#666" : "#d4af37",
+                        color: currentSection === 1 ? "#999" : "#000",
+                        border: "none",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        flex: "1",
+                        minWidth: "0",
+                        maxWidth: "calc(50% - 5px)",
+                        boxSizing: "border-box",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {currentSection === 1 ? "맨 위로" : "이전 섹션"}
+                    </button>
 
-                  <button
-                    onClick={handleNextClick}
-                    style={{
-                      padding: "12px 24px",
-                      backgroundColor:
-                        currentSection === 7 ||
-                        (currentSection === 1 && !consultation.isPaid)
-                          ? "#666"
-                          : "#d4af37",
-                      color:
-                        currentSection === 7 ||
-                        (currentSection === 1 && !consultation.isPaid)
-                          ? "#999"
-                          : "#000",
-                      border: "none",
-                      borderRadius: "6px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
-                      flex: "1",
-                      minWidth: "0",
-                      maxWidth: "calc(50% - 5px)",
-                      boxSizing: "border-box",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {currentSection === 1 && !consultation.isPaid
-                      ? "맨 위로"
-                      : currentSection === 7
-                      ? "맨 위로"
-                      : "다음 섹션"}
-                  </button>
-                </div>
+                    <button
+                      onClick={handleNextClick}
+                      style={{
+                        padding: "12px 24px",
+                        backgroundColor:
+                          currentSection === 7 ||
+                          (currentSection === 1 && !consultation.isPaid)
+                            ? "#666"
+                            : "#d4af37",
+                        color:
+                          currentSection === 7 ||
+                          (currentSection === 1 && !consultation.isPaid)
+                            ? "#999"
+                            : "#000",
+                        border: "none",
+                        borderRadius: "6px",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        flex: "1",
+                        minWidth: "0",
+                        maxWidth: "calc(50% - 5px)",
+                        boxSizing: "border-box",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {currentSection === 1 && !consultation.isPaid
+                        ? "맨 위로"
+                        : currentSection === 7
+                        ? "맨 위로"
+                        : "다음 섹션"}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </section>

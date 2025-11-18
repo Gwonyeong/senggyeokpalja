@@ -3,6 +3,7 @@ import WebtoonPanel from "../../../../../components/consultation/WebtoonPanel";
 import IntroWebtoonPanel from "../../../../../components/consultation/IntroWebtoonPanel";
 import SajuChart from "../../../../../components/consultation/SajuChart";
 import SpeechBubble from "../../../../../components/consultation/SpeechBubble";
+import PromotionBubble from "../../../../../components/consultation/PromotionBubble";
 import { generateSectionContent } from "../../../../../lib/consultation-content-generator";
 import { useState, useEffect } from "react";
 import { getFiveElementBasicInfo } from "../../../../../lib/five-elements-utils";
@@ -646,6 +647,17 @@ export default function Section1BasicInfo({ consultation }) {
         <div style={{ height: "60px" }}></div>
       </div>
 
+      {/* 프로모션 이미지 */}
+      <div
+        style={{
+          marginTop: "840px",
+
+          textAlign: "center",
+        }}
+      >
+        <PromotionBubble />
+      </div>
+
       {/* 결제 상태에 따른 조건부 렌더링 */}
       {consultation?.isPaid ? (
         <>
@@ -705,31 +717,76 @@ export default function Section1BasicInfo({ consultation }) {
         /* 무료 사용자용 프로모션 이미지 */
         <div
           style={{
-            marginTop: "60px",
-            marginBottom: "60px",
             textAlign: "center",
           }}
         >
           <div
             style={{
-              position: "relative",
               maxWidth: "600px",
               margin: "0 auto",
+              position: "relative",
             }}
           >
             <Image
-              src="/assets/images/promotion.jpg"
+              src="/assets/images/promotion.png"
               alt="프로모션 이미지"
               width={600}
               height={400}
               style={{
                 width: "100%",
                 height: "auto",
-                borderRadius: "12px",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
               }}
               priority
             />
+
+            {/* 프로모션 이미지 위 구매 버튼 오버레이 */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "45%",
+                left: "50%",
+                transform: "translateX(-50%)",
+                zIndex: 10,
+                width: "85%",
+                // maxWidth: "350px",
+              }}
+            >
+              <button
+                onClick={() => {
+                  // 페이지 하단의 결제 섹션으로 스크롤
+                  const paymentSection =
+                    document.querySelector(".payment-section");
+                  if (paymentSection) {
+                    paymentSection.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    // 또는 결제 액션 바를 표시
+                    window.scrollTo({
+                      top: document.body.scrollHeight,
+                      behavior: "smooth",
+                    });
+                  }
+                }}
+                style={{
+                  width: "100%",
+                  padding: "2.8% 32px",
+                  backgroundColor: "rgb(74, 144, 226)",
+                  color: "#FFFFFF",
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  border: "none",
+                  borderRadius: "50px",
+                  cursor: "pointer",
+
+                  transition: "all 0.3s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                <span>지금 구매하기</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
