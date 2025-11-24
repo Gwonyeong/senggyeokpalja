@@ -800,7 +800,7 @@ export default function DailyFortunePage() {
     };
   };
 
-  // 사용자의 주된 십신 계산 함수
+  // 사용자의 주된 십신 계산 함수 (간소화)
   const calculateUserPrimarySibsin = async () => {
     if (!userProfile || !userProfile.birthDate) {
       console.log("프로필 정보가 부족합니다:", {
@@ -872,7 +872,7 @@ export default function DailyFortunePage() {
         timeIndex = 11;
       else if (hour === 23 && minute >= 30) timeIndex = 0;
 
-      // 서버 사주 계산 API 호출 (consultation과 동일한 로직)
+      // 서버 사주 계산 API 호출
       const response = await fetch("/api/saju/calculate", {
         method: "POST",
         headers: {
@@ -894,14 +894,14 @@ export default function DailyFortunePage() {
       if (apiResult.success && apiResult.data) {
         const sajuData = apiResult.data;
 
-        // consultation과 동일한 방식: 단순히 개수가 가장 많은 십신 찾기
+        // 개수가 가장 많은 십신 찾기
         const dominantGod = Object.entries(sajuData.sibsin).reduce(
           (max, [god, value]) =>
             value > (max.value || 0) ? { god, value } : max,
           {}
         );
 
-        // consultation과 동일한 형태로 주된 십신 정보 구성
+        // 주된 십신 정보 구성
         const primarySibsin = dominantGod.god
           ? {
               name: dominantGod.god,
@@ -913,253 +913,16 @@ export default function DailyFortunePage() {
             }
           : null;
 
-        // 오행 분석 (서버에서 계산된 데이터 사용)
-        const ohaengAnalysis = analyzeOhaeng(sajuData.ohaeng);
+        // 50-100점 중 랜덤으로 점수 생성
+        const finalScore = Math.floor(Math.random() * 51) + 50; // 50 ~ 100
 
-        // 희신/기신 분석
-        const heesinGisinResult = analyzeHeesinGisin(sajuData);
+        console.log("🎯 오늘의 운세 점수:", finalScore, "점 (랜덤 생성)");
+        console.log("🎌 주된 십신:", primarySibsin?.name || "알 수 없음");
 
-        // 오늘의 일진 계산
-        const todayIljin = calculateTodayIljin();
-
-        // 일진 조화 분석 (사용자 일간과 오늘 일진의 관계)
-        const iljinHarmonyResult = analyzeIljinHarmony(
-          sajuData.palja.ilju.gan,
-          todayIljin
-        );
-
-        // 원국 특성 분석 (격국, 용신, 구조 조화)
-        const wongukResult = analyzeWongukCharacteristics(
-          sajuData,
-          heesinGisinResult,
-          todayIljin
-        );
-
-        if (primarySibsin) {
-          // 각 오행별 상세 정보
-
-          Object.entries(ohaengAnalysis.distribution).forEach(
-            ([element, info]) => {
-              if (info.count > 0) {
-                console.log(
-                  `   ${info.name}: ${info.count}개 (${info.percentage}%) - ${info.meaning}`
-                );
-              }
-            }
-          );
-
-          // 희신/기신 분석 결과 출력
-          if (heesinGisinResult) {
-            console.log("\n🎯 희신/기신 분석 결과:");
-            console.log(
-              "├─ 일간:",
-              `${heesinGisinResult.ilgan.kor}(${heesinGisinResult.ilgan.han}) - ${heesinGisinResult.ilgan.ohaeng} ${heesinGisinResult.ilgan.eumYang}`
-            );
-            console.log(
-              "├─ 일간 강약:",
-              heesinGisinResult.isIlganStrong ? "강함" : "약함"
-            );
-            console.log("└─ 희신/기신 분석:");
-
-            // 기본 점수 70점에서 시작
-            let totalScore = 70;
-
-            Object.entries(heesinGisinResult.heesinGisinAnalysis).forEach(
-              ([element, analysis]) => {
-                if (analysis.count > 0) {
-                  const elementScore = analysis.score * analysis.count;
-                  totalScore += elementScore;
-
-                  const ohaengNames = {
-                    木: "목(木)",
-                    火: "화(火)",
-                    土: "토(土)",
-                    金: "금(金)",
-                    水: "수(水)",
-                  };
-
-                  console.log(
-                    `   ${ohaengNames[element]}: ${analysis.type} (${
-                      analysis.count
-                    }개 × ${analysis.score}점 = ${
-                      elementScore > 0 ? "+" : ""
-                    }${elementScore}점)`
-                  );
-                }
-              }
-            );
-
-            console.log(
-              `\n🏆 임시 점수: ${totalScore}점 (기본 70점 + 희신/기신 보정)`
-            );
-            console.log(
-              `   희신/기신 보정: ${
-                heesinGisinResult.totalScore > 0 ? "+" : ""
-              }${heesinGisinResult.totalScore}점`
-            );
-          }
-
-          // 일진 조화 분석 결과 출력 및 최종 점수 계산
-          let finalScore = heesinGisinResult
-            ? 70 + heesinGisinResult.totalScore
-            : 70;
-
-          if (iljinHarmonyResult) {
-            console.log("\n📅 일진 조화 분석:");
-            console.log(
-              `├─ 오늘의 일진: ${iljinHarmonyResult.todayIljin.gapja}(${iljinHarmonyResult.todayIljin.gapjaHan})`
-            );
-            console.log(
-              `├─ 일진 천간: ${iljinHarmonyResult.todayIljin.gan.kor}(${iljinHarmonyResult.todayIljin.gan.han}) - ${iljinHarmonyResult.todayIljin.gan.ohaeng} ${iljinHarmonyResult.todayIljin.gan.eumYang}`
-            );
-            console.log(
-              `├─ 사용자 일간: ${iljinHarmonyResult.userIlgan.kor}(${iljinHarmonyResult.userIlgan.han}) - ${iljinHarmonyResult.userIlgan.ohaeng} ${iljinHarmonyResult.userIlgan.eumYang}`
-            );
-            console.log(
-              `├─ 십신 관계: ${iljinHarmonyResult.sibsinType || "없음"}`
-            );
-            console.log(
-              `├─ 조화 점수: ${iljinHarmonyResult.score > 0 ? "+" : ""}${
-                iljinHarmonyResult.score
-              }점`
-            );
-            console.log(`└─ 설명: ${iljinHarmonyResult.description}`);
-
-            // 일진 조화 점수를 최종 점수에 반영
-            finalScore += iljinHarmonyResult.score;
-
-            console.log(`\n🎯 최종 점수: ${finalScore}점`);
-            console.log(`   = 기본 점수 70점`);
-            if (heesinGisinResult) {
-              console.log(
-                `   + 희신/기신 보정 ${
-                  heesinGisinResult.totalScore > 0 ? "+" : ""
-                }${heesinGisinResult.totalScore}점`
-              );
-            }
-            console.log(
-              `   + 일진 조화 보정 ${iljinHarmonyResult.score > 0 ? "+" : ""}${
-                iljinHarmonyResult.score
-              }점`
-            );
-          } else {
-            // 일진 조화 분석이 없는 경우에도 점수 범위 조정
-            const adjustedScore = Math.max(50, Math.min(100, finalScore));
-
-            console.log(
-              `\n🎯 임시 점수: ${adjustedScore}점 (일진 조화 분석 불가)`
-            );
-
-            if (finalScore !== adjustedScore) {
-              console.log(
-                `   ⚖️ 점수 조정: ${finalScore}점 → ${adjustedScore}점 (50-100점 범위 적용)`
-              );
-            }
-
-            finalScore = adjustedScore;
-          }
-
-          // 원국 특성 분석 결과 출력 및 최종 점수 계산
-          if (wongukResult) {
-            console.log("\n🏛️ 원국 특성 분석:");
-
-            // 격국 정보 출력
-            if (wongukResult.geokgukResult) {
-              console.log(`├─ 격국: ${wongukResult.geokgukResult.geokguk}`);
-              console.log(
-                `├─ 주도 십신: ${wongukResult.geokgukResult.dominantSibsin} (${wongukResult.geokgukResult.maxCount}개)`
-              );
-            }
-
-            // 용신 정보 출력
-            if (wongukResult.yongsinResult) {
-              const yongsinElements = wongukResult.yongsinResult.yongsin
-                .map((y) => y.element)
-                .join(", ");
-              const gisinElements = wongukResult.yongsinResult.gisin
-                .map((g) => g.element)
-                .join(", ");
-              console.log(`├─ 용신: ${yongsinElements || "없음"}`);
-              console.log(`├─ 기신: ${gisinElements || "없음"}`);
-            }
-
-            // 원국 특성 분석 상세 출력
-            console.log("└─ 원국 특성 분석 상세:");
-            wongukResult.analysisDetails.forEach((detail, index) => {
-              const prefix =
-                index === wongukResult.analysisDetails.length - 1
-                  ? "   └─"
-                  : "   ├─";
-              console.log(
-                `${prefix} ${detail.type}: ${detail.score > 0 ? "+" : ""}${
-                  detail.score
-                }점 (${detail.reason})`
-              );
-              console.log(`      ${detail.detail}`);
-            });
-
-            // 원국 특성 점수를 최종 점수에 반영
-            finalScore += wongukResult.totalScore;
-
-            // 점수 범위 조정 (50-100점 제한)
-            const adjustedScore = Math.max(50, Math.min(100, finalScore));
-
-            console.log(`\n🎯 최종 점수: ${adjustedScore}점`);
-            console.log(`   = 기본 점수 70점`);
-            if (heesinGisinResult) {
-              console.log(
-                `   + 희신/기신 보정 ${
-                  heesinGisinResult.totalScore > 0 ? "+" : ""
-                }${heesinGisinResult.totalScore}점`
-              );
-            }
-            if (iljinHarmonyResult) {
-              console.log(
-                `   + 일진 조화 보정 ${
-                  iljinHarmonyResult.score > 0 ? "+" : ""
-                }${iljinHarmonyResult.score}점`
-              );
-            }
-            console.log(
-              `   + 원국 특성 보정 ${wongukResult.totalScore > 0 ? "+" : ""}${
-                wongukResult.totalScore
-              }점`
-            );
-
-            if (finalScore !== adjustedScore) {
-              console.log(
-                `   ⚖️ 점수 조정: ${finalScore}점 → ${adjustedScore}점 (50-100점 범위 적용)`
-              );
-            }
-
-            // 최종 점수를 조정된 점수로 업데이트
-            finalScore = adjustedScore;
-          } else {
-            // 원국 특성 분석이 없는 경우에도 점수 범위 조정
-            const adjustedScore = Math.max(50, Math.min(100, finalScore));
-
-            console.log(
-              `\n🎯 최종 점수: ${adjustedScore}점 (원국 특성 분석 불가)`
-            );
-
-            if (finalScore !== adjustedScore) {
-              console.log(
-                `   ⚖️ 점수 조정: ${finalScore}점 → ${adjustedScore}점 (50-100점 범위 적용)`
-              );
-            }
-
-            finalScore = adjustedScore;
-          }
-
-          return {
-            primarySibsin,
-            ohaengAnalysis,
-            heesinGisinResult,
-            iljinHarmonyResult,
-            wongukResult,
-            finalScore,
-          };
-        }
+        return {
+          primarySibsin,
+          finalScore,
+        };
       }
 
       return null;
@@ -1295,7 +1058,7 @@ export default function DailyFortunePage() {
         console.log("🎯 사주팔자 분석 결과");
         console.log("=".repeat(50));
 
-        // 십신별 운세 데이터 로드 (MBTI 포함)
+        // 십신별 운세 데이터 로드 (MBTI 포함) - finalScore는 이미 랜덤값
         const fortuneData = await loadFortuneData(
           result.primarySibsin.name,
           result.finalScore,
@@ -1345,7 +1108,6 @@ export default function DailyFortunePage() {
                   score: result.finalScore,
                   fortuneData: finalFortuneData,
                   primarySibsin: result.primarySibsin,
-                  ohaengAnalysis: result.ohaengAnalysis,
                 }),
               });
             } catch (error) {
